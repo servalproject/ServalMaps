@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MappingServices!</string>
-    <string name="app_name">ServalMappingServices</string>
+    <string name="app_name">Serval Mapping Services</string>
+    <!-- labels -->
+    <string name="debug_info">Buttons are here for development / testing / debugging will be moved to a menu and then possibly moved out all together. Will be replaced with the map</string>
+    <!--  buttons -->
+    <string name="btn_start_service">Start Mapping Data Service</string>
+    <string name="btn_status_service">Determine Service Status</string>
 </resources>

@@ -7,6 +7,18 @@
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/hello"
+    android:text="@string/debug_info"
     />
+<Button
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:text="@string/btn_start_service" 
+	android:id="@+id/btn_start_service"
+	/>
+<Button
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:text="@string/btn_status_service" 
+	android:id="@+id/btn_status_service"
+	/>
 </LinearLayout>
