@@ -114,6 +114,17 @@ public class MappingDataService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
+		//start the threads if required
+		this.startThreads();
+		
+		// we don't want this service to be sticky so return the appropriate int to signify this
+		return Service.START_NOT_STICKY;
+	}
+	
+	/*
+	 * start the threads if required
+	 */
+	private void startThreads() {
 		// start the new threads as required
 		if(incidentThread == null) {
 			incidentThread = new Thread(incidentCollector);
@@ -128,9 +139,6 @@ public class MappingDataService extends Service {
 		if(V_LOG) {
 			Log.v(TAG, "service started");
 		}
-		
-		// we don't want this service to be sticky so return the appropriate int to signify this
-		return Service.START_NOT_STICKY;
 	}
 	
 	/*
@@ -168,6 +176,9 @@ public class MappingDataService extends Service {
 	 */
 	@Override
 	public IBinder onBind(Intent intent) {
+		//start the threads if required
+		this.startThreads();
+		
 		return mMessenger.getBinder();
 	}
 	
