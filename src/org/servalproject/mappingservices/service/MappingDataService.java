@@ -1,6 +1,21 @@
-/**
- * 
+/*
+ * This file is part of the Serval Mapping Services app.
+ *
+ *  Serval Mapping Services app is free software: you can redistribute it 
+ *  and/or modify it under the terms of the GNU General Public License 
+ *  as published by the Free Software Foundation, either version 3 of 
+ *  the License, or (at your option) any later version.
+ *
+ *  Serval Mapping Services app is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Serval Mapping Services app.  
+ *  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.servalproject.mappingservices.service;
 
 import java.net.SocketException;
@@ -17,7 +32,10 @@ import android.os.RemoteException;
 import android.util.Log;
 
 /**
- * @author techxplorer (corey@techxplorer.com)
+ * Service to manage the collection of incoming location and incident packets
+ * and put them in the appropriate database
+ * 
+ * @author corey.wallis@servalproject.org
  *
  */
 public class MappingDataService extends Service {
@@ -37,7 +55,7 @@ public class MappingDataService extends Service {
 	 */
 	public static final int MSG_SERVICE_STATUS = 1;
 	
-	/**
+	/*
      * Handler of incoming messages from clients.
      */
 	private class IncomingHandler extends Handler {
@@ -61,14 +79,14 @@ public class MappingDataService extends Service {
 		}
 	}
     
-    /**
+    /*
      * target for clients to send messages to this service
      */
     public final Messenger mMessenger = new Messenger(new IncomingHandler());
     private final MappingDataService self = this;
 	
 	/*
-	 * class level variables
+	 * private class level variables
 	 */
 	private PacketCollector incidentCollector = null; 
 	private PacketCollector locationCollector = null;
@@ -80,7 +98,7 @@ public class MappingDataService extends Service {
 	private AtomicInteger locationCount = null;
 	
 	/*
-	 * private class constants
+	 * private class level constants
 	 */
 	
 	private final boolean V_LOG = true;
@@ -165,6 +183,7 @@ public class MappingDataService extends Service {
 			incidentThread.interrupt();
 			incidentCollector = null;
 			incidentThread = null;
+			incidentCount = null;
 		}
 		
 		if(locationThread != null) {
@@ -172,6 +191,7 @@ public class MappingDataService extends Service {
 			locationThread.interrupt();
 			locationCollector = null;
 			locationThread = null;
+			locationCount =  null;
 		}
 		
 		if(V_LOG) {
@@ -197,11 +217,10 @@ public class MappingDataService extends Service {
 	 */
 	private Bundle getServiceStatus() {
 		
+		// use a bundle for the info
 		Bundle serviceStatus = new Bundle();
 		
-		//HashMap<String, String> serviceStatus = new HashMap<String, String>();
-		
-		// build the status bundle
+		// add status info for the incident thread
 		if(incidentThread != null) {
 			if(incidentThread.isAlive() == true) {
 				serviceStatus.putString("incidentThread", "running");
@@ -212,6 +231,7 @@ public class MappingDataService extends Service {
 			serviceStatus.putString("incidentThread", "stopped");	
 		}
 		
+		// add status info for the location thread
 		if(locationThread != null) {
 			if(locationThread.isAlive() == true) {
 				serviceStatus.putString("locationThread", "running");
@@ -222,6 +242,7 @@ public class MappingDataService extends Service {
 			serviceStatus.putString("locationThread", "stopped");	
 		}
 		
+		// add the count of packets received
 		serviceStatus.putInt("incidentCount", incidentCount.get());
 		serviceStatus.putInt("locationCount", locationCount.get());
 		

@@ -1,3 +1,20 @@
+/*
+ * This file is part of the Serval Mapping Services app.
+ *
+ *  Serval Mapping Services app is free software: you can redistribute it 
+ *  and/or modify it under the terms of the GNU General Public License 
+ *  as published by the Free Software Foundation, either version 3 of 
+ *  the License, or (at your option) any later version.
+ *
+ *  Serval Mapping Services app is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Serval Mapping Services app.  
+ *  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.servalproject.mappingservices;
 
 import org.servalproject.mappingservices.service.MappingDataService;
@@ -18,22 +35,33 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+/**
+ * Primary activity for the Serval Mapping Services app
+ * 
+ * @author corey.wallis@servalproject.org
+ *
+ */
 public class MappingServices extends Activity implements OnClickListener {
 	
 	/*
-	 * private class constants
+	 * private class level constants
 	 */
 	
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-MV";
 	
 	/*
-	 * private class variables
+	 * private class level variables
 	 */
-	private Messenger mService = null;
-	private boolean mIsBound;
+	private Messenger serviceMessenger = null;
+	private boolean isBound;
 	
-    /** Called when the activity is first created. */
+    /*
+     * Called when the activity is first created
+     * 
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreate(android.os.Bundle)
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +75,10 @@ public class MappingServices extends Activity implements OnClickListener {
         button.setOnClickListener(this);
     }
     
-    /**
-     * Handler of incoming messages from service.
+    /*
+     * class to handle the incoming messages from the service
      */
-    class IncomingHandler extends Handler {
+    private class IncomingHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -58,6 +86,9 @@ public class MappingServices extends Activity implements OnClickListener {
                 	Bundle bundle = msg.getData();
                 	//debug code
                 	Log.v(TAG, bundle.getString("locationThread"));
+                	Log.v(TAG, bundle.getString("incidentThread"));
+                	Log.v(TAG, "location packets: " + bundle.getInt("locationCount"));
+                	Log.v(TAG, "incident packets: " + bundle.getInt("incidentCount"));
                     break;
                 default:
                     super.handleMessage(msg);
@@ -65,46 +96,44 @@ public class MappingServices extends Activity implements OnClickListener {
         }
     }
     
-    /**
-     * Target we publish for clients to send messages to IncomingHandler.
+    /*
+     * Messenger object that the service can use to send replies
      */
-    public final Messenger mMessenger = new Messenger(new IncomingHandler());
+    private final Messenger messenger = new Messenger(new IncomingHandler());
     
-    /**
-     * Class for interacting with the main interface of the service.
+    /*
+     * ServiceConnection class that represents a collection to the MappindDataService
      */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private ServiceConnection connection = new ServiceConnection() {
     	public void onServiceConnected(ComponentName className, IBinder service) {
-    		// This is called when the connection with the service has been
-    		// established, giving us the service object we can use to
-    		// interact with the service.  We are communicating with our
-    		// service through an IDL interface, so get a client-side
-    		// representation of that from the raw service object.
-    		mService = new Messenger(service);
+    		// called when the connection is made
+    		serviceMessenger = new Messenger(service);
     		
     	}
 
     	public void onServiceDisconnected(ComponentName className) {
-    		// This is called when the connection with the service has been
-    		// unexpectedly disconnected -- that is, its process crashed.
-    		mService = null;
+    		// called when the connection is lost
+    		serviceMessenger = null;
     	}
     };
     
-    void doBindService() {
+    /*
+     * a method to bind to the service
+     */
+    private void doBindService() {
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        bindService(new Intent(MappingServices.this, MappingDataService.class), mConnection, Context.BIND_AUTO_CREATE);
-        mIsBound = true;
+        bindService(new Intent(MappingServices.this, MappingDataService.class), connection, Context.BIND_AUTO_CREATE);
+        isBound = true;
     }
 
     void doUnbindService() {
-        if (mIsBound) {
+        if (isBound) {
 
             // Detach our existing connection.
-            unbindService(mConnection);
-            mIsBound = false;
+            unbindService(connection);
+            isBound = false;
         }
     }
 
@@ -128,26 +157,27 @@ public class MappingServices extends Activity implements OnClickListener {
 			Intent intent = new Intent(this, org.servalproject.mappingservices.service.MappingDataService.class);
 			startService(intent);
 			*/
-			doBindService();
+			
 			
 		} else if(v.getId() == R.id.btn_status_service) {
-			// status button was touched
-			// We want to monitor the service for as long as we are
-    		// connected to it.
+			// bind to the service
+			doBindService();
+			
     		try {
+    			// send a message to the service to see what its status is
     			Message msg = Message.obtain(null, MappingDataService.MSG_SERVICE_STATUS);
-    			msg.replyTo = mMessenger;
-    			mService.send(msg);
+    			msg.replyTo = messenger;
+    			serviceMessenger.send(msg);
 
     		} catch (RemoteException e) {
-    			// In this case the service has crashed before we could even
-    			// do anything with it; we can count on soon being
-    			// disconnected (and then reconnected if it can be restarted)
-    			// so there is no need to do anything here.
+    			// only log while in development 
+    			if(V_LOG) {
+    				Log.v(TAG, "unable to send a message to the MappingDataService", e);
+    			}
     		}
-			
+    		
+    		// unbind the service
+    		doUnbindService();
 		}
 	}
-    
-    
 }

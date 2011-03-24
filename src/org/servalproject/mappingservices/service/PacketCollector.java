@@ -1,3 +1,21 @@
+/*
+ * This file is part of the Serval Mapping Services app.
+ *
+ *  Serval Mapping Services app is free software: you can redistribute it 
+ *  and/or modify it under the terms of the GNU General Public License 
+ *  as published by the Free Software Foundation, either version 3 of 
+ *  the License, or (at your option) any later version.
+ *
+ *  Serval Mapping Services app is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Serval Mapping Services app.  
+ *  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.servalproject.mappingservices.service;
 
 import java.io.IOException;
@@ -8,6 +26,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import android.util.Log;
 
+/**
+ * Collect UDP packets and keep a count of the number received
+ * 
+ * @author corey.wallis@servalproject.org
+ *
+ */
 public class PacketCollector implements Runnable{
 	
 	/**
@@ -26,7 +50,7 @@ public class PacketCollector implements Runnable{
 	public final Integer DEFAULT_BUFFER_SIZE = 1024;
 	
 	/*
-	 * private class variables
+	 * private class level variables
 	 */
 	private Integer port = null;
 	private DatagramSocket socket = null;
@@ -34,7 +58,7 @@ public class PacketCollector implements Runnable{
 	private AtomicInteger packetCount = null;
 	
 	/*
-	 * private class constants
+	 * private class level constants
 	 */
 	
 	private final boolean V_LOG = true;
@@ -46,7 +70,7 @@ public class PacketCollector implements Runnable{
 	 * @param port the port to bind to for packets
 	 * @param count a variable to hold a count of packets received
 	 * 
-	 * @throws SocketException if a DatagramSocket could not be created
+	 * @throws SocketException if unable to bind the specified socket
 	 */
 	public PacketCollector (Integer port, AtomicInteger count) throws SocketException {
 		
@@ -70,7 +94,13 @@ public class PacketCollector implements Runnable{
 			Log.v(TAG, "packet collector configured (" + socket.getLocalAddress().getHostName() + ":" + socket.getLocalPort() + ")");
 		}
 	}
-
+	
+	/*
+	 * When invoked run as long as possible and collect packets from the network
+	 * 
+	 * (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 		
