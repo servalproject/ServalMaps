@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.util.Log;
 
@@ -30,6 +31,7 @@ public class PacketCollector implements Runnable{
 	private Integer port = null;
 	private DatagramSocket socket = null;
 	private volatile boolean keepGoing = true;
+	private AtomicInteger packetCount = null;
 	
 	/*
 	 * private class constants
@@ -40,9 +42,13 @@ public class PacketCollector implements Runnable{
 	
 	/**
 	 * constructor for this class
+	 * 
+	 * @param port the port to bind to for packets
+	 * @param count a variable to hold a count of packets received
+	 * 
 	 * @throws SocketException if a DatagramSocket could not be created
 	 */
-	public PacketCollector (Integer port) throws SocketException {
+	public PacketCollector (Integer port, AtomicInteger count) throws SocketException {
 		
 		// check on the parameters
 		if(port == null) {
@@ -56,6 +62,8 @@ public class PacketCollector implements Runnable{
 		// instantiate the required objects
 		this.port = port;
 		socket = new DatagramSocket(this.port);
+		
+		packetCount = count;
 		
 		// output some debug text
 		if(V_LOG) {
@@ -94,6 +102,9 @@ public class PacketCollector implements Runnable{
 			// get info about the packet
 			mHost = mPacket.getAddress().getHostName();
 			mContent = new String(mPacketContent).trim();
+			
+			// increment the count
+			packetCount.incrementAndGet();
 			
 			if(V_LOG) {
 				Log.v(TAG, "new packet from: " + mHost + "(" + mContent + ")");

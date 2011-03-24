@@ -4,6 +4,8 @@
 package org.servalproject.mappingservices.service;
 
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
@@ -70,8 +72,12 @@ public class MappingDataService extends Service {
 	 */
 	private PacketCollector incidentCollector = null; 
 	private PacketCollector locationCollector = null;
+	
 	private Thread incidentThread = null;
 	private Thread locationThread = null;
+	
+	private AtomicInteger incidentCount = null;
+	private AtomicInteger locationCount = null;
 	
 	/*
 	 * private class constants
@@ -91,8 +97,11 @@ public class MappingDataService extends Service {
 		
 		// set up the required objects
 		try{
-			incidentCollector = new PacketCollector(INCIDENT_PORT);
-			locationCollector = new PacketCollector(LOCATION_PORT);
+			incidentCollector = new PacketCollector(INCIDENT_PORT, incidentCount);
+			locationCollector = new PacketCollector(LOCATION_PORT, locationCount);
+			
+			incidentCount = new AtomicInteger();
+			locationCount = new AtomicInteger();
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -192,7 +201,7 @@ public class MappingDataService extends Service {
 		
 		//HashMap<String, String> serviceStatus = new HashMap<String, String>();
 		
-		// build the status map
+		// build the status bundle
 		if(incidentThread != null) {
 			if(incidentThread.isAlive() == true) {
 				serviceStatus.putString("incidentThread", "running");
@@ -212,6 +221,9 @@ public class MappingDataService extends Service {
 		} else {
 			serviceStatus.putString("locationThread", "stopped");	
 		}
+		
+		serviceStatus.putInt("incidentCount", incidentCount.get());
+		serviceStatus.putInt("locationCount", locationCount.get());
 		
 		return serviceStatus;
 	}
