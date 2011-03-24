@@ -149,19 +149,20 @@ public class MappingDataService extends Service {
 	 */
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		
 		// play nice and tidy up as required
 		if(incidentThread != null) {
 			incidentCollector.requestStop();
-			incidentThread = null;
+			incidentThread.interrupt();
 			incidentCollector = null;
+			incidentThread = null;
 		}
 		
 		if(locationThread != null) {
 			locationCollector.requestStop();
-			locationThread = null;
+			locationThread.interrupt();
 			locationCollector = null;
+			locationThread = null;
 		}
 		
 		if(V_LOG) {
@@ -214,5 +215,4 @@ public class MappingDataService extends Service {
 		
 		return serviceStatus;
 	}
-
 }

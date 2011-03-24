@@ -26,6 +26,10 @@ public class MappingServices extends Activity implements OnClickListener {
 	
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-MV";
+	
+	/*
+	 * private class variables
+	 */
 	private Messenger mService = null;
 	private boolean mIsBound;
 	
