@@ -57,6 +57,11 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	public static final String PHONE_NUMBER_FIELD = "phone_number";
 	
 	/**
+	 * Name of the ip address field
+	 */
+	public static final String IP_ADDRESS_FIELD = "ip_address";
+	
+	/**
 	 * Name of the latitude field
 	 */
 	public static final String LATITUDE_FIELD = "latitude";
@@ -105,9 +110,14 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		
+		/*
+		 * TODO remove phone number as it isnt needed and adjust rest of the code to compensate
+		 */
+		
 		// build the sql to create the table
 		String mSql = "CREATE TABLE " + TABLE_NAME + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-		            + PHONE_NUMBER_FIELD + " int, " + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real,"
+		            + PHONE_NUMBER_FIELD + " int, " + IP_ADDRESS_FIELD + " text, "+ LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real,"
 		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + HASH_INDEX_FIELD + " text)";
 		
 		// execute the sql
@@ -118,7 +128,7 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 		}
 		
 		// build the sql to create the indexes
-		mSql = "CREATE INDEX idx_phone_number ON " + TABLE_NAME + " ON (" + PHONE_NUMBER_FIELD + ")";
+		mSql = "CREATE INDEX idx_phone_number ON " + TABLE_NAME + " (" + PHONE_NUMBER_FIELD + ")";
 		
 		try {
 			db.execSQL(mSql);
@@ -126,7 +136,15 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 			Log.e(TAG, "unable to create phone number index", e);
 		}
 		
-		mSql = "CREATE UNIQUE INDEX idx_hash ON " + TABLE_NAME + " ON (" + HASH_INDEX_FIELD + ")";
+		mSql = "CREATE UNIQUE INDEX idx_hash ON " + TABLE_NAME + " (" + HASH_INDEX_FIELD + ")";
+		
+		try {
+			db.execSQL(mSql);
+		} catch (SQLException e) {
+			Log.e(TAG, "unable to create has field index", e);
+		}
+		
+		mSql = "CREATE INDEX idx_ip_address ON " + TABLE_NAME + " (" + IP_ADDRESS_FIELD + ")";
 		
 		try {
 			db.execSQL(mSql);

@@ -16,13 +16,18 @@
  *  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.servalproject.mappingservices.service;
+package org.servalproject.mappingservices.services;
 
+import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.servalproject.mappingservices.content.LocationOpenHelper;
 
 import android.app.Service;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -43,12 +48,12 @@ public class MappingDataService extends Service {
 	/**
 	 * port that will be used to listen for incoming incident messages
 	 */
-	public static final Integer INCIDENT_PORT = 7001;
+	public static final Integer INCIDENT_PORT = 4103;
 	
 	/**
 	 * port that will be used to listen for incoming location updates
 	 */
-	public static final Integer LOCATION_PORT = 7002;
+	public static final Integer LOCATION_PORT = 4102;
 	
 	/**
 	 * message to return the status of the service
@@ -90,12 +95,18 @@ public class MappingDataService extends Service {
 	 */
 	private PacketCollector incidentCollector = null; 
 	private PacketCollector locationCollector = null;
+	private PacketSaver     packetSaver       = null;
 	
-	private Thread incidentThread = null;
-	private Thread locationThread = null;
+	private Thread incidentThread    = null;
+	private Thread locationThread    = null;
+	private Thread packetSaverThread = null;
 	
 	private AtomicInteger incidentCount = null;
 	private AtomicInteger locationCount = null;
+	
+	private LinkedBlockingQueue<DatagramPacket> packetQueue = null;
+	private LocationOpenHelper locationOpenHelper = null;
+	
 	
 	/*
 	 * private class level constants
@@ -115,11 +126,19 @@ public class MappingDataService extends Service {
 		
 		// set up the required objects
 		try{
-			incidentCollector = new PacketCollector(INCIDENT_PORT, incidentCount);
-			locationCollector = new PacketCollector(LOCATION_PORT, locationCount);
-			
+			// initialise helper variables
 			incidentCount = new AtomicInteger();
 			locationCount = new AtomicInteger();
+			packetQueue   = new LinkedBlockingQueue<DatagramPacket>();
+			
+			// initalise the packet collection objects
+			incidentCollector = new PacketCollector(INCIDENT_PORT, incidentCount, packetQueue);
+			locationCollector = new PacketCollector(LOCATION_PORT, locationCount, packetQueue);
+			
+			// initialise the packet saving objects
+			locationOpenHelper = new LocationOpenHelper(this);
+			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, locationOpenHelper.getWritableDatabase());
+			
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -141,6 +160,11 @@ public class MappingDataService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
+		// debug message
+		if(V_LOG) {
+			Log.v(TAG, "service onStartCommand called");
+		}
+		
 		//start the threads if required
 		this.startThreads();
 		
@@ -161,6 +185,11 @@ public class MappingDataService extends Service {
 		if(locationThread == null) {
 			locationThread = new Thread(locationCollector);
 			locationThread.start();
+		}
+		
+		if(packetSaverThread == null) {
+			packetSaverThread = new Thread(packetSaver);
+			packetSaverThread.start();
 		}
 		
 		if(V_LOG) {
@@ -192,6 +221,17 @@ public class MappingDataService extends Service {
 			locationCollector = null;
 			locationThread = null;
 			locationCount =  null;
+		}
+		
+		if(packetSaverThread != null) {
+			packetSaver.requestStop();
+			packetSaverThread.interrupt();
+			packetSaver = null;
+			packetSaverThread = null;
+		}
+		
+		if(packetQueue != null) {
+			packetQueue = null;
 		}
 		
 		if(V_LOG) {

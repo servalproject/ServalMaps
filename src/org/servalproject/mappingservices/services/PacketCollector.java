@@ -16,12 +16,13 @@
  *  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.servalproject.mappingservices.service;
+package org.servalproject.mappingservices.services;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import android.util.Log;
@@ -37,17 +38,17 @@ public class PacketCollector implements Runnable{
 	/**
 	 * the minimum allowed port number
 	 */
-	public final Integer MIN_PORT = 1024;
+	public static final Integer MIN_PORT = 1024;
 	
 	/**
 	 * the maximum allowed port number
 	 */
-	public final Integer MAX_PORT = 65535;
+	public static final Integer MAX_PORT = 65535;
 		
 	/**
 	 * the default buffer size used for incoming packets
 	 */
-	public final Integer DEFAULT_BUFFER_SIZE = 1024;
+	public static final Integer DEFAULT_BUFFER_SIZE = 1024;
 	
 	/*
 	 * private class level variables
@@ -56,6 +57,7 @@ public class PacketCollector implements Runnable{
 	private DatagramSocket socket = null;
 	private volatile boolean keepGoing = true;
 	private AtomicInteger packetCount = null;
+	private LinkedBlockingQueue<DatagramPacket> packetQueue = null;
 	
 	/*
 	 * private class level constants
@@ -72,15 +74,15 @@ public class PacketCollector implements Runnable{
 	 * 
 	 * @throws SocketException if unable to bind the specified socket
 	 */
-	public PacketCollector (Integer port, AtomicInteger count) throws SocketException {
+	public PacketCollector (Integer port, AtomicInteger count, LinkedBlockingQueue<DatagramPacket> queue) throws SocketException {
 		
 		// check on the parameters
-		if(port == null) {
-			throw new IllegalArgumentException("the port parameter is required");
+		if(port == null || count == null || queue == null) {
+			throw new IllegalArgumentException("all parameters are required");
 		}
 		
-		if(port < this.MIN_PORT || port > this.MAX_PORT) {
-			throw new IllegalArgumentException("this port parameter must be between: " + this.MIN_PORT + " and " + this.MAX_PORT);
+		if(port < MIN_PORT || port > MAX_PORT) {
+			throw new IllegalArgumentException("the port parameter must be between: " + MIN_PORT + " and " + MAX_PORT);
 		}
 		
 		// instantiate the required objects
@@ -88,6 +90,7 @@ public class PacketCollector implements Runnable{
 		socket = new DatagramSocket(this.port);
 		
 		packetCount = count;
+		packetQueue = queue;
 		
 		// output some debug text
 		if(V_LOG) {
@@ -126,7 +129,7 @@ public class PacketCollector implements Runnable{
 			try {
 				socket.receive(mPacket);
 			} catch (IOException e) {
-				//System.err.println("an IO error occurred while reading a packet:\n" + e.toString());
+				Log.e(TAG, "io exception occured while receiving packet", e);
 			}
 			
 			// get info about the packet
@@ -135,6 +138,12 @@ public class PacketCollector implements Runnable{
 			
 			// increment the count
 			packetCount.incrementAndGet();
+			
+			// override the port number to the destination port and not the source port
+			mPacket.setPort(port);
+			
+			// add the packet to the queue
+			packetQueue.add(mPacket);
 			
 			if(V_LOG) {
 				Log.v(TAG, "new packet from: " + mHost + "(" + mContent + ")");

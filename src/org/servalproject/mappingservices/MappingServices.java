@@ -17,7 +17,7 @@
  */
 package org.servalproject.mappingservices;
 
-import org.servalproject.mappingservices.service.MappingDataService;
+import org.servalproject.mappingservices.services.MappingDataService;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -153,10 +153,8 @@ public class MappingServices extends Activity implements OnClickListener {
 		// determine which button was clicked
 		if(v.getId() == R.id.btn_start_service) {
 			// start button was touched
-			/*
-			Intent intent = new Intent(this, org.servalproject.mappingservices.service.MappingDataService.class);
+			Intent intent = new Intent(this, org.servalproject.mappingservices.services.MappingDataService.class);
 			startService(intent);
-			*/
 			
 			
 		} else if(v.getId() == R.id.btn_status_service) {
