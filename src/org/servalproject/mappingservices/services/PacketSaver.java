@@ -18,16 +18,14 @@
 
 package org.servalproject.mappingservices.services;
 
-import java.math.BigInteger;
 import java.net.DatagramPacket;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.servalproject.mappingservices.content.LocationOpenHelper;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -46,7 +44,6 @@ public class PacketSaver implements Runnable {
 	private int locationPort;
 	private int incidentPort;
 	private volatile boolean keepGoing = true;
-	private MessageDigest digester = null;
 	
 	private SQLiteDatabase locationDatabase;
 	
@@ -85,16 +82,6 @@ public class PacketSaver implements Runnable {
 		this.packetQueue      = packetQueue;
 		this.locationDatabase = locationDatabase;
 		
-		// setup the message digester
-		try {
-			digester = MessageDigest.getInstance("SHA-1");
-		} catch (NoSuchAlgorithmException e) {
-			Log.e(TAG, "unable to create the SHA-1 message digester", e);
-			digester = null;
-		}
-		
-		// debug status messages
-		Log.v(TAG, "locationDatabase location: " + locationDatabase.getPath());
 	}
 
 	/*
@@ -158,108 +145,78 @@ public class PacketSaver implements Runnable {
 		// get the fields from the packet
 		String[] mFields = mContent.split("\\|");
 		
+		//validate the packet according to business rules
+		try {
+			PacketValidator.isValidLocation(mFields);
+		} catch (ValidationException e) {
+			if(V_LOG) {
+				Log.v(TAG, "packet didn't pass validation", e);
+			}
+			
+			// exit the method early as the validation failed
+			return;
+		}
+		
+		// packet passed validation so continue
 		// declare other helper variables
 		Cursor mCursor          = null;
 		String[] mColumns       = null;
 		String   mSelection     = null;
 		String[] mSelectionArgs = null;
 		
-		// check to make sure we have the required number of fields
-		// see: http://developer.servalproject.org/twiki/bin/view/Main/PublicAlphaMappingServiceLocationPackets
+		// check to make sure we haven't saved this packet already as duplicates are expected
 		
-		/*
-		 * TODO remove phone number as it isnt needed and adjust rest of the code to compensate
-		 */
+		// columns to return
+		mColumns = new String[1];
+		mColumns[0] = LocationOpenHelper._ID;
 		
-		if(mFields.length == 5) {
-			// required number of fields found
+		// where statement
+		mSelection = LocationOpenHelper.TYPE_FIELD + " = ? AND " + LocationOpenHelper.IP_ADDRESS_FIELD + " = ? AND " + LocationOpenHelper.TIMESTAMP_FIELD + " = ?";
+		
+		// values to match against
+		mSelectionArgs = new String[3];
+		mSelectionArgs[0] = mFields[0];
+		mSelectionArgs[1] = packet.getAddress().getHostAddress();
+		mSelectionArgs[2] = mFields[3];
+		
+		// execute the query
+		mCursor = locationDatabase.query(LocationOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
+	
+		if(mCursor.getCount() == 0) {
 			
-			//TODO packet content validation
+			// values weren't found so we can store this new packet
+			ContentValues mValues = new ContentValues();
+			mValues.put(LocationOpenHelper.TYPE_FIELD, mFields[0]);
+			mValues.put(LocationOpenHelper.LATITUDE_FIELD, mFields[1]);
+			mValues.put(LocationOpenHelper.LONGITUDE_FIELD, mFields[2]);
+			mValues.put(LocationOpenHelper.TIMESTAMP_FIELD, mFields[3]);
+			mValues.put(LocationOpenHelper.TIMEZONE_FIELD, mFields[4]);
+			mValues.put(LocationOpenHelper.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
 			
-			// get a hash of the packet content
-			String mHash = getHash(mContent);
-			
-			// check to see if the hashing worked
-			if(mHash != null) {
-				
-				// setup the DB objects
-				mColumns = new String[1];
-				mColumns[0] = LocationOpenHelper.HASH_INDEX_FIELD;
-				mSelection  = LocationOpenHelper.HASH_INDEX_FIELD + " = ?"; 
-				mSelectionArgs = new String[1];
-				mSelectionArgs[0] = mHash;
-				
-				// check to see if this packet is already stored
-				mCursor = locationDatabase.query(LocationOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
-				
-				if(mCursor.getCount() == 0) {
-					// add the packet to the database
-					
-					// create a collection of new values
-					ContentValues mValues = new ContentValues();
-					mValues.put(LocationOpenHelper.PHONE_NUMBER_FIELD, mFields[0]);
-					mValues.put(LocationOpenHelper.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
-					mValues.put(LocationOpenHelper.LATITUDE_FIELD, mFields[1]);
-					mValues.put(LocationOpenHelper.LONGITUDE_FIELD, mFields[2]);
-					mValues.put(LocationOpenHelper.TIMESTAMP_FIELD, mFields[3]);
-					mValues.put(LocationOpenHelper.TIMEZONE_FIELD, mFields[4]);
-					
-					// add the row
-					locationDatabase.insert(LocationOpenHelper.TABLE_NAME, null, mValues);
-					
-					// play nice and tidy up
-					mValues = null;
-					
-					//status message
-					if(V_LOG) {
-						Log.v(TAG, "new location data saved to database");
-					}
-				} 
-				
-				// play nice and tidy up
-				mCursor.close();
-				
-			} else {
-				// hashing didn't work
-				// use multiple fields to check if a record already exists
+			// add the row
+			try {
+				locationDatabase.insertOrThrow(LocationOpenHelper.TABLE_NAME, null, mValues);
+			} catch (SQLException e) {
+				Log.e(TAG, "unable to save new location data", e);
 			}
 			
+			//status message
+			if(V_LOG) {
+				Log.v(TAG, "new location data saved to database");
+			}
 		} else {
 			if(V_LOG) {
-				Log.v(TAG, "location packet didn't have required number of fields");
+				Log.v(TAG, "duplicate location data detected");
 			}
 		}
+		
+		// play nice and tidy up
+		mCursor.close();
 	}
 	
 	// private method to save incident data
 	private void saveIncident(DatagramPacket packet) {
 		
-	}
-	
-	//private method to generate a hash for comparison purposes
-	private String getHash(String input) {
-		
-		// declare local variables
-		String mHashString = null;
-		
-		if(digester != null) {
-			// reset the digester
-			digester.reset();
-			
-			// convert the string to bytes and hash those bytes
-			digester.update(input.getBytes());
-			
-			// convert the hashed bytes into an hex encoded string
-			BigInteger mHash = new BigInteger(1, digester.digest());
-			mHashString = mHash.toString(16);
-			
-			// check to ensure if a leading 0 is required
-			if((mHashString.length() % 2) != 0) {
-				mHashString = "0" + mHashString;
-			}
-		}
-
-		return mHashString;
 	}
 	
 	/**

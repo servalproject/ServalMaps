@@ -27,7 +27,6 @@ import org.servalproject.mappingservices.content.LocationOpenHelper;
 
 import android.app.Service;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;

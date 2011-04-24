@@ -57,6 +57,11 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	public static final String PHONE_NUMBER_FIELD = "phone_number";
 	
 	/**
+	 * Type of location record
+	 */
+	public static final String TYPE_FIELD = "type";
+	
+	/**
 	 * Name of the ip address field
 	 */
 	public static final String IP_ADDRESS_FIELD = "ip_address";
@@ -80,11 +85,6 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	 * Name of the time zone field
 	 */
 	public static final String TIMEZONE_FIELD = "timezone";
-	
-	/**
-	 * Name of the hash field
-	 */
-	public static final String HASH_INDEX_FIELD = "hash";
 	
 	
 	/*
@@ -111,14 +111,10 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		
-		/*
-		 * TODO remove phone number as it isnt needed and adjust rest of the code to compensate
-		 */
-		
 		// build the sql to create the table
 		String mSql = "CREATE TABLE " + TABLE_NAME + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-		            + PHONE_NUMBER_FIELD + " int, " + IP_ADDRESS_FIELD + " text, "+ LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real,"
-		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + HASH_INDEX_FIELD + " text)";
+		            + PHONE_NUMBER_FIELD + " int, " + TYPE_FIELD + " int, " + IP_ADDRESS_FIELD + " text, "+ LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real,"
+		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text)";
 		
 		// execute the sql
 		try {
@@ -136,14 +132,6 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 			Log.e(TAG, "unable to create phone number index", e);
 		}
 		
-		mSql = "CREATE UNIQUE INDEX idx_hash ON " + TABLE_NAME + " (" + HASH_INDEX_FIELD + ")";
-		
-		try {
-			db.execSQL(mSql);
-		} catch (SQLException e) {
-			Log.e(TAG, "unable to create has field index", e);
-		}
-		
 		mSql = "CREATE INDEX idx_ip_address ON " + TABLE_NAME + " (" + IP_ADDRESS_FIELD + ")";
 		
 		try {
@@ -152,15 +140,24 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 			Log.e(TAG, "unable to create has field index", e);
 		}
 		
+		mSql = "CREATE INDEX idx_type_ip_time ON " + TABLE_NAME + " (" + TYPE_FIELD + ", " + IP_ADDRESS_FIELD + ", " + TIMESTAMP_FIELD + ")";
+		
+		try {
+			db.execSQL(mSql);
+		} catch (SQLException e) {
+			Log.e(TAG, "unable to create type_ip_time index", e);
+		}
+		
 		// output some debug text
 		if(V_LOG) {
 			Log.v(TAG, "database tables and indexes created");
+			Log.v(TAG, "database path:" + db.getPath());
 		}
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
+		//TODO upgrade tables when necessary
 
 	}
 
