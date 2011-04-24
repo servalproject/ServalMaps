@@ -34,6 +34,11 @@ public class PacketValidator {
 	public static final int LOCATION_FIELD_COUNT = 5;
 	
 	/**
+	 * number of expected fields in an incident packet
+	 */
+	public static final int INCIDENT_FIELD_COUNT = 7;
+	
+	/**
 	 * Validate the content of a location packet once it has been broken up into the individual fields
 	 * 
 	 * @param packetContent an array of fields derived from the packet content
@@ -52,7 +57,7 @@ public class PacketValidator {
 		/* 
 		 * fields are:
 		 * 
-		 * type: - expected to be an integer, currently only 1 is valid
+		 * type - expected to be an integer, currently only 1 is valid
 		 * latitude - expected to be a float
 		 * longitude - expected to be a float
 		 * timestamp - expected to be an integer
@@ -85,6 +90,75 @@ public class PacketValidator {
 		}
 		
 		if(isTimezoneId(packetContent[4]) != true) {
+			throw new ValidationException("timezone field is not a valid timezone identifier");
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Validate the content of an incident packet once it has been broken up into the individual fields
+	 * 
+	 * @param packetContent an array of fields derived from the packet content
+	 * 
+	 * @return true if the packet passes validation, false if it is fails
+	 */
+	public static boolean isValidIncident(String[] packetContent) throws ValidationException {
+		
+		// ensure the required number of fields
+		if(packetContent.length != INCIDENT_FIELD_COUNT) {
+			throw new ValidationException("incorrect number of fields found '" + packetContent.length + "' expected '" + INCIDENT_FIELD_COUNT + "'");
+		}
+		
+		/* 
+		 * fields are:
+		 * 
+		 * title - title of the incident
+		 * description - description of the incident
+		 * category - incident category
+		 * latitude - expected to be a float
+		 * longitude - expected to be a float
+		 * timestamp - expected to be an integer
+		 * timezone - expected to be a valid timezone identifier
+		 * 
+		 * for more info see:
+		 * http://developer.servalproject.org/twiki/bin/view/Main/PublicAlphaMappingServiceIncidentPackets
+		 */
+		
+		if(isValidString(packetContent[0]) != true) {
+			throw new ValidationException("title field cannot empty");
+		}
+		
+		if(isValidString(packetContent[1]) != true) {
+			throw new ValidationException("description field cannot empty");
+		}
+		
+		if(isInteger(packetContent[2]) != true) {
+			throw new ValidationException("category field is not an integer");
+		}
+		
+		// TODO expand validation once more categories are in use
+		// most likely swap this static method for one that is non static and gets
+		// the list of categories from the incident database or some other storage mechanism
+		
+		int value = Integer.parseInt(packetContent[2]);
+		if(value != 1) {
+			throw new ValidationException("category field is not valid. Found '" + value + "' expected '1'");
+		}
+		
+		if(isFloat(packetContent[3]) != true) {
+			throw new ValidationException("latitude field is not a valid float");
+		}
+		
+		if(isFloat(packetContent[4]) != true) {
+			throw new ValidationException("longitude field is not a valid float");
+		}
+		
+		if(isInteger(packetContent[5]) != true) {
+			throw new ValidationException("timestamp field is not a valid integer");
+		}
+		
+		if(isTimezoneId(packetContent[6]) != true) {
 			throw new ValidationException("timezone field is not a valid timezone identifier");
 		}
 		
@@ -134,6 +208,17 @@ public class PacketValidator {
 		}
 		
 		return mFound;
+	}
+	
+	/*
+	 * private method to validate a string field
+	 */
+	private static boolean isValidString(String value) {
+		if(value.trim().length() > 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

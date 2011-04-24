@@ -23,6 +23,7 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.LocationOpenHelper;
 
 import android.app.Service;
@@ -105,6 +106,7 @@ public class MappingDataService extends Service {
 	
 	private LinkedBlockingQueue<DatagramPacket> packetQueue = null;
 	private LocationOpenHelper locationOpenHelper = null;
+	private IncidentOpenHelper incidentOpenHelper = null;
 	
 	
 	/*
@@ -130,13 +132,14 @@ public class MappingDataService extends Service {
 			locationCount = new AtomicInteger();
 			packetQueue   = new LinkedBlockingQueue<DatagramPacket>();
 			
-			// initalise the packet collection objects
+			// initialise the packet collection objects
 			incidentCollector = new PacketCollector(INCIDENT_PORT, incidentCount, packetQueue);
 			locationCollector = new PacketCollector(LOCATION_PORT, locationCount, packetQueue);
 			
 			// initialise the packet saving objects
 			locationOpenHelper = new LocationOpenHelper(this);
-			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, locationOpenHelper.getWritableDatabase());
+			incidentOpenHelper = new IncidentOpenHelper(this);
+			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, locationOpenHelper.getWritableDatabase(), incidentOpenHelper.getWritableDatabase());
 			
 			
 			if(V_LOG) {
@@ -231,6 +234,16 @@ public class MappingDataService extends Service {
 		
 		if(packetQueue != null) {
 			packetQueue = null;
+		}
+		
+		if(locationOpenHelper != null) {
+			locationOpenHelper.close();
+			locationOpenHelper = null;
+		}
+		
+		if(incidentOpenHelper != null) {
+			incidentOpenHelper.close();
+			incidentOpenHelper = null;
 		}
 		
 		if(V_LOG) {

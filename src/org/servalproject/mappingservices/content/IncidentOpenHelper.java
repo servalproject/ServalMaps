@@ -15,6 +15,7 @@
  *  along with Serval Mapping Services app.  
  *  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.servalproject.mappingservices.content;
 
 import android.content.Context;
@@ -26,10 +27,10 @@ import android.util.Log;
 
 /**
  * Manages the database used to store location information
+ * 
  * @author corey.wallis@servalproject.org
- *
  */
-public class LocationOpenHelper extends SQLiteOpenHelper {
+public class IncidentOpenHelper extends SQLiteOpenHelper {
 	
 	/**
 	 * Version of the database supported by this class
@@ -39,12 +40,12 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	/**
 	 * Name of the database file
 	 */
-	public static final String DATABASE_NAME = "serval-maps-locations.db";
+	public static final String DATABASE_NAME = "serval-maps-incidents.db";
 	
 	/**
 	 * Name of the locations table
 	 */
-	public static final String TABLE_NAME = "locations";
+	public static final String TABLE_NAME = "incidents";
 	
 	/**
 	 * Name of the id field
@@ -57,14 +58,24 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	public static final String PHONE_NUMBER_FIELD = "phone_number";
 	
 	/**
-	 * Type of location record
-	 */
-	public static final String TYPE_FIELD = "type";
-	
-	/**
 	 * Name of the ip address field
 	 */
 	public static final String IP_ADDRESS_FIELD = "ip_address";
+	
+	/**
+	 * Name of the title field
+	 */
+	public static final String TITLE_FIELD = "title";
+	
+	/**
+	 * Name of the description field
+	 */
+	public static final String DESCRIPTION_FIELD = "description";
+	
+	/**
+	 * Name of the category field
+	 */
+	public static final String CATEGORY_FIELD = "category";
 	
 	/**
 	 * Name of the latitude field
@@ -86,7 +97,6 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	 */
 	public static final String TIMEZONE_FIELD = "timezone";
 	
-	
 	/*
 	 * private class variables
 	 */
@@ -98,7 +108,7 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-LOH";
 	
-	public LocationOpenHelper(Context context) {
+	public IncidentOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION); 
 		this.context = context;
 		
@@ -110,10 +120,12 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		// create the incident table and related indices
 		
-		// build the sql to create the table
 		String mSql = "CREATE TABLE " + TABLE_NAME + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-		            + PHONE_NUMBER_FIELD + " text, " + TYPE_FIELD + " int, " + IP_ADDRESS_FIELD + " text, " + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real, "
+		            + PHONE_NUMBER_FIELD + " text, " + IP_ADDRESS_FIELD + " text, "
+		            + TITLE_FIELD + " text, " + DESCRIPTION_FIELD + " text, " + CATEGORY_FIELD + " text, "
+		            + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real, "
 		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text)";
 		
 		// execute the sql
@@ -140,12 +152,12 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 			Log.e(TAG, "unable to create has field index", e);
 		}
 		
-		mSql = "CREATE INDEX idx_type_ip_time ON " + TABLE_NAME + " (" + TYPE_FIELD + ", " + IP_ADDRESS_FIELD + ", " + TIMESTAMP_FIELD + ")";
+		mSql = "CREATE INDEX idx_ip_time ON " + TABLE_NAME + " (" + IP_ADDRESS_FIELD + ", " + TIMESTAMP_FIELD + ")";
 		
 		try {
 			db.execSQL(mSql);
 		} catch (SQLException e) {
-			Log.e(TAG, "unable to create type_ip_time index", e);
+			Log.e(TAG, "unable to create ip_time index", e);
 		}
 		
 		// output some debug text

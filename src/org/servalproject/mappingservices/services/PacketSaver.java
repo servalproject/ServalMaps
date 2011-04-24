@@ -21,6 +21,7 @@ package org.servalproject.mappingservices.services;
 import java.net.DatagramPacket;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.LocationOpenHelper;
 
 import android.content.ContentValues;
@@ -46,6 +47,7 @@ public class PacketSaver implements Runnable {
 	private volatile boolean keepGoing = true;
 	
 	private SQLiteDatabase locationDatabase;
+	private SQLiteDatabase incidentDatabase;
 	
 	/*
 	 * private class level constants
@@ -61,7 +63,7 @@ public class PacketSaver implements Runnable {
 	 * @param packetQueue  a queue containing DatagramPackets
 	 * @param locationDatabase a valid writable SQLiteDatabase object
 	 */
-	public PacketSaver(Integer locationPort, Integer incidentPort, LinkedBlockingQueue<DatagramPacket> packetQueue, SQLiteDatabase locationDatabase) {
+	public PacketSaver(Integer locationPort, Integer incidentPort, LinkedBlockingQueue<DatagramPacket> packetQueue, SQLiteDatabase locationDatabase, SQLiteDatabase incidentDatabase) {
 		
 		// validate the parameters
 		if(locationPort == null || incidentPort == null || packetQueue == null || locationDatabase == null) {
@@ -81,6 +83,7 @@ public class PacketSaver implements Runnable {
 		this.incidentPort     = incidentPort;
 		this.packetQueue      = packetQueue;
 		this.locationDatabase = locationDatabase;
+		this.incidentDatabase = incidentDatabase;
 		
 	}
 
@@ -216,6 +219,82 @@ public class PacketSaver implements Runnable {
 	
 	// private method to save incident data
 	private void saveIncident(DatagramPacket packet) {
+		
+		// get the content of the packet
+		String mContent = new String(packet.getData());
+		mContent = mContent.trim();
+		
+		// get the fields from the packet
+		String[] mFields = mContent.split("\\|");
+		
+		//validate the packet according to business rules
+		try {
+			PacketValidator.isValidIncident(mFields);
+		} catch (ValidationException e) {
+			if(V_LOG) {
+				Log.v(TAG, "packet didn't pass validation", e);
+			}
+			
+			// exit the method early as the validation failed
+			return;
+		}
+		
+		// packet passed validation so continue
+		// declare other helper variables
+		Cursor mCursor          = null;
+		String[] mColumns       = null;
+		String   mSelection     = null;
+		String[] mSelectionArgs = null;
+		
+		// check to make sure we haven't saved this packet already as duplicates are expected
+		
+		// columns to return
+		mColumns = new String[1];
+		mColumns[0] = IncidentOpenHelper._ID;
+		
+		// where statement
+		mSelection = IncidentOpenHelper.IP_ADDRESS_FIELD + " = ? AND " + IncidentOpenHelper.TIMESTAMP_FIELD + " = ?";
+		
+		// values to match against
+		mSelectionArgs = new String[2];
+		mSelectionArgs[0] = packet.getAddress().getHostAddress();
+		mSelectionArgs[2] = mFields[5];
+		
+		// execute the query
+		mCursor = incidentDatabase.query(IncidentOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
+	
+		if(mCursor.getCount() == 0) {
+			
+			// values weren't found so we can store this new packet
+			ContentValues mValues = new ContentValues();
+			mValues.put(IncidentOpenHelper.TITLE_FIELD, mFields[0]);
+			mValues.put(IncidentOpenHelper.DESCRIPTION_FIELD, mFields[1]);
+			mValues.put(IncidentOpenHelper.CATEGORY_FIELD, mFields[2]);
+			mValues.put(IncidentOpenHelper.LATITUDE_FIELD, mFields[3]);
+			mValues.put(IncidentOpenHelper.LONGITUDE_FIELD, mFields[4]);
+			mValues.put(IncidentOpenHelper.TIMESTAMP_FIELD, mFields[5]);
+			mValues.put(IncidentOpenHelper.TIMEZONE_FIELD, mFields[6]);
+			mValues.put(IncidentOpenHelper.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
+			
+			// add the row
+			try {
+				incidentDatabase.insertOrThrow(IncidentOpenHelper.TABLE_NAME, null, mValues);
+			} catch (SQLException e) {
+				Log.e(TAG, "unable to save new incident data", e);
+			}
+			
+			//status message
+			if(V_LOG) {
+				Log.v(TAG, "new incident data saved to database");
+			}
+		} else {
+			if(V_LOG) {
+				Log.v(TAG, "duplicate incident data detected");
+			}
+		}
+		
+		// play nice and tidy up
+		mCursor.close();
 		
 	}
 	
