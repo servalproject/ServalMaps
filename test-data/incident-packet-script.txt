@@ -1,0 +1,5 @@
+# Techxplorer's UdpSender App packet script for testing the saving of incident packets
+#
+#
+10	first test incident|an incident that is first|1|-34.93|138.6|{ts}|{tz}
+10	second test incident|an incident that is second|1|-34.9345|138.645|{ts}|{tz}
