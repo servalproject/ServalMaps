@@ -85,8 +85,8 @@ public class MappingServices extends Activity implements OnClickListener {
                 case MappingDataService.MSG_SERVICE_STATUS:
                 	Bundle bundle = msg.getData();
                 	//debug code
-                	Log.v(TAG, bundle.getString("locationThread"));
-                	Log.v(TAG, bundle.getString("incidentThread"));
+                	Log.v(TAG, "location thread: " + bundle.getString("locationThread"));
+                	Log.v(TAG, "incident thread: " + bundle.getString("incidentThread"));
                 	Log.v(TAG, "location packets: " + bundle.getInt("locationCount"));
                 	Log.v(TAG, "incident packets: " + bundle.getInt("incidentCount"));
                     break;
@@ -161,21 +161,30 @@ public class MappingServices extends Activity implements OnClickListener {
 			// bind to the service
 			doBindService();
 			
-    		try {
-    			// send a message to the service to see what its status is
-    			Message msg = Message.obtain(null, MappingDataService.MSG_SERVICE_STATUS);
-    			msg.replyTo = messenger;
-    			serviceMessenger.send(msg);
-
-    		} catch (RemoteException e) {
-    			// only log while in development 
-    			if(V_LOG) {
-    				Log.v(TAG, "unable to send a message to the MappingDataService", e);
+			// only try to bind to the service if it is available
+			if(serviceMessenger != null) {
+				
+	    		try {
+	    			// send a message to the service to see what its status is
+	    			Message msg = Message.obtain(null, MappingDataService.MSG_SERVICE_STATUS);
+	    			msg.replyTo = messenger;
+	    			serviceMessenger.send(msg);
+	
+	    		} catch (RemoteException e) {
+	    			// only log while in development 
+	    			if(V_LOG) {
+	    				Log.v(TAG, "unable to send a message to the MappingDataService", e);
+	    			}
+	    		}
+	    		
+	    		// unbind the service
+	    		doUnbindService();
+			} else {
+				// service is not bound at this time
+				if(V_LOG) {
+    				Log.v(TAG, "service is not bound at this time");
     			}
-    		}
-    		
-    		// unbind the service
-    		doUnbindService();
+			}
 		}
 	}
 }
