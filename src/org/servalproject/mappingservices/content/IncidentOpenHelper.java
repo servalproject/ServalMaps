@@ -114,7 +114,7 @@ public class IncidentOpenHelper extends SQLiteOpenHelper {
 		
 		// output some debug text
 		if(V_LOG) {
-			Log.v(TAG, "database file created");
+			Log.v(TAG, "class instantiated");
 		}
 	}
 
@@ -141,7 +141,7 @@ public class IncidentOpenHelper extends SQLiteOpenHelper {
 		try {
 			db.execSQL(mSql);
 		} catch (SQLException e) {
-			Log.e(TAG, "unable to create phone number index", e);
+			Log.e(TAG, "unable to create phone_number index", e);
 		}
 		
 		mSql = "CREATE INDEX idx_ip_address ON " + TABLE_NAME + " (" + IP_ADDRESS_FIELD + ")";
@@ -149,15 +149,15 @@ public class IncidentOpenHelper extends SQLiteOpenHelper {
 		try {
 			db.execSQL(mSql);
 		} catch (SQLException e) {
-			Log.e(TAG, "unable to create has field index", e);
+			Log.e(TAG, "unable to create ip_address field index", e);
 		}
 		
-		mSql = "CREATE INDEX idx_ip_time ON " + TABLE_NAME + " (" + IP_ADDRESS_FIELD + ", " + TIMESTAMP_FIELD + ")";
+		mSql = "CREATE INDEX idx_phone_time ON " + TABLE_NAME + " (" + PHONE_NUMBER_FIELD + ", " + TIMESTAMP_FIELD + ")";
 		
 		try {
 			db.execSQL(mSql);
 		} catch (SQLException e) {
-			Log.e(TAG, "unable to create ip_time index", e);
+			Log.e(TAG, "unable to create phone_number-time index", e);
 		}
 		
 		// output some debug text

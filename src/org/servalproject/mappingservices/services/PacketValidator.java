@@ -36,7 +36,7 @@ public class PacketValidator {
 	/**
 	 * number of expected fields in an incident packet
 	 */
-	public static final int INCIDENT_FIELD_COUNT = 7;
+	public static final int INCIDENT_FIELD_COUNT = 8;
 	
 	/**
 	 * Validate the content of a location packet once it has been broken up into the individual fields
@@ -126,14 +126,18 @@ public class PacketValidator {
 		 */
 		
 		if(isValidString(packetContent[0]) != true) {
-			throw new ValidationException("title field cannot empty");
+			throw new ValidationException("phone number field cannot be empty");
 		}
 		
 		if(isValidString(packetContent[1]) != true) {
+			throw new ValidationException("title field cannot empty");
+		}
+		
+		if(isValidString(packetContent[2]) != true) {
 			throw new ValidationException("description field cannot empty");
 		}
 		
-		if(isInteger(packetContent[2]) != true) {
+		if(isInteger(packetContent[3]) != true) {
 			throw new ValidationException("category field is not an integer");
 		}
 		
@@ -141,24 +145,24 @@ public class PacketValidator {
 		// most likely swap this static method for one that is non static and gets
 		// the list of categories from the incident database or some other storage mechanism
 		
-		int value = Integer.parseInt(packetContent[2]);
+		int value = Integer.parseInt(packetContent[3]);
 		if(value != 1) {
 			throw new ValidationException("category field is not valid. Found '" + value + "' expected '1'");
 		}
 		
-		if(isFloat(packetContent[3]) != true) {
+		if(isFloat(packetContent[4]) != true) {
 			throw new ValidationException("latitude field is not a valid float");
 		}
 		
-		if(isFloat(packetContent[4]) != true) {
+		if(isFloat(packetContent[5]) != true) {
 			throw new ValidationException("longitude field is not a valid float");
 		}
 		
-		if(isInteger(packetContent[5]) != true) {
+		if(isInteger(packetContent[6]) != true) {
 			throw new ValidationException("timestamp field is not a valid integer");
 		}
 		
-		if(isTimezoneId(packetContent[6]) != true) {
+		if(isTimezoneId(packetContent[7]) != true) {
 			throw new ValidationException("timezone field is not a valid timezone identifier");
 		}
 		

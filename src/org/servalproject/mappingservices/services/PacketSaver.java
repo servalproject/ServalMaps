@@ -258,7 +258,7 @@ public class PacketSaver implements Runnable {
 		// values to match against
 		mSelectionArgs = new String[2];
 		mSelectionArgs[0] = packet.getAddress().getHostAddress();
-		mSelectionArgs[2] = mFields[5];
+		mSelectionArgs[1] = mFields[5];
 		
 		// execute the query
 		mCursor = incidentDatabase.query(IncidentOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);

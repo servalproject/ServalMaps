@@ -104,7 +104,7 @@ public class LocationOpenHelper extends SQLiteOpenHelper {
 		
 		// output some debug text
 		if(V_LOG) {
-			Log.v(TAG, "database file created");
+			Log.v(TAG, "class instantiated");
 		}
 	}
 
