@@ -27,6 +27,7 @@ import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.LocationOpenHelper;
 
 import android.app.Service;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -105,8 +106,8 @@ public class MappingDataService extends Service {
 	private AtomicInteger locationCount = null;
 	
 	private LinkedBlockingQueue<DatagramPacket> packetQueue = null;
-	private LocationOpenHelper locationOpenHelper = null;
 	private IncidentOpenHelper incidentOpenHelper = null;
+	private ContentResolver contentResolver = null;
 	
 	
 	/*
@@ -137,10 +138,9 @@ public class MappingDataService extends Service {
 			locationCollector = new PacketCollector(LOCATION_PORT, locationCount, packetQueue);
 			
 			// initialise the packet saving objects
-			locationOpenHelper = new LocationOpenHelper(this);
 			incidentOpenHelper = new IncidentOpenHelper(this);
-			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, locationOpenHelper.getWritableDatabase(), incidentOpenHelper.getWritableDatabase());
-			
+			contentResolver = this.getContentResolver();
+			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, incidentOpenHelper.getWritableDatabase(), contentResolver);
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -234,11 +234,6 @@ public class MappingDataService extends Service {
 		
 		if(packetQueue != null) {
 			packetQueue = null;
-		}
-		
-		if(locationOpenHelper != null) {
-			locationOpenHelper.close();
-			locationOpenHelper = null;
 		}
 		
 		if(incidentOpenHelper != null) {

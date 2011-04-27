@@ -15,6 +15,7 @@
             </intent-filter>
         </activity>
         <service android:name=".services.MappingDataService"></service>
+        <provider android:name=".content.LocationProvider" android:authorities="org.servalproject.mappingservices.content.locationprovider"></provider>
 
     </application>
 </manifest>

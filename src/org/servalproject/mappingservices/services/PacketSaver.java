@@ -23,11 +23,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.LocationOpenHelper;
+import org.servalproject.mappingservices.content.LocationProvider;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.util.Log;
 
 /**
@@ -45,9 +48,11 @@ public class PacketSaver implements Runnable {
 	private int locationPort;
 	private int incidentPort;
 	private volatile boolean keepGoing = true;
-	
-	private SQLiteDatabase locationDatabase;
+
 	private SQLiteDatabase incidentDatabase;
+	
+	private ContentResolver contentResolver;
+	private Uri locationContentUri;
 	
 	/*
 	 * private class level constants
@@ -63,10 +68,10 @@ public class PacketSaver implements Runnable {
 	 * @param packetQueue  a queue containing DatagramPackets
 	 * @param locationDatabase a valid writable SQLiteDatabase object
 	 */
-	public PacketSaver(Integer locationPort, Integer incidentPort, LinkedBlockingQueue<DatagramPacket> packetQueue, SQLiteDatabase locationDatabase, SQLiteDatabase incidentDatabase) {
+	public PacketSaver(Integer locationPort, Integer incidentPort, LinkedBlockingQueue<DatagramPacket> packetQueue, SQLiteDatabase incidentDatabase, ContentResolver contentResolver) {
 		
 		// validate the parameters
-		if(locationPort == null || incidentPort == null || packetQueue == null || locationDatabase == null) {
+		if(locationPort == null || incidentPort == null || packetQueue == null || contentResolver == null) {
 			throw new IllegalArgumentException("all parameters are required");
 		}
 		
@@ -82,8 +87,11 @@ public class PacketSaver implements Runnable {
 		this.locationPort     = locationPort;
 		this.incidentPort     = incidentPort;
 		this.packetQueue      = packetQueue;
-		this.locationDatabase = locationDatabase;
 		this.incidentDatabase = incidentDatabase;
+		
+		// get uris for the content providers
+		locationContentUri = LocationProvider.CONTENT_URI;
+		this.contentResolver = contentResolver;
 		
 	}
 
@@ -183,7 +191,8 @@ public class PacketSaver implements Runnable {
 		mSelectionArgs[2] = mFields[3];
 		
 		// execute the query
-		mCursor = locationDatabase.query(LocationOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
+		mCursor = contentResolver.query(locationContentUri, mColumns, mSelection, mSelectionArgs, null);
+		//mCursor = locationDatabase.query(LocationOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
 	
 		if(mCursor.getCount() == 0) {
 			
@@ -198,7 +207,8 @@ public class PacketSaver implements Runnable {
 			
 			// add the row
 			try {
-				locationDatabase.insertOrThrow(LocationOpenHelper.TABLE_NAME, null, mValues);
+				//locationDatabase.insertOrThrow(LocationOpenHelper.TABLE_NAME, null, mValues);
+				contentResolver.insert(locationContentUri, mValues);
 			} catch (SQLException e) {
 				Log.e(TAG, "unable to save new location data", e);
 			}
