@@ -204,8 +204,8 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 		
 		// get a writable instance of the database
 		SQLiteDatabase database = locationOpenHelper.getWritableDatabase();
-	     int count;
-		
+		int count;
+
 		// check the URI and update the database accordingly
 		switch (uriMatcher.match(uri)) {
 		case LOCATION:
@@ -218,7 +218,7 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
-		
+
 		// Notify any watchers of the change
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;

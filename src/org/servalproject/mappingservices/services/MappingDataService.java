@@ -23,9 +23,6 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.servalproject.mappingservices.content.IncidentOpenHelper;
-import org.servalproject.mappingservices.content.LocationOpenHelper;
-
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -106,7 +103,7 @@ public class MappingDataService extends Service {
 	private AtomicInteger locationCount = null;
 	
 	private LinkedBlockingQueue<DatagramPacket> packetQueue = null;
-	private IncidentOpenHelper incidentOpenHelper = null;
+
 	private ContentResolver contentResolver = null;
 	
 	
@@ -138,9 +135,8 @@ public class MappingDataService extends Service {
 			locationCollector = new PacketCollector(LOCATION_PORT, locationCount, packetQueue);
 			
 			// initialise the packet saving objects
-			incidentOpenHelper = new IncidentOpenHelper(this);
 			contentResolver = this.getContentResolver();
-			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, incidentOpenHelper.getWritableDatabase(), contentResolver);
+			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, contentResolver);
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -234,11 +230,6 @@ public class MappingDataService extends Service {
 		
 		if(packetQueue != null) {
 			packetQueue = null;
-		}
-		
-		if(incidentOpenHelper != null) {
-			incidentOpenHelper.close();
-			incidentOpenHelper = null;
 		}
 		
 		if(V_LOG) {

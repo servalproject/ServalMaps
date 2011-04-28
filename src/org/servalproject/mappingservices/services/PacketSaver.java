@@ -21,15 +21,13 @@ package org.servalproject.mappingservices.services;
 import java.net.DatagramPacket;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.servalproject.mappingservices.content.IncidentOpenHelper;
-import org.servalproject.mappingservices.content.LocationOpenHelper;
+import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.LocationProvider;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
@@ -48,11 +46,10 @@ public class PacketSaver implements Runnable {
 	private int locationPort;
 	private int incidentPort;
 	private volatile boolean keepGoing = true;
-
-	private SQLiteDatabase incidentDatabase;
 	
 	private ContentResolver contentResolver;
 	private Uri locationContentUri;
+	private Uri incidentContentUri;
 	
 	/*
 	 * private class level constants
@@ -68,7 +65,7 @@ public class PacketSaver implements Runnable {
 	 * @param packetQueue  a queue containing DatagramPackets
 	 * @param locationDatabase a valid writable SQLiteDatabase object
 	 */
-	public PacketSaver(Integer locationPort, Integer incidentPort, LinkedBlockingQueue<DatagramPacket> packetQueue, SQLiteDatabase incidentDatabase, ContentResolver contentResolver) {
+	public PacketSaver(Integer locationPort, Integer incidentPort, LinkedBlockingQueue<DatagramPacket> packetQueue, ContentResolver contentResolver) {
 		
 		// validate the parameters
 		if(locationPort == null || incidentPort == null || packetQueue == null || contentResolver == null) {
@@ -87,12 +84,11 @@ public class PacketSaver implements Runnable {
 		this.locationPort     = locationPort;
 		this.incidentPort     = incidentPort;
 		this.packetQueue      = packetQueue;
-		this.incidentDatabase = incidentDatabase;
 		
 		// get uris for the content providers
 		locationContentUri = LocationProvider.CONTENT_URI;
+		incidentContentUri = IncidentProvider.CONTENT_URI;
 		this.contentResolver = contentResolver;
-		
 	}
 
 	/*
@@ -179,10 +175,10 @@ public class PacketSaver implements Runnable {
 		
 		// columns to return
 		mColumns = new String[1];
-		mColumns[0] = LocationOpenHelper._ID;
+		mColumns[0] = LocationProvider._ID;
 		
 		// where statement
-		mSelection = LocationOpenHelper.TYPE_FIELD + " = ? AND " + LocationOpenHelper.IP_ADDRESS_FIELD + " = ? AND " + LocationOpenHelper.TIMESTAMP_FIELD + " = ?";
+		mSelection = LocationProvider.TYPE_FIELD + " = ? AND " + LocationProvider.IP_ADDRESS_FIELD + " = ? AND " + LocationProvider.TIMESTAMP_FIELD + " = ?";
 		
 		// values to match against
 		mSelectionArgs = new String[3];
@@ -192,22 +188,20 @@ public class PacketSaver implements Runnable {
 		
 		// execute the query
 		mCursor = contentResolver.query(locationContentUri, mColumns, mSelection, mSelectionArgs, null);
-		//mCursor = locationDatabase.query(LocationOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
 	
 		if(mCursor.getCount() == 0) {
 			
 			// values weren't found so we can store this new packet
 			ContentValues mValues = new ContentValues();
-			mValues.put(LocationOpenHelper.TYPE_FIELD, mFields[0]);
-			mValues.put(LocationOpenHelper.LATITUDE_FIELD, mFields[1]);
-			mValues.put(LocationOpenHelper.LONGITUDE_FIELD, mFields[2]);
-			mValues.put(LocationOpenHelper.TIMESTAMP_FIELD, mFields[3]);
-			mValues.put(LocationOpenHelper.TIMEZONE_FIELD, mFields[4]);
-			mValues.put(LocationOpenHelper.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
+			mValues.put(LocationProvider.TYPE_FIELD, mFields[0]);
+			mValues.put(LocationProvider.LATITUDE_FIELD, mFields[1]);
+			mValues.put(LocationProvider.LONGITUDE_FIELD, mFields[2]);
+			mValues.put(LocationProvider.TIMESTAMP_FIELD, mFields[3]);
+			mValues.put(LocationProvider.TIMEZONE_FIELD, mFields[4]);
+			mValues.put(LocationProvider.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
 			
 			// add the row
 			try {
-				//locationDatabase.insertOrThrow(LocationOpenHelper.TABLE_NAME, null, mValues);
 				contentResolver.insert(locationContentUri, mValues);
 			} catch (SQLException e) {
 				Log.e(TAG, "unable to save new location data", e);
@@ -260,10 +254,10 @@ public class PacketSaver implements Runnable {
 		
 		// columns to return
 		mColumns = new String[1];
-		mColumns[0] = IncidentOpenHelper._ID;
+		mColumns[0] = IncidentProvider._ID;
 		
 		// where statement
-		mSelection = IncidentOpenHelper.IP_ADDRESS_FIELD + " = ? AND " + IncidentOpenHelper.TIMESTAMP_FIELD + " = ?";
+		mSelection = IncidentProvider.IP_ADDRESS_FIELD + " = ? AND " + IncidentProvider.TIMESTAMP_FIELD + " = ?";
 		
 		// values to match against
 		mSelectionArgs = new String[2];
@@ -271,24 +265,24 @@ public class PacketSaver implements Runnable {
 		mSelectionArgs[1] = mFields[5];
 		
 		// execute the query
-		mCursor = incidentDatabase.query(IncidentOpenHelper.TABLE_NAME, mColumns, mSelection, mSelectionArgs, null, null, null, null);
+		mCursor = contentResolver.query(incidentContentUri, mColumns, mSelection, mSelectionArgs, null);
 	
 		if(mCursor.getCount() == 0) {
 			
 			// values weren't found so we can store this new packet
 			ContentValues mValues = new ContentValues();
-			mValues.put(IncidentOpenHelper.TITLE_FIELD, mFields[0]);
-			mValues.put(IncidentOpenHelper.DESCRIPTION_FIELD, mFields[1]);
-			mValues.put(IncidentOpenHelper.CATEGORY_FIELD, mFields[2]);
-			mValues.put(IncidentOpenHelper.LATITUDE_FIELD, mFields[3]);
-			mValues.put(IncidentOpenHelper.LONGITUDE_FIELD, mFields[4]);
-			mValues.put(IncidentOpenHelper.TIMESTAMP_FIELD, mFields[5]);
-			mValues.put(IncidentOpenHelper.TIMEZONE_FIELD, mFields[6]);
-			mValues.put(IncidentOpenHelper.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
+			mValues.put(IncidentProvider.TITLE_FIELD, mFields[0]);
+			mValues.put(IncidentProvider.DESCRIPTION_FIELD, mFields[1]);
+			mValues.put(IncidentProvider.CATEGORY_FIELD, mFields[2]);
+			mValues.put(IncidentProvider.LATITUDE_FIELD, mFields[3]);
+			mValues.put(IncidentProvider.LONGITUDE_FIELD, mFields[4]);
+			mValues.put(IncidentProvider.TIMESTAMP_FIELD, mFields[5]);
+			mValues.put(IncidentProvider.TIMEZONE_FIELD, mFields[6]);
+			mValues.put(IncidentProvider.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
 			
 			// add the row
 			try {
-				incidentDatabase.insertOrThrow(IncidentOpenHelper.TABLE_NAME, null, mValues);
+				contentResolver.insert(incidentContentUri, mValues);
 			} catch (SQLException e) {
 				Log.e(TAG, "unable to save new incident data", e);
 			}
@@ -305,11 +299,10 @@ public class PacketSaver implements Runnable {
 		
 		// play nice and tidy up
 		mCursor.close();
-		
 	}
 	
 	/**
-	 * request that packet collection stops and so stop the thread
+	 * request that the thread stops
 	 */
 	public void requestStop() {
 		keepGoing = false;
