@@ -26,40 +26,40 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 /**
- * Manages access to the saved location data used by the mapping service
+ * Manages access to the saved incident data used by the mapping service
  * 
  * @author corey.wallis@servalproject.org
  *
  */
-public class LocationProvider extends ContentProvider implements LocationColumns{
-	
+public class IncidentProvider extends ContentProvider implements IncidentColumns {
+
 	/*
 	 * derived from a pattern in the "Hello, Android! 3e" ebook
 	 * http://www.pragmaticprogrammer.com/titles/eband3  
 	 */
 	
 	// use as part of a URI matcher to identify mime types
-	private static final int LOCATION = 1;
-	private static final int LOCATION_ID = 2;
+	private static final int INCIDENT = 1;
+	private static final int INCIDENT_ID = 2;
 	
 	// declare mime types to identify the type of data requested
-	private static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.servalproject.mappingservice.location"; // content type for a list of locations
-	private static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.servalproject.mappingservice.location"; // content type for a single location
+	private static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.servalproject.mappingservice.incident"; // content type for a list of incidents
+	private static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.servalproject.mappingservice.incident"; // content type for a single incident
 	
 	// declare other class level variables
 	private UriMatcher uriMatcher;
-	private LocationOpenHelper locationOpenHelper;
+	private IncidentOpenHelper incidentOpenHelper;
 	
 	@Override
 	public boolean onCreate() {
 		
 		// declare a URI matcher class to identify and match the URIs used by this content provider
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(AUTHORITY, "locations", LOCATION);
-		uriMatcher.addURI(AUTHORITY, "locations/#", LOCATION_ID);
+		uriMatcher.addURI(AUTHORITY, "incidents", INCIDENT);
+		uriMatcher.addURI(AUTHORITY, "incidents/#", INCIDENT_ID);
 		
 		// open the sqlite database
-		locationOpenHelper = new LocationOpenHelper(getContext());
+		incidentOpenHelper = new IncidentOpenHelper(getContext());
 		
 		// return true to indicate everything is OK
 		return false;
@@ -78,9 +78,9 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 	public String getType(Uri uri) {
 		//determine which URI is provided and return the appropriate MIME type
 		switch(uriMatcher.match(uri)) {
-		case LOCATION:
+		case INCIDENT:
 			return CONTENT_TYPE;
-		case LOCATION_ID:
+		case INCIDENT_ID:
 			return CONTENT_ITEM_TYPE;
 		default:
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -102,12 +102,12 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 	public Uri insert(Uri uri, ContentValues values) {
 		
 		// validate the URI
-		if(uriMatcher.match(uri) != LOCATION) {
+		if(uriMatcher.match(uri) != INCIDENT) {
 			throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		
 		// get an instance of the database
-		SQLiteDatabase database = locationOpenHelper.getWritableDatabase();
+		SQLiteDatabase database = incidentOpenHelper.getWritableDatabase();
 		
 		// insert the provided data into the database
 		long id = database.insertOrThrow(TABLE_NAME, null, values);
@@ -132,15 +132,15 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		
 		// get an instance of the database
-		SQLiteDatabase database = locationOpenHelper.getWritableDatabase();
+		SQLiteDatabase database = incidentOpenHelper.getWritableDatabase();
 		int count; // store the number of deleted rows
 		
 		// determine what type of delete is needed
 		switch(uriMatcher.match(uri)) {
-		case LOCATION: // some other criteria
+		case INCIDENT: // some other criteria
 			count = database.delete(TABLE_NAME, selection, selectionArgs);
 			break;
-		case LOCATION_ID: // by record id
+		case INCIDENT_ID: // by record id
 			long id = Long.parseLong(uri.getPathSegments().get(1));
 			count = database.delete(TABLE_NAME, ammendWhereClause(selection, id), selectionArgs);
 			break;
@@ -171,13 +171,13 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		
 		// check on which URI was used and adjust query accordingly
-		if(uriMatcher.match(uri) == LOCATION_ID) {
+		if(uriMatcher.match(uri) == INCIDENT_ID) {
 			long id = Long.parseLong(uri.getPathSegments().get(1));
 			selection = ammendWhereClause(selection, id);
 		}
 
 		// as we're only reading no need to get a writable instance of the database
-		SQLiteDatabase database = locationOpenHelper.getReadableDatabase();
+		SQLiteDatabase database = incidentOpenHelper.getReadableDatabase();
 
 		// execute the query
 		Cursor cursor = database.query(TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
@@ -203,15 +203,15 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 	public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 		
 		// get a writable instance of the database
-		SQLiteDatabase database = locationOpenHelper.getWritableDatabase();
+		SQLiteDatabase database = incidentOpenHelper.getWritableDatabase();
 	     int count;
 		
 		// check the URI and update the database accordingly
 		switch (uriMatcher.match(uri)) {
-		case LOCATION:
+		case INCIDENT:
 			count = database.update(TABLE_NAME, values, selection, selectionArgs);
 			break;
-		case LOCATION_ID:
+		case INCIDENT_ID:
 			long id = Long.parseLong(uri.getPathSegments().get(1));
 			count = database.update(TABLE_NAME, values, ammendWhereClause(selection, id), selectionArgs);
 			break;
@@ -240,5 +240,4 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 		
 		return mWhereClause;
 	}
-
 }

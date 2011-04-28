@@ -22,7 +22,6 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.provider.BaseColumns;
 import android.util.Log;
 
 /**
@@ -30,72 +29,7 @@ import android.util.Log;
  * 
  * @author corey.wallis@servalproject.org
  */
-public class IncidentOpenHelper extends SQLiteOpenHelper {
-	
-	/**
-	 * Version of the database supported by this class
-	 */
-	public static final int DATABASE_VERSION = 1;
-	
-	/**
-	 * Name of the database file
-	 */
-	public static final String DATABASE_NAME = "serval-maps-incidents.db";
-	
-	/**
-	 * Name of the locations table
-	 */
-	public static final String TABLE_NAME = "incidents";
-	
-	/**
-	 * Name of the id field
-	 */
-	public static final String _ID = BaseColumns._ID;
-	
-	/**
-	 * Name of the phone number field
-	 */
-	public static final String PHONE_NUMBER_FIELD = "phone_number";
-	
-	/**
-	 * Name of the ip address field
-	 */
-	public static final String IP_ADDRESS_FIELD = "ip_address";
-	
-	/**
-	 * Name of the title field
-	 */
-	public static final String TITLE_FIELD = "title";
-	
-	/**
-	 * Name of the description field
-	 */
-	public static final String DESCRIPTION_FIELD = "description";
-	
-	/**
-	 * Name of the category field
-	 */
-	public static final String CATEGORY_FIELD = "category";
-	
-	/**
-	 * Name of the latitude field
-	 */
-	public static final String LATITUDE_FIELD = "latitude";
-	
-	/**
-	 * Name of the longitude field
-	 */
-	public static final String LONGITUDE_FIELD = "longitude";
-	
-	/**
-	 * Name of the time stamp field
-	 */
-	public static final String TIMESTAMP_FIELD = "timestamp";
-	
-	/**
-	 * Name of the time zone field
-	 */
-	public static final String TIMEZONE_FIELD = "timezone";
+public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColumns {
 	
 	/*
 	 * private class variables

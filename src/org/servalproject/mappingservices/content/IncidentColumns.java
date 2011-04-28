@@ -22,12 +22,13 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * An interface defining the constants that are used for accessing location data
+ * An interface defining the constants that are used for accessing incident data
  * 
  * @author corey.wallis@servalproject.org
  *
  */
-public interface LocationColumns {
+
+public interface IncidentColumns {
 	
 	/**
 	 * Version of the database supported by this class
@@ -37,12 +38,12 @@ public interface LocationColumns {
 	/**
 	 * Name of the database file
 	 */
-	public static final String DATABASE_NAME = "serval-maps-locations.db";
+	public static final String DATABASE_NAME = "serval-maps-incidents.db";
 	
 	/**
 	 * Name of the locations table
 	 */
-	public static final String TABLE_NAME = "locations";
+	public static final String TABLE_NAME = "incidents";
 	
 	/**
 	 * Name of the id field
@@ -55,14 +56,24 @@ public interface LocationColumns {
 	public static final String PHONE_NUMBER_FIELD = "phone_number";
 	
 	/**
-	 * Type of location record
-	 */
-	public static final String TYPE_FIELD = "type";
-	
-	/**
 	 * Name of the ip address field
 	 */
 	public static final String IP_ADDRESS_FIELD = "ip_address";
+	
+	/**
+	 * Name of the title field
+	 */
+	public static final String TITLE_FIELD = "title";
+	
+	/**
+	 * Name of the description field
+	 */
+	public static final String DESCRIPTION_FIELD = "description";
+	
+	/**
+	 * Name of the category field
+	 */
+	public static final String CATEGORY_FIELD = "category";
 	
 	/**
 	 * Name of the latitude field
@@ -84,9 +95,7 @@ public interface LocationColumns {
 	 */
 	public static final String TIMEZONE_FIELD = "timezone";
 	
-	/**
-	 * the content URI that represents this data
-	 */
-	public static final String AUTHORITY = "org.servalproject.mappingservices.content.locationprovider";
-	public static final Uri CONTENT_URI = Uri.parse("content://org.servalproject.mappingservices.content.locationprovider" + "/" + TABLE_NAME);
+	public static final String AUTHORITY = "org.servalproject.mappingservices.content.incidentprovider";
+	public static final Uri CONTENT_URI = Uri.parse("content://org.servalproject.mappingservices.content.incidentprovider" + "/" + TABLE_NAME);
+
 }

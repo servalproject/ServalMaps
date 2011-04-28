@@ -14,8 +14,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- services -->
         <service android:name=".services.MappingDataService"></service>
+        <!-- content providers -->
         <provider android:name=".content.LocationProvider" android:authorities="org.servalproject.mappingservices.content.locationprovider"></provider>
+        <provider android:name=".content.IncidentProvider" android:authorities="org.servalproject.mappingservices.content.incidentprovider"></provider>
 
     </application>
 </manifest>
