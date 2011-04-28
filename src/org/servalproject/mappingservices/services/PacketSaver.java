@@ -257,12 +257,12 @@ public class PacketSaver implements Runnable {
 		mColumns[0] = IncidentProvider._ID;
 		
 		// where statement
-		mSelection = IncidentProvider.IP_ADDRESS_FIELD + " = ? AND " + IncidentProvider.TIMESTAMP_FIELD + " = ?";
+		mSelection = IncidentProvider.PHONE_NUMBER_FIELD + " = ? AND " + IncidentProvider.TIMESTAMP_FIELD + " = ?";
 		
 		// values to match against
 		mSelectionArgs = new String[2];
-		mSelectionArgs[0] = packet.getAddress().getHostAddress();
-		mSelectionArgs[1] = mFields[5];
+		mSelectionArgs[0] = mFields[0];
+		mSelectionArgs[1] = mFields[6];
 		
 		// execute the query
 		mCursor = contentResolver.query(incidentContentUri, mColumns, mSelection, mSelectionArgs, null);
@@ -271,13 +271,14 @@ public class PacketSaver implements Runnable {
 			
 			// values weren't found so we can store this new packet
 			ContentValues mValues = new ContentValues();
-			mValues.put(IncidentProvider.TITLE_FIELD, mFields[0]);
-			mValues.put(IncidentProvider.DESCRIPTION_FIELD, mFields[1]);
-			mValues.put(IncidentProvider.CATEGORY_FIELD, mFields[2]);
-			mValues.put(IncidentProvider.LATITUDE_FIELD, mFields[3]);
-			mValues.put(IncidentProvider.LONGITUDE_FIELD, mFields[4]);
-			mValues.put(IncidentProvider.TIMESTAMP_FIELD, mFields[5]);
-			mValues.put(IncidentProvider.TIMEZONE_FIELD, mFields[6]);
+			mValues.put(IncidentProvider.PHONE_NUMBER_FIELD, mFields[0]);
+			mValues.put(IncidentProvider.TITLE_FIELD, mFields[1]);
+			mValues.put(IncidentProvider.DESCRIPTION_FIELD, mFields[2]);
+			mValues.put(IncidentProvider.CATEGORY_FIELD, mFields[3]);
+			mValues.put(IncidentProvider.LATITUDE_FIELD, mFields[4]);
+			mValues.put(IncidentProvider.LONGITUDE_FIELD, mFields[5]);
+			mValues.put(IncidentProvider.TIMESTAMP_FIELD, mFields[6]);
+			mValues.put(IncidentProvider.TIMEZONE_FIELD, mFields[7]);
 			mValues.put(IncidentProvider.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
 			
 			// add the row
