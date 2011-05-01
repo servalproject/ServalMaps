@@ -23,9 +23,12 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.servalproject.mappingservices.content.IncidentOpenHelper;
+
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -94,10 +97,12 @@ public class MappingDataService extends Service {
 	private PacketCollector incidentCollector = null; 
 	private PacketCollector locationCollector = null;
 	private PacketSaver     packetSaver       = null;
+	private IncidentRepeater incidentRepeater = null;
 	
 	private Thread incidentThread    = null;
 	private Thread locationThread    = null;
 	private Thread packetSaverThread = null;
+	private Thread incidentRepeaterThread = null;
 	
 	private AtomicInteger incidentCount = null;
 	private AtomicInteger locationCount = null;
@@ -137,6 +142,10 @@ public class MappingDataService extends Service {
 			// initialise the packet saving objects
 			contentResolver = this.getContentResolver();
 			packetSaver = new PacketSaver(LOCATION_PORT, INCIDENT_PORT, packetQueue, contentResolver);
+			
+			// initialise the incident repeater object
+			SQLiteOpenHelper incidentOpenHelper = new IncidentOpenHelper(this.getApplicationContext());
+			incidentRepeater = new IncidentRepeater(incidentOpenHelper.getReadableDatabase());
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -190,6 +199,11 @@ public class MappingDataService extends Service {
 			packetSaverThread.start();
 		}
 		
+		if(incidentRepeaterThread == null) {
+			incidentRepeaterThread = new Thread(incidentRepeater);
+			incidentRepeaterThread.start();
+		}
+		
 		if(V_LOG) {
 			Log.v(TAG, "service started");
 		}
@@ -228,6 +242,13 @@ public class MappingDataService extends Service {
 			packetSaverThread = null;
 		}
 		
+		if(incidentRepeaterThread == null) {
+			incidentRepeater.requestStop();
+			incidentRepeaterThread.interrupt();
+			incidentRepeater = null;
+			incidentRepeaterThread = null;
+		}
+		
 		if(packetQueue != null) {
 			packetQueue = null;
 		}
@@ -257,6 +278,9 @@ public class MappingDataService extends Service {
 		
 		// use a bundle for the info
 		Bundle serviceStatus = new Bundle();
+		
+		//TODO add a reusable private method to determine a thread status
+		//TODO use the reusable method to report status of all threads
 		
 		// add status info for the incident thread
 		if(incidentThread != null) {
