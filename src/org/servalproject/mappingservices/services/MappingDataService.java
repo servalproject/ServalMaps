@@ -24,6 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
+import org.servalproject.mappingservices.net.PacketCollector;
 
 import android.app.Service;
 import android.content.ContentResolver;

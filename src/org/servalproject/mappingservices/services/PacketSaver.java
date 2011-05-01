@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.LocationProvider;
+import org.servalproject.mappingservices.net.PacketCollector;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;

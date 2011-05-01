@@ -25,7 +25,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import org.servalproject.mappingservices.services.PacketCollector;
 
 import android.util.Log;
 
