@@ -34,6 +34,8 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 	/*
 	 * private class variables
 	 */
+	@SuppressWarnings("unused")
+	//TODO find out if this can be used here for anything or if we can just safely discard it
 	private Context context;
 	
 	/*
@@ -83,7 +85,7 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 		try {
 			db.execSQL(mSql);
 		} catch (SQLException e) {
-			Log.e(TAG, "unable to create ip_address field index", e);
+			Log.e(TAG, "unable to create idx_ip_address index", e);
 		}
 		
 		mSql = "CREATE INDEX idx_phone_time ON " + TABLE_NAME + " (" + PHONE_NUMBER_FIELD + ", " + TIMESTAMP_FIELD + ")";
@@ -91,7 +93,7 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 		try {
 			db.execSQL(mSql);
 		} catch (SQLException e) {
-			Log.e(TAG, "unable to create phone_number-time index", e);
+			Log.e(TAG, "unable to create idx_phone_time index", e);
 		}
 		
 		// output some debug text

@@ -33,6 +33,8 @@ public class LocationOpenHelper extends SQLiteOpenHelper implements LocationColu
 	/*
 	 * private class variables
 	 */
+	@SuppressWarnings("unused")
+	//TODO find out if this can be used here for anything or if we can just safely discard it
 	private Context context;
 	
 	/*
