@@ -99,8 +99,9 @@ public class IncidentRepeater implements Runnable{
 			mSql = "SELECT MAX(" + IncidentOpenHelper._ID + ") FROM " + IncidentOpenHelper.TABLE_NAME;
 			
 			mCursor = database.rawQuery(mSql, null);
+			mCursor.moveToFirst();
 			
-			if(mCursor.getCount() != 0) {
+			if(mCursor.getCount() > 0) {
 				mMaxId = mCursor.getInt(0);
 			} else {
 				mMaxId = -1;
@@ -124,6 +125,7 @@ public class IncidentRepeater implements Runnable{
 				
 				// get the selected record
 				mCursor = database.query(IncidentOpenHelper.TABLE_NAME, null, IncidentOpenHelper._ID + " = " + mSelectId, null, null, null, null);
+				mCursor.moveToFirst();
 				
 				// build the content of the packet
 				mPacketContent = new StringBuilder();
