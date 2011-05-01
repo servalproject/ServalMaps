@@ -178,13 +178,14 @@ public class PacketSaver implements Runnable {
 		mColumns[0] = LocationProvider._ID;
 		
 		// where statement
-		mSelection = LocationProvider.TYPE_FIELD + " = ? AND " + LocationProvider.IP_ADDRESS_FIELD + " = ? AND " + LocationProvider.TIMESTAMP_FIELD + " = ?";
+		mSelection = LocationProvider.TYPE_FIELD + " = ? AND " + LocationProvider.PHONE_NUMBER_FIELD + " = ? AND " + LocationProvider.TIMESTAMP_FIELD + " = ?";
 		
 		// values to match against
 		mSelectionArgs = new String[3];
+		
 		mSelectionArgs[0] = mFields[0];
-		mSelectionArgs[1] = packet.getAddress().getHostAddress();
-		mSelectionArgs[2] = mFields[3];
+		mSelectionArgs[1] = mFields[1];
+		mSelectionArgs[2] = mFields[4];
 		
 		// execute the query
 		mCursor = contentResolver.query(locationContentUri, mColumns, mSelection, mSelectionArgs, null);
@@ -194,10 +195,11 @@ public class PacketSaver implements Runnable {
 			// values weren't found so we can store this new packet
 			ContentValues mValues = new ContentValues();
 			mValues.put(LocationProvider.TYPE_FIELD, mFields[0]);
-			mValues.put(LocationProvider.LATITUDE_FIELD, mFields[1]);
-			mValues.put(LocationProvider.LONGITUDE_FIELD, mFields[2]);
-			mValues.put(LocationProvider.TIMESTAMP_FIELD, mFields[3]);
-			mValues.put(LocationProvider.TIMEZONE_FIELD, mFields[4]);
+			mValues.put(LocationProvider.PHONE_NUMBER_FIELD, mFields[1]);
+			mValues.put(LocationProvider.LATITUDE_FIELD, mFields[2]);
+			mValues.put(LocationProvider.LONGITUDE_FIELD, mFields[3]);
+			mValues.put(LocationProvider.TIMESTAMP_FIELD, mFields[4]);
+			mValues.put(LocationProvider.TIMEZONE_FIELD, mFields[5]);
 			mValues.put(LocationProvider.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
 			
 			// add the row

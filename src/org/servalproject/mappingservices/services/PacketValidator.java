@@ -31,7 +31,7 @@ public class PacketValidator {
 	/**
 	 * number of expected fields in a location packet
 	 */
-	public static final int LOCATION_FIELD_COUNT = 5;
+	public static final int LOCATION_FIELD_COUNT = 6;
 	
 	/**
 	 * number of expected fields in an incident packet
@@ -58,6 +58,7 @@ public class PacketValidator {
 		 * fields are:
 		 * 
 		 * type - expected to be an integer, currently only 1 is valid
+		 * phone number - expected to be text
 		 * latitude - expected to be a float
 		 * longitude - expected to be a float
 		 * timestamp - expected to be an integer
@@ -77,19 +78,23 @@ public class PacketValidator {
 			throw new ValidationException("type field is not valid. Found '" + value + "' expected '1'");
 		}
 		
-		if(isFloat(packetContent[1]) != true) {
-			throw new ValidationException("latitude field is not a valid float");
+		if(isValidString(packetContent[1]) == true) {
+			throw new ValidationException("the phone number field cannot be empty");
 		}
 		
 		if(isFloat(packetContent[2]) != true) {
+			throw new ValidationException("latitude field is not a valid float");
+		}
+		
+		if(isFloat(packetContent[3]) != true) {
 			throw new ValidationException("longitude field is not a valid float");
 		}
 		
-		if(isInteger(packetContent[3]) != true) {
+		if(isInteger(packetContent[4]) != true) {
 			throw new ValidationException("timestamp field is not a valid integer");
 		}
 		
-		if(isTimezoneId(packetContent[4]) != true) {
+		if(isTimezoneId(packetContent[5]) != true) {
 			throw new ValidationException("timezone field is not a valid timezone identifier");
 		}
 		
