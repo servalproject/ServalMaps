@@ -59,7 +59,7 @@ public class LocationOpenHelper extends SQLiteOpenHelper implements LocationColu
 		// build the sql to create the table
 		String mSql = "CREATE TABLE " + TABLE_NAME + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 		            + PHONE_NUMBER_FIELD + " text, " + TYPE_FIELD + " int, " + IP_ADDRESS_FIELD + " text, " + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real, "
-		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text)";
+		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + SELF_FIELD + " text)";
 		
 		// execute the sql
 		try {

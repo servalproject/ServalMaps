@@ -85,6 +85,11 @@ public interface LocationColumns {
 	public static final String TIMEZONE_FIELD = "timezone";
 	
 	/**
+	 * Identify a record as belonging to this device
+	 */
+	public static final String SELF_FIELD = "self";
+	
+	/**
 	 * the content URI that represents this data
 	 */
 	public static final String AUTHORITY = "org.servalproject.mappingservices.content.locationprovider";
