@@ -5,7 +5,16 @@
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="8" />
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-
+    
+    <!--  start permissions required by the osmdroid library -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<!-- <uses-permission android:name="android.permission.INTERNET" /> -->
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<!--  end permissions required by the osmdroid library -->
+	
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name="MappingServices"
                   android:label="@string/app_name">
