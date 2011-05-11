@@ -6,4 +6,7 @@
     <!--  buttons -->
     <string name="btn_start_service">Start Mapping Data Service</string>
     <string name="btn_status_service">Determine Service Status</string>
+    <string name="btn_launch_map_activity">Show the Map</string>
+    <!-- resources for the MapActivity -->
+    <string name="ma_lbl_debug">This is the MapActivity</string>
 </resources>

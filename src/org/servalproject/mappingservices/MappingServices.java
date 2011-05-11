@@ -73,6 +73,9 @@ public class MappingServices extends Activity implements OnClickListener {
         
         button = (Button)findViewById(R.id.btn_status_service);
         button.setOnClickListener(this);
+        
+        button = (Button)findViewById(R.id.btn_launch_map_activity);
+        button.setOnClickListener(this);
     }
     
     /*
@@ -150,6 +153,8 @@ public class MappingServices extends Activity implements OnClickListener {
 			Log.v(TAG, "button touched");
 		}
 		
+		//TODO work out a better way of handling these events
+		
 		// determine which button was clicked
 		if(v.getId() == R.id.btn_start_service) {
 			// start button was touched
@@ -185,6 +190,9 @@ public class MappingServices extends Activity implements OnClickListener {
     				Log.v(TAG, "service is not bound at this time");
     			}
 			}
+		} else if(v.getId() == R.id.btn_launch_map_activity) {
+			Intent intent = new Intent(MappingServices.this, MapActivity.class);
+	        startActivity(intent);
 		}
 	}
 }

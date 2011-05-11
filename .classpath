@@ -3,7 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="lib/osmdroid-android-3.0.3.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-android-1.5.8.jar"/>
+	<classpathentry kind="lib" path="lib/mapsforge-map-0.2.2.jar" sourcepath="/Users/techxplorer/third-party-code/mapsforge-read-only/mapsforge/src">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/Users/techxplorer/third-party-code/mapsforge-read-only/mapsforge/doc/0.2.2/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
