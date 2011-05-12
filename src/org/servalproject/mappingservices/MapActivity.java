@@ -17,11 +17,15 @@
  */
 package org.servalproject.mappingservices;
 
-import org.mapsforge.android.maps.ArrayItemizedOverlay;
+import org.servalproject.mappingservices.content.RecordTypes;
+import org.servalproject.mappingservices.mapsforge.OverlayItem;
+import org.servalproject.mappingservices.mapsforge.OverlayList;
+
+//import org.mapsforge.android.maps.ArrayItemizedOverlay;
 import org.mapsforge.android.maps.GeoPoint;
 import org.mapsforge.android.maps.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.OverlayItem;
+//import org.mapsforge.android.maps.OverlayItem;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -61,10 +65,17 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         GeoPoint mLocationPoint = new GeoPoint(-35.026513, 138.571664);
         GeoPoint mIncidentPoint = new GeoPoint(-35.026454, 138.572377);
         
-        ArrayItemizedOverlay markerOverlay = new ArrayItemizedOverlay(mPeerLocationMarker, this);
+        OverlayList markerOverlay = new OverlayList(mPeerLocationMarker, this);
         
-        markerOverlay.addItem(new OverlayItem(mLocationPoint, "Test location", "This is a test location"));
-        markerOverlay.addItem(new OverlayItem(mIncidentPoint, "Test incident", "This is a test incident", ItemizedOverlay.boundCenterBottom(mIncidentLocationMarker)));
+        OverlayItem item = new OverlayItem(mLocationPoint, "Test location", "This is a test location");
+        item.setRecordType(RecordTypes.LOCATION_RECORD_TYPE);
+        item.setRecordId("1");
+        markerOverlay.addItem(item);
+        
+        item = new OverlayItem(mIncidentPoint, "Test incident", "This is a test incident", ItemizedOverlay.boundCenterBottom(mIncidentLocationMarker));
+        item.setRecordType(RecordTypes.INCIDENT_RECORD_TYPE);
+        item.setRecordId("2");
+        markerOverlay.addItem(item);
         
         mapView.getOverlays().add(markerOverlay);
       
