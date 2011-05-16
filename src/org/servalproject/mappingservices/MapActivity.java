@@ -38,6 +38,13 @@ import android.os.Bundle;
  */
 public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	
+	/*
+	 * private class level constants
+	 */
+	
+	private final boolean V_LOG = true;
+	private final String TAG = "ServalMaps-MA";
+	
 	
 	/*
      * Called when the activity is first created
@@ -78,7 +85,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         markerOverlay.addItem(item);
         
         mapView.getOverlays().add(markerOverlay);
-      
     }
 
 }

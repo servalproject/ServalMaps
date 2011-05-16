@@ -56,7 +56,7 @@ public class PacketSaver implements Runnable {
 	 * private class level constants
 	 */
 	private final boolean V_LOG = true;
-	private final String TAG = "ServalMaps-PS";
+	private final String TAG = "ServalMaps-PSv";
 	
 	/**
 	 * constructor for this class

@@ -42,7 +42,7 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 	 * private class constants
 	 */
 	private final boolean V_LOG = true;
-	private final String TAG = "ServalMaps-LOH";
+	private final String TAG = "ServalMaps-IOH";
 	
 	public IncidentOpenHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION); 

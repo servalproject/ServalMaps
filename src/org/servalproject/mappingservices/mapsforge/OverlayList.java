@@ -31,6 +31,13 @@ import android.util.Log;
  *
  */
 public class OverlayList extends ArrayItemizedOverlay {
+	
+	/*
+	 * private class level constants
+	 */
+	
+	private final boolean V_LOG = true;
+	private final String TAG = "ServalMaps-OL";
 
 	public OverlayList(Drawable defaultMarker, Context context) {
 		super(defaultMarker, context);
@@ -44,7 +51,7 @@ public class OverlayList extends ArrayItemizedOverlay {
 		
 		if(item != null) {
 			//TODO do something more intelligent with the item
-			Log.v("ServalTestOverlay", item.getRecordId());
+			Log.v(TAG, item.getRecordId());
 		}
 		
 		return true;
