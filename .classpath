@@ -3,9 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="lib/mapsforge-map-0.2.2.jar" sourcepath="/Users/techxplorer/third-party-code/mapsforge-read-only/mapsforge/src">
+	<classpathentry kind="lib" path="lib/mapsforge-map-0.2.3.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="file:/Users/techxplorer/third-party-code/mapsforge-read-only/mapsforge/doc/0.2.2/"/>
+			<attribute name="javadoc_location" value="http://mapsforge.googlecode.com/svn/tags/0.2.3/javadoc/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

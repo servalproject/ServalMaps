@@ -3,6 +3,8 @@ Serval Mapping Service
 
 This application requires the following libraries
 
+ * [mapsforge](http://code.google.com/p/mapsforge/)
+
 More Information
 ----------------
 
