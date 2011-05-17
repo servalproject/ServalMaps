@@ -9,4 +9,10 @@
     <string name="btn_launch_map_activity">Show the Map</string>
     <!-- resources for the MapActivity -->
     <string name="ma_lbl_debug">This is the MapActivity</string>
+    <!--  resources for the ViewIncidentActivity -->
+    <string name="incident_view_added_by">Added by:</string>
+    <string name="incident_view_incident_age">Incident Age:</string>
+    <!--  common resources -->
+    <string name="common_experimental_software">Experimental Software</string>
+    <string name="common_serval_project">Serval Project</string>
 </resources>

@@ -23,7 +23,10 @@
         <!-- content providers -->
         <provider android:name=".content.LocationProvider" android:authorities="org.servalproject.mappingservices.content.locationprovider"></provider>
         <provider android:name=".content.IncidentProvider" android:authorities="org.servalproject.mappingservices.content.incidentprovider"></provider>
+        
+        <!--  other activities -->
         <activity android:name="MapActivity"></activity>
+        <activity android:name="ViewIncidentActivity"></activity>
 
     </application>
 </manifest>

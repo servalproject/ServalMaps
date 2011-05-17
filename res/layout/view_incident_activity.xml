@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:orientation="vertical" 
+    android:id="@+id/linearLayout1">
+        <TableLayout android:id="@+id/tableLayout1" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TableRow android:layout_width="match_parent" android:id="@+id/tableRow1" android:layout_height="wrap_content">
+                <ImageView android:layout_height="wrap_content" 
+                           android:src="@drawable/android_logo_marker" 
+                           android:layout_width="wrap_content" 
+                           android:id="@+id/imageView1">
+                </ImageView>
+                <TextView android:text="@string/common_serval_project"
+                          android:layout_width="wrap_content" 
+                          android:layout_height="wrap_content">
+                </TextView>
+            </TableRow>
+        </TableLayout>
+        <TextView android:text="TextView" 
+        		  android:id="@+id/lbl_incident_title" 
+        		  android:layout_width="wrap_content" 
+        		  android:layout_height="wrap_content">
+        </TextView>
+        <TextView android:text="TextView" 
+        		  android:id="@+id/lbl_incident_description" 
+        		  android:layout_width="fill_parent" 
+        		  android:layout_height="wrap_content"
+        		  android:layout_weight="1">
+        </TextView>
+        <TableLayout android:id="@+id/tableLayout2" 
+        			 android:layout_width="match_parent" 
+        			 android:layout_height="wrap_content">
+                <TableRow android:id="@+id/tableRow3" 
+                		  android:layout_width="wrap_content" 
+                		  android:layout_height="wrap_content">
+	                <TextView android:id="@+id/textView4" 
+	                		  android:layout_width="wrap_content" 
+	                		  android:layout_height="wrap_content"
+	                		  android:text="@string/incident_view_added_by">
+	                </TextView>
+	                <TextView android:text="TextView" 
+	                		  android:id="@+id/lbl_incident_added_by" 
+	                		  android:layout_width="wrap_content" 
+	                		  android:layout_height="wrap_content">
+	                </TextView>
+                </TableRow>
+                <TableRow android:id="@+id/tableRow2" 
+                		  android:layout_width="wrap_content" 
+                		  android:layout_height="wrap_content">
+                <TextView android:id="@+id/textView6" 
+                		  android:layout_width="wrap_content" 
+                		  android:layout_height="wrap_content"
+                		  android:text="@string/incident_view_incident_age"
+                		  android:layout_marginRight="6sp">
+               	</TextView>
+                <TextView android:text="TextView" 
+                		  android:id="@+id/lbl_incident_age" 
+                		  android:layout_width="wrap_content" 
+                		  android:layout_height="wrap_content">
+                </TextView>
+            </TableRow>
+        </TableLayout>
+        <TextView android:layout_width="fill_parent" 
+        	android:layout_height="wrap_content"
+        	android:text="@string/common_experimental_software">
+        </TextView>
+    </LinearLayout>

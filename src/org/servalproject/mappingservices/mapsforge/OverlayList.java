@@ -19,7 +19,10 @@ package org.servalproject.mappingservices.mapsforge;
 
 import org.mapsforge.android.maps.ArrayItemizedOverlay;
 
+import org.servalproject.mappingservices.ViewIncidentActivity;
+
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -38,16 +41,28 @@ public class OverlayList extends ArrayItemizedOverlay {
 	
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-OL";
+	
+	/*
+	 * private class level variables
+	 */
+	private Context parentContext = null;
 
 	public OverlayList(Drawable defaultMarker, Context context) {
 		super(defaultMarker, context);
 		// TODO Auto-generated constructor stub
+		
+		parentContext = context;
 	}
 	
 	@Override
 	public boolean onTap(int index) {
 		
 		OverlayItem item = (OverlayItem)this.createItem(index);
+		
+		//TODO do more than just show the view
+		
+		Intent intent = new Intent(parentContext, ViewIncidentActivity.class);
+		parentContext.startActivity(intent);
 		
 		if(item != null) {
 			//TODO do something more intelligent with the item
@@ -69,6 +84,18 @@ public class OverlayList extends ArrayItemizedOverlay {
 //			return true;
 //		}
 		
+	}
+	
+	/*
+	 * make sure we don't hold onto a reference to the context
+	 * (non-Javadoc)
+	 * @see java.lang.Object#finalize()
+	 */
+	
+	@Override
+	protected void finalize() throws Throwable{
+		parentContext = null;
+		super.finalize();
 	}
 
 }
