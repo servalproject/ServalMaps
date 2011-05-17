@@ -20,10 +20,12 @@ package org.servalproject.mappingservices.mapsforge;
 import org.mapsforge.android.maps.ArrayItemizedOverlay;
 
 import org.servalproject.mappingservices.ViewIncidentActivity;
+import org.servalproject.mappingservices.content.RecordTypes;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 
 /**
@@ -45,44 +47,45 @@ public class OverlayList extends ArrayItemizedOverlay {
 	/*
 	 * private class level variables
 	 */
+	
+	// store a reference to the content of the parent activity 
 	private Context parentContext = null;
 
 	public OverlayList(Drawable defaultMarker, Context context) {
 		super(defaultMarker, context);
-		// TODO Auto-generated constructor stub
-		
 		parentContext = context;
 	}
 	
+	/*
+	 * respond to the tap event on a marker
+	 * (non-Javadoc)
+	 * @see org.mapsforge.android.maps.ArrayItemizedOverlay#onTap(int)
+	 */
 	@Override
 	public boolean onTap(int index) {
 		
 		OverlayItem item = (OverlayItem)this.createItem(index);
 		
-		//TODO do more than just show the view
-		
-		Intent intent = new Intent(parentContext, ViewIncidentActivity.class);
-		parentContext.startActivity(intent);
-		
-		if(item != null) {
-			//TODO do something more intelligent with the item
-			Log.v(TAG, item.getRecordId());
+		// see what was tapped
+		if(item.getRecordType() == RecordTypes.INCIDENT_RECORD_TYPE) {
+			
+			if(V_LOG) {
+				Log.v(TAG, "incident marker tapped with id:" + item.getRecordId());
+			}
+			
+			// this is an incident marker so start the ViewIncidentActivity 
+			// and provide it with the incident record number
+			Intent mIntent = new Intent(parentContext, ViewIncidentActivity.class);
+			Bundle mBundle = new Bundle();
+			mBundle.putString("id", item.getRecordId());
+			mIntent.putExtras(mBundle);
+			parentContext.startActivity(mIntent);
+			
+		} else {
+			// this is a location marker
 		}
 		
 		return true;
-		
-//		synchronized (this.overlayItems) {
-//			OverlayItem item = this.overlayItems.get(index);
-//			if (item != null) {
-//				Builder builder = new AlertDialog.Builder(this.context);
-//				builder.setIcon(android.R.drawable.ic_menu_info_details);
-//				builder.setTitle(item.getTitle());
-//				builder.setMessage(item.getSnippet());
-//				builder.setPositiveButton(this.internalMapView.getText(TextField.OKAY), null);
-//				builder.show();
-//			}
-//			return true;
-//		}
 		
 	}
 	
