@@ -19,7 +19,6 @@ package org.servalproject.mappingservices;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import org.servalproject.mappingservices.content.IncidentProvider;
@@ -168,17 +167,17 @@ public class ViewIncidentActivity extends Activity {
     	
     	if(mTime < 1) { // less than one minute
     		mTime = (int) ((mTimeDifference / 1000) % 60);
-    		mIncidentAge = mTime + " seconds";
+    		mIncidentAge = String.format(this.getString(R.string.incident_view_seconds), mTime);
     	} else if(mTime > 60) { // more than an hour
     		mTime = (int) ((mTimeDifference / 1000) / 3600);
     		
     		if(mTime > 24) { // more than 24 hours
-    			mIncidentAge = "more than a day";
+    			mIncidentAge = String.format(this.getString(R.string.incident_view_more_than_a_day), mTime);
     		} else {
-    			mIncidentAge = mTime + " hours";
+    			mIncidentAge = String.format(this.getString(R.string.incident_view_hours), mTime);
     		}
     	} else { // minutes
-    		mIncidentAge = mTime + " minutes";
+    		mIncidentAge = String.format(this.getString(R.string.incident_view_minutes), mTime);
     	}
  
     	return mIncidentAge;

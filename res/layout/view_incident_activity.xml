@@ -43,7 +43,8 @@
 	                <TextView android:text="TextView" 
 	                		  android:id="@+id/lbl_incident_added_by" 
 	                		  android:layout_width="wrap_content" 
-	                		  android:layout_height="wrap_content">
+	                		  android:layout_height="wrap_content"
+	                		  android:autoLink="phone">
 	                </TextView>
                 </TableRow>
                 <TableRow android:id="@+id/tableRow2" 

@@ -12,6 +12,11 @@
     <!--  resources for the ViewIncidentActivity -->
     <string name="incident_view_added_by">Added by:</string>
     <string name="incident_view_incident_age">Incident Age:</string>
+    <!--  incident age constants used to format the output -->
+    <string name="incident_view_seconds">%d seconds</string>
+    <string name="incident_view_minutes">%d minutes</string>
+    <string name="incident_view_hours">%d hours</string>
+    <string name="incident_view_more_than_a_day">more than a day</string>
     <!--  common resources -->
     <string name="common_experimental_software">Experimental Software</string>
     <string name="common_serval_project">Serval Project</string>
