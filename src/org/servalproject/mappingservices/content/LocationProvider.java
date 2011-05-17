@@ -24,6 +24,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
 
 /**
  * Manages access to the saved location data used by the mapping service
@@ -232,7 +233,7 @@ public class LocationProvider extends ContentProvider implements LocationColumns
 		
 		String mWhereClause = "";
 		
-		if(selection.trim().equals("") == true) {
+		if(TextUtils.isEmpty(selection) == true) {
 			mWhereClause = _ID + " = " + id;
 		} else {
 			mWhereClause = _ID + " = " + id + " AND (" + selection + ")";
