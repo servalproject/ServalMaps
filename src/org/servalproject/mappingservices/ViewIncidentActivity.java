@@ -19,6 +19,8 @@ package org.servalproject.mappingservices;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
+import android.widget.TextView;
 
 /**
  * Activity that displays details of an incident to the user
@@ -45,6 +47,10 @@ public class ViewIncidentActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	 super.onCreate(savedInstanceState);
          setContentView(R.layout.view_incident_activity);
+         
+         // setup scrolling for the description text view
+         TextView mDescriptionView = (TextView)findViewById(R.id.lbl_incident_description);
+         mDescriptionView.setMovementMethod(new ScrollingMovementMethod()); 
     }
 
 }

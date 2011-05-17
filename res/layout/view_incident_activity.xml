@@ -26,7 +26,8 @@
         		  android:id="@+id/lbl_incident_description" 
         		  android:layout_width="fill_parent" 
         		  android:layout_height="wrap_content"
-        		  android:layout_weight="1">
+        		  android:layout_weight="1"
+        		  android:scrollbars="vertical">
         </TextView>
         <TableLayout android:id="@+id/tableLayout2" 
         			 android:layout_width="match_parent" 
