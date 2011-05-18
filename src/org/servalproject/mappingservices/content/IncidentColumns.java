@@ -56,6 +56,11 @@ public interface IncidentColumns {
 	public static final String PHONE_NUMBER_FIELD = "phone_number";
 	
 	/**
+	 * Name of the SID field
+	 */
+	public static final String SID_FIELD = "sid";
+	
+	/**
 	 * Name of the ip address field
 	 */
 	public static final String IP_ADDRESS_FIELD = "ip_address";
@@ -94,6 +99,11 @@ public interface IncidentColumns {
 	 * Name of the time zone field
 	 */
 	public static final String TIMEZONE_FIELD = "timezone";
+	
+	/**
+	 * Name of the signature field
+	 */
+	public static final String SIGNATURE_FIELD = "signature";
 	
 	public static final String AUTHORITY = "org.servalproject.mappingservices.content.incidentprovider";
 	public static final Uri CONTENT_URI = Uri.parse("content://org.servalproject.mappingservices.content.incidentprovider" + "/" + TABLE_NAME);

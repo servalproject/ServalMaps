@@ -55,6 +55,11 @@ public interface LocationColumns {
 	public static final String PHONE_NUMBER_FIELD = "phone_number";
 	
 	/**
+	 * Name of the SID field
+	 */
+	public static final String SID_FIELD = "sid";
+	
+	/**
 	 * Type of location record
 	 */
 	public static final String TYPE_FIELD = "type";
@@ -83,6 +88,11 @@ public interface LocationColumns {
 	 * Name of the time zone field
 	 */
 	public static final String TIMEZONE_FIELD = "timezone";
+	
+	/**
+	 * Name of the signature field
+	 */
+	public static final String SIGNATURE_FIELD = "signature";
 	
 	/**
 	 * Identify a record as belonging to this device

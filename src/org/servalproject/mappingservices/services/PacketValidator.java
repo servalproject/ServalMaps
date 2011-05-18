@@ -31,12 +31,22 @@ public class PacketValidator {
 	/**
 	 * number of expected fields in a location packet
 	 */
-	public static final int LOCATION_FIELD_COUNT = 6;
+	public static final int LOCATION_FIELD_COUNT = 8;
 	
 	/**
 	 * number of expected fields in an incident packet
 	 */
-	public static final int INCIDENT_FIELD_COUNT = 8;
+	public static final int INCIDENT_FIELD_COUNT = 10;
+	
+	/**
+	 * number of hex bytes in the SID
+	 */
+	public static final int SID_BYTE_LENGTH = 33;
+	
+	/**
+	 * number of hex bytes in the signature
+	 */
+	public static final int SIGNATURE_BYTE_LENGTH = 129;
 	
 	/**
 	 * Validate the content of a location packet once it has been broken up into the individual fields
@@ -59,10 +69,12 @@ public class PacketValidator {
 		 * 
 		 * type - expected to be an integer, currently only 1 is valid
 		 * phone number - expected to be text
+		 * SID - expected to be no more than 33 bytes of hex
 		 * latitude - expected to be a float
 		 * longitude - expected to be a float
 		 * timestamp - expected to be an integer
 		 * timezone - expected to be a valid timezone identifier
+		 * signature - expected to be a valid signature no more than 129 bytes of hex
 		 * 
 		 * for more info see:
 		 * http://developer.servalproject.org/twiki/bin/view/Main/PublicAlphaMappingServiceLocationPackets
@@ -78,24 +90,36 @@ public class PacketValidator {
 			throw new ValidationException("type field is not valid. Found '" + value + "' expected '1'");
 		}
 		
-		if(isValidString(packetContent[1]) == true) {
+		if(isValidString(packetContent[1]) != true) {
 			throw new ValidationException("the phone number field cannot be empty");
 		}
 		
-		if(isFloat(packetContent[2]) != true) {
-			throw new ValidationException("latitude field is not a valid float");
+		if(isValidSid(packetContent[2]) != true) {
+			throw new ValidationException("the sid field is invalid");
 		}
 		
 		if(isFloat(packetContent[3]) != true) {
+			throw new ValidationException("latitude field is not a valid float");
+		}
+		
+		if(isFloat(packetContent[4]) != true) {
 			throw new ValidationException("longitude field is not a valid float");
 		}
 		
-		if(isInteger(packetContent[4]) != true) {
+		if(isInteger(packetContent[5]) != true) {
 			throw new ValidationException("timestamp field is not a valid integer");
 		}
 		
-		if(isTimezoneId(packetContent[5]) != true) {
+		if(isTimezoneId(packetContent[6]) != true) {
 			throw new ValidationException("timezone field is not a valid timezone identifier");
+		}
+		
+		if(isValidSignature(packetContent[7]) != true) {
+			throw new ValidationException("signature field is not valid");
+		}
+		
+		if(isValidatedBySignature(packetContent) != true) {
+			throw new ValidationException("packet content is not validated by signature");
 		}
 		
 		return true;
@@ -118,6 +142,8 @@ public class PacketValidator {
 		/* 
 		 * fields are:
 		 * 
+		 * phone number - the phone number of the device that first added this incident
+		 * sid - the sid of the device that first added this incident
 		 * title - title of the incident
 		 * description - description of the incident
 		 * category - incident category
@@ -125,6 +151,7 @@ public class PacketValidator {
 		 * longitude - expected to be a float
 		 * timestamp - expected to be an integer
 		 * timezone - expected to be a valid timezone identifier
+		 * signature - the signature of the packet
 		 * 
 		 * for more info see:
 		 * http://developer.servalproject.org/twiki/bin/view/Main/PublicAlphaMappingServiceIncidentPackets
@@ -134,15 +161,19 @@ public class PacketValidator {
 			throw new ValidationException("phone number field cannot be empty");
 		}
 		
-		if(isValidString(packetContent[1]) != true) {
-			throw new ValidationException("title field cannot empty");
+		if(isValidSid(packetContent[1]) != true) {
+			throw new ValidationException("the sid field is invalid");
 		}
 		
 		if(isValidString(packetContent[2]) != true) {
+			throw new ValidationException("title field cannot empty");
+		}
+		
+		if(isValidString(packetContent[3]) != true) {
 			throw new ValidationException("description field cannot empty");
 		}
 		
-		if(isInteger(packetContent[3]) != true) {
+		if(isInteger(packetContent[4]) != true) {
 			throw new ValidationException("category field is not an integer");
 		}
 		
@@ -150,25 +181,33 @@ public class PacketValidator {
 		// most likely swap this static method for one that is non static and gets
 		// the list of categories from the incident database or some other storage mechanism
 		
-		int value = Integer.parseInt(packetContent[3]);
+		int value = Integer.parseInt(packetContent[4]);
 		if(value != 1) {
 			throw new ValidationException("category field is not valid. Found '" + value + "' expected '1'");
 		}
 		
-		if(isFloat(packetContent[4]) != true) {
+		if(isFloat(packetContent[5]) != true) {
 			throw new ValidationException("latitude field is not a valid float");
 		}
 		
-		if(isFloat(packetContent[5]) != true) {
+		if(isFloat(packetContent[6]) != true) {
 			throw new ValidationException("longitude field is not a valid float");
 		}
 		
-		if(isInteger(packetContent[6]) != true) {
+		if(isInteger(packetContent[7]) != true) {
 			throw new ValidationException("timestamp field is not a valid integer");
 		}
 		
-		if(isTimezoneId(packetContent[7]) != true) {
+		if(isTimezoneId(packetContent[8]) != true) {
 			throw new ValidationException("timezone field is not a valid timezone identifier");
+		}
+		
+		if(isValidSignature(packetContent[9]) != true) {
+			throw new ValidationException("signature field is not valid");
+		}
+		
+		if(isValidatedBySignature(packetContent) != true) {
+			throw new ValidationException("packet content is not validated by signature");
 		}
 		
 		return true;
@@ -229,5 +268,42 @@ public class PacketValidator {
 			return false;
 		}
 	}
-
+	
+	/*
+	 * private method to validate a sid
+	 */
+	private static boolean isValidSid(String value) {
+		if(value.matches("[0-9A-F]+") == false ) {
+			return false;
+		} else {
+			if(value.length() != (SID_BYTE_LENGTH * 2)) { //33 bytes == 66 characters
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	
+	/*
+	 * private method to validate a sid
+	 */
+	private static boolean isValidSignature(String value) {
+		if(value.matches("[0-9A-F]+") == false ) {
+			return false;
+		} else {
+			if(value.length() != (SIGNATURE_BYTE_LENGTH * 2)) { //129 bytes == 66 characters
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+	
+	/*
+	 * private method to validate packet content to the signature
+	 */
+	private static boolean isValidatedBySignature(String[] packetContent) {
+		// TODO actually do more than just return true
+		return true;
+	}
 }

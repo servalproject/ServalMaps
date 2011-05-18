@@ -59,10 +59,10 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 		// create the incident table and related indices
 		
 		String mSql = "CREATE TABLE " + TABLE_NAME + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-		            + PHONE_NUMBER_FIELD + " text, " + IP_ADDRESS_FIELD + " text, "
+		            + PHONE_NUMBER_FIELD + " text, " + SID_FIELD + " text, " + IP_ADDRESS_FIELD + " text, "
 		            + TITLE_FIELD + " text, " + DESCRIPTION_FIELD + " text, " + CATEGORY_FIELD + " text, "
 		            + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real, "
-		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text)";
+		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + SIGNATURE_FIELD + " text)";
 		
 		// execute the sql
 		try {
