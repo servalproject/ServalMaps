@@ -24,6 +24,10 @@ package org.servalproject.mappingservices.content;
  *
  */
 public class RecordTypes {
+		
+	/*
+	 * don't forget to update the isValidType method when adding record types
+	 */
 	
 	/**
 	 * Constant to identify the location record type
@@ -34,5 +38,23 @@ public class RecordTypes {
 	 * Constant to identify the incident record type
 	 */
 	public static int INCIDENT_RECORD_TYPE = 1;
+	
+	/**
+	 * a method to determine if a type is a valid record type
+	 * 
+	 * @param type the type to valid
+	 * @return true if the type is valid, false if it is invalid
+	 */
+	public static boolean isValidType(int type) {
+		
+		/*
+		 * don't forget to update this when adding record types
+		 */
+		if(type >= 0 && type <= 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

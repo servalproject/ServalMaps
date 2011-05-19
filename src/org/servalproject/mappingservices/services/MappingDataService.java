@@ -23,13 +23,18 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.servalproject.mappingservices.content.DatabaseInfo;
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
+import org.servalproject.mappingservices.content.RecordTypes;
 import org.servalproject.mappingservices.net.PacketCollector;
 
 import android.app.Service;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -99,18 +104,24 @@ public class MappingDataService extends Service {
 	private PacketCollector locationCollector = null;
 	private PacketSaver     packetSaver       = null;
 	private IncidentRepeater incidentRepeater = null;
+	private LocationCollector incomingLocations = null;
+	private LocationSaver     incomingLocationsSaver = null;
 	
 	private Thread incidentThread    = null;
 	private Thread locationThread    = null;
 	private Thread packetSaverThread = null;
 	private Thread incidentRepeaterThread = null;
+	private Thread incomingLocationsThread = null;
 	
 	private AtomicInteger incidentCount = null;
 	private AtomicInteger locationCount = null;
 	
 	private LinkedBlockingQueue<DatagramPacket> packetQueue = null;
+	private LinkedBlockingQueue<Location> incomingLocationQueue = null;
 
 	private ContentResolver contentResolver = null;
+	
+	private LocationManager locationManager = null;
 	
 	
 	/*
@@ -135,6 +146,7 @@ public class MappingDataService extends Service {
 			incidentCount = new AtomicInteger();
 			locationCount = new AtomicInteger();
 			packetQueue   = new LinkedBlockingQueue<DatagramPacket>();
+			incomingLocationQueue = new LinkedBlockingQueue<Location>();
 			
 			// initialise the packet collection objects
 			incidentCollector = new PacketCollector(INCIDENT_PORT, incidentCount, packetQueue);
@@ -148,13 +160,18 @@ public class MappingDataService extends Service {
 			SQLiteOpenHelper incidentOpenHelper = new IncidentOpenHelper(this.getApplicationContext());
 			incidentRepeater = new IncidentRepeater(incidentOpenHelper.getReadableDatabase());
 			
+			// initialise the geo location objects
+			incomingLocations = new LocationCollector(incomingLocationQueue);
+			incomingLocationsSaver = new LocationSaver(incomingLocationQueue, contentResolver);
+			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
 			}
 			
 		} catch(SocketException e) {
 			if(V_LOG) {
-				Log.v(TAG, "unable to create the packet collector objects");
+				Log.v(TAG, "unable to create the necessary objects");
 			}
 		}
 	}
@@ -205,8 +222,19 @@ public class MappingDataService extends Service {
 			incidentRepeaterThread.start();
 		}
 		
+		if(incomingLocationsThread == null) {
+			incomingLocationsThread = new Thread(incomingLocationsSaver);
+			incomingLocationsThread.start();
+			
+			// listen for both GPS and Network locations
+			//TODO see if the time internal and minimum distance parameters need to be adjusted
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, incomingLocations);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, incomingLocations);
+			
+		}
+		
 		if(V_LOG) {
-			Log.v(TAG, "service started");
+			Log.v(TAG, "threads started");
 		}
 	}
 	
@@ -243,11 +271,20 @@ public class MappingDataService extends Service {
 			packetSaverThread = null;
 		}
 		
-		if(incidentRepeaterThread == null) {
+		if(incidentRepeaterThread != null) {
 			incidentRepeater.requestStop();
 			incidentRepeaterThread.interrupt();
 			incidentRepeater = null;
 			incidentRepeaterThread = null;
+		}
+		
+		if(incomingLocationsThread != null) {
+			incomingLocationsSaver.requestStop();
+			incomingLocationsThread.interrupt();
+			incomingLocationsSaver = null;
+			incomingLocationsThread = null;
+			locationManager.removeUpdates(incomingLocations);
+			incomingLocationQueue = null;
 		}
 		
 		if(packetQueue != null) {
@@ -280,35 +317,36 @@ public class MappingDataService extends Service {
 		// use a bundle for the info
 		Bundle serviceStatus = new Bundle();
 		
-		//TODO add a reusable private method to determine a thread status
-		//TODO use the reusable method to report status of all threads
-		
-		// add status info for the incident thread
-		if(incidentThread != null) {
-			if(incidentThread.isAlive() == true) {
-				serviceStatus.putString("incidentThread", "running");
-			} else {
-				serviceStatus.putString("incidentThread", "stopped");
-			}
-		} else {
-			serviceStatus.putString("incidentThread", "stopped");	
-		}
-		
-		// add status info for the location thread
-		if(locationThread != null) {
-			if(locationThread.isAlive() == true) {
-				serviceStatus.putString("locationThread", "running");
-			} else {
-				serviceStatus.putString("locationThread", "stopped");
-			}
-		} else {
-			serviceStatus.putString("locationThread", "stopped");	
-		}
+		// get the status of all of the threads
+		serviceStatus.putString("incidentThread", getThreadStatus(incidentThread));
+		serviceStatus.putString("locationThread", getThreadStatus(incidentThread));
+		serviceStatus.putString("packetSaverThread", getThreadStatus(packetSaverThread));
+		serviceStatus.putString("incidentRepeaterThread", getThreadStatus(incidentRepeaterThread));
+		serviceStatus.putString("deviceLocationThread", getThreadStatus(incomingLocationsThread));
 		
 		// add the count of packets received
-		serviceStatus.putInt("incidentCount", incidentCount.get());
-		serviceStatus.putInt("locationCount", locationCount.get());
+		serviceStatus.putString("incidentPacketCount", Integer.toString(incidentCount.get()));
+		serviceStatus.putString("locationPacketCount", Integer.toString(locationCount.get()));
+		
+		// add the count of records
+		serviceStatus.putString("incidentRecordCount", Integer.toString(DatabaseInfo.getRecordCount(RecordTypes.INCIDENT_RECORD_TYPE, this.getBaseContext())));
+		serviceStatus.putString("locationRecordCount", Integer.toString(DatabaseInfo.getRecordCount(RecordTypes.LOCATION_RECORD_TYPE, this.getBaseContext())));
 		
 		return serviceStatus;
+	}
+	
+	/*
+	 * determine the status of a thread
+	 */
+	private String getThreadStatus(Thread thread) {
+		if(thread != null) {
+			if(thread.isAlive() == true) {
+				return "running";
+			} else {
+				return "stopped";
+			}
+		} else {
+			return "stopped";	
+		}
 	}
 }

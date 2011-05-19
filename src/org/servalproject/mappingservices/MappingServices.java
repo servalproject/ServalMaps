@@ -17,6 +17,9 @@
  */
 package org.servalproject.mappingservices;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.servalproject.mappingservices.services.MappingDataService;
 
 import android.app.Activity;
@@ -87,11 +90,15 @@ public class MappingServices extends Activity implements OnClickListener {
             switch (msg.what) {
                 case MappingDataService.MSG_SERVICE_STATUS:
                 	Bundle bundle = msg.getData();
-                	//debug code
-                	Log.v(TAG, "location thread: " + bundle.getString("locationThread"));
-                	Log.v(TAG, "incident thread: " + bundle.getString("incidentThread"));
-                	Log.v(TAG, "location packets: " + bundle.getInt("locationCount"));
-                	Log.v(TAG, "incident packets: " + bundle.getInt("incidentCount"));
+                	
+                	Set<String> keys = bundle.keySet();
+                	Iterator<String> iterator = keys.iterator();
+                	
+                	while(iterator.hasNext() == true) {
+                		String key = iterator.next();
+                		Log.v(TAG, key + " : " + bundle.getString(key));
+                	}
+                	
                     break;
                 default:
                     super.handleMessage(msg);
