@@ -137,6 +137,7 @@ public class ViewIncidentActivity extends Activity {
     private String getIncidentAge(String timestamp, String timezone) {
     	
     	//TODO add extensive error checking
+    	//TODO check with different timezones
     	
     	String mIncidentAge = null;
     	
@@ -149,14 +150,16 @@ public class ViewIncidentActivity extends Activity {
     	Calendar mIncidentCal = Calendar.getInstance(TimeZone.getTimeZone(timezone));
     	mIncidentCal.setTimeInMillis((mTimeStampAsLong * 1000));
     	
+    	// get the timestamp in device time using the incident time
+    	mDeviceCal.setTimeInMillis(mIncidentCal.getTimeInMillis());
+    	mTimeStampAsLong = mDeviceCal.getTimeInMillis();
+    	
     	if(V_LOG) {
     		DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     		Log.v(TAG, "device time: " + formatter.format(mDeviceCal.getTime()));
     		Log.v(TAG, "incident time: " + formatter.format(mIncidentCal.getTime()));
     	}
     	
-    	// get the timestamp in device time using the incident time
-    	mTimeStampAsLong = mIncidentCal.getTimeInMillis();
     	
     	// get the difference
     	long mTimeDifference = mDeviceTimeAsLong - mTimeStampAsLong;
