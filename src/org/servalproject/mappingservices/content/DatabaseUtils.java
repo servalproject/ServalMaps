@@ -17,9 +17,13 @@
  */
 package org.servalproject.mappingservices.content;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 /**
  * a class used to rerieve information about the databases used by the 
@@ -28,7 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
  * @author corey.wallis@servalproject.org
  *
  */
-public class DatabaseInfo {
+public class DatabaseUtils {
 	
 	/**
 	 * count the number of records that match the provided record type
@@ -88,7 +92,42 @@ public class DatabaseInfo {
 		}
 		
 		return mRecordCount;
-		
 	}
-
+	
+	/**
+	 * convert a timestamp field from the supplied timezone to UTC
+	 * 
+	 * @param timestamp the original timestamp (in seconds)
+	 * @param timezone  the timezone id
+	 * 
+	 * @return the timestamp (in seconds) according to UTC
+	 * 
+	 * @throws IllegalArgumentException if the timestamp field isn't recognised as a long
+	 * @throws IllegalArgumentException if the timezone field is empty
+	 */
+	public static String getTimestampAsUtc(String timestamp, String timezone) {
+		
+		// check the parameters
+		long mTime = -1;
+		try {
+			mTime = Long.parseLong(timestamp);
+		} catch(NumberFormatException e) {
+			throw new IllegalArgumentException("the timestamp must be a valid long", e);
+		}
+		
+		if(TextUtils.isEmpty(timezone) == true) {
+			throw new IllegalArgumentException("the timezone field is required");
+		}
+		
+		Calendar mCalendar = Calendar.getInstance(TimeZone.getTimeZone(timezone));
+		mCalendar.setTimeInMillis((mTime * 1000));
+		
+		Calendar mUtcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		mUtcCalendar.setTimeInMillis(mCalendar.getTimeInMillis());
+		
+		mTime = mUtcCalendar.getTimeInMillis(); 
+		mTime = mTime / 1000;
+		
+		return Long.toString(mTime);
+	}
 }

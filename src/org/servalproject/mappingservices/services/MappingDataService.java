@@ -23,7 +23,7 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.servalproject.mappingservices.content.DatabaseInfo;
+import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.RecordTypes;
 import org.servalproject.mappingservices.net.PacketCollector;
@@ -329,8 +329,8 @@ public class MappingDataService extends Service {
 		serviceStatus.putString("locationPacketCount", Integer.toString(locationCount.get()));
 		
 		// add the count of records
-		serviceStatus.putString("incidentRecordCount", Integer.toString(DatabaseInfo.getRecordCount(RecordTypes.INCIDENT_RECORD_TYPE, this.getBaseContext())));
-		serviceStatus.putString("locationRecordCount", Integer.toString(DatabaseInfo.getRecordCount(RecordTypes.LOCATION_RECORD_TYPE, this.getBaseContext())));
+		serviceStatus.putString("incidentRecordCount", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.INCIDENT_RECORD_TYPE, this.getBaseContext())));
+		serviceStatus.putString("locationRecordCount", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.LOCATION_RECORD_TYPE, this.getBaseContext())));
 		
 		return serviceStatus;
 	}
