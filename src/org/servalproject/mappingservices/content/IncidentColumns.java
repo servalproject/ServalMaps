@@ -105,6 +105,11 @@ public interface IncidentColumns {
 	 */
 	public static final String SIGNATURE_FIELD = "signature";
 	
+	/**
+	 * Name of the time stamp in UTC field
+	 */
+	public static final String TIMESTAMP_UTC_FIELD = "timestamp_utc";
+	
 	public static final String AUTHORITY = "org.servalproject.mappingservices.content.incidentprovider";
 	public static final Uri CONTENT_URI = Uri.parse("content://org.servalproject.mappingservices.content.incidentprovider" + "/" + TABLE_NAME);
 

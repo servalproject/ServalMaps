@@ -62,7 +62,8 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 		            + PHONE_NUMBER_FIELD + " text, " + SID_FIELD + " text, " + IP_ADDRESS_FIELD + " text, "
 		            + TITLE_FIELD + " text, " + DESCRIPTION_FIELD + " text, " + CATEGORY_FIELD + " text, "
 		            + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real, "
-		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + SIGNATURE_FIELD + " text)";
+		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + SIGNATURE_FIELD + " text, "
+		            + TIMESTAMP_UTC_FIELD + " int)";
 		
 		// execute the sql
 		try {
@@ -94,6 +95,14 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 			db.execSQL(mSql);
 		} catch (SQLException e) {
 			Log.e(TAG, "unable to create idx_phone_time index", e);
+		}
+		
+		mSql = "CREATE INDEX idx_timestamp_utc_id ON " + TABLE_NAME + " (" + TIMESTAMP_UTC_FIELD + ", " + _ID + ")";
+		
+		try {
+			db.execSQL(mSql);
+		} catch (SQLException e) {
+			Log.e(TAG, "unable to create idx_timestamp_utc_id index", e);
 		}
 		
 		// output some debug text

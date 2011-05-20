@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.LocationProvider;
 
 import android.content.ContentResolver;
@@ -151,6 +152,7 @@ public class LocationSaver implements Runnable {
 		mValues.put(LocationProvider.TIMESTAMP_FIELD, mSeconds);
 		mValues.put(LocationProvider.TIMEZONE_FIELD, timeZone);
 		mValues.put(LocationProvider.SELF_FIELD, "y");
+		mValues.put(LocationProvider.TIMESTAMP_UTC_FIELD, DatabaseUtils.getTimestampAsUtc(Long.toString(mSeconds), timeZone));
 		
 		// add the row
 		try {

@@ -59,7 +59,8 @@ public class LocationOpenHelper extends SQLiteOpenHelper implements LocationColu
 		// build the sql to create the table
 		String mSql = "CREATE TABLE " + TABLE_NAME + " (" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 		            + PHONE_NUMBER_FIELD + " text, " + SID_FIELD + " text, " + TYPE_FIELD + " int, " + IP_ADDRESS_FIELD + " text, " + LATITUDE_FIELD + " real, " + LONGITUDE_FIELD + " real, "
-		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + SIGNATURE_FIELD + " text, "+ SELF_FIELD + " text)";
+		            + TIMESTAMP_FIELD + " int, " + TIMEZONE_FIELD + " text, " + SIGNATURE_FIELD + " text, "+ SELF_FIELD + " text, "
+		            + TIMESTAMP_UTC_FIELD + " int)";
 		
 		// execute the sql
 		try {
@@ -91,6 +92,14 @@ public class LocationOpenHelper extends SQLiteOpenHelper implements LocationColu
 			db.execSQL(mSql);
 		} catch (SQLException e) {
 			Log.e(TAG, "unable to create type_ip_time index", e);
+		}
+		
+		mSql = "CREATE INDEX idx_timestamp_utc_id ON " + TABLE_NAME + " (" + TIMESTAMP_UTC_FIELD + ", " + _ID + ")";
+		
+		try {
+			db.execSQL(mSql);
+		} catch (SQLException e) {
+			Log.e(TAG, "unable to create idx_timestamp_utc_id index", e);
 		}
 		
 		// output some debug text

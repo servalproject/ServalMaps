@@ -100,6 +100,11 @@ public interface LocationColumns {
 	public static final String SELF_FIELD = "self";
 	
 	/**
+	 * Name of the time stamp in UTC field
+	 */
+	public static final String TIMESTAMP_UTC_FIELD = "timestamp_utc";
+	
+	/**
 	 * the content URI that represents this data
 	 */
 	public static final String AUTHORITY = "org.servalproject.mappingservices.content.locationprovider";

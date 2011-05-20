@@ -21,6 +21,7 @@ package org.servalproject.mappingservices.services;
 import java.net.DatagramPacket;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.LocationProvider;
 import org.servalproject.mappingservices.net.PacketCollector;
@@ -197,11 +198,14 @@ public class PacketSaver implements Runnable {
 			ContentValues mValues = new ContentValues();
 			mValues.put(LocationProvider.TYPE_FIELD, mFields[0]);
 			mValues.put(LocationProvider.PHONE_NUMBER_FIELD, mFields[1]);
-			mValues.put(LocationProvider.LATITUDE_FIELD, mFields[2]);
-			mValues.put(LocationProvider.LONGITUDE_FIELD, mFields[3]);
-			mValues.put(LocationProvider.TIMESTAMP_FIELD, mFields[4]);
-			mValues.put(LocationProvider.TIMEZONE_FIELD, mFields[5]);
+			mValues.put(LocationProvider.SID_FIELD, mFields[2]);
+			mValues.put(LocationProvider.LATITUDE_FIELD, mFields[3]);
+			mValues.put(LocationProvider.LONGITUDE_FIELD, mFields[4]);
+			mValues.put(LocationProvider.TIMESTAMP_FIELD, mFields[5]);
+			mValues.put(LocationProvider.TIMEZONE_FIELD, mFields[6]);
+			mValues.put(LocationProvider.SIGNATURE_FIELD, mFields[7]);
 			mValues.put(LocationProvider.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
+			mValues.put(LocationProvider.TIMESTAMP_UTC_FIELD, DatabaseUtils.getTimestampAsUtc(mFields[5], mFields[6]));
 			
 			// add the row
 			try {
@@ -275,14 +279,17 @@ public class PacketSaver implements Runnable {
 			// values weren't found so we can store this new packet
 			ContentValues mValues = new ContentValues();
 			mValues.put(IncidentProvider.PHONE_NUMBER_FIELD, mFields[0]);
-			mValues.put(IncidentProvider.TITLE_FIELD, mFields[1]);
-			mValues.put(IncidentProvider.DESCRIPTION_FIELD, mFields[2]);
-			mValues.put(IncidentProvider.CATEGORY_FIELD, mFields[3]);
-			mValues.put(IncidentProvider.LATITUDE_FIELD, mFields[4]);
-			mValues.put(IncidentProvider.LONGITUDE_FIELD, mFields[5]);
-			mValues.put(IncidentProvider.TIMESTAMP_FIELD, mFields[6]);
-			mValues.put(IncidentProvider.TIMEZONE_FIELD, mFields[7]);
+			mValues.put(IncidentProvider.SID_FIELD, mFields[1]);
+			mValues.put(IncidentProvider.TITLE_FIELD, mFields[2]);
+			mValues.put(IncidentProvider.DESCRIPTION_FIELD, mFields[3]);
+			mValues.put(IncidentProvider.CATEGORY_FIELD, mFields[4]);
+			mValues.put(IncidentProvider.LATITUDE_FIELD, mFields[5]);
+			mValues.put(IncidentProvider.LONGITUDE_FIELD, mFields[6]);
+			mValues.put(IncidentProvider.TIMESTAMP_FIELD, mFields[7]);
+			mValues.put(IncidentProvider.TIMEZONE_FIELD, mFields[8]);
+			mValues.put(IncidentProvider.SIGNATURE_FIELD, mFields[9]);
 			mValues.put(IncidentProvider.IP_ADDRESS_FIELD, packet.getAddress().getHostAddress());
+			mValues.put(IncidentProvider.TIMESTAMP_UTC_FIELD, DatabaseUtils.getTimestampAsUtc(mFields[7], mFields[8]));
 			
 			// add the row
 			try {
