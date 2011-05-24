@@ -41,12 +41,12 @@ public class PacketValidator {
 	/**
 	 * number of hex bytes in the SID
 	 */
-	public static final int SID_BYTE_LENGTH = 33;
+	public static final int SID_BYTE_LENGTH = 32;
 	
 	/**
 	 * number of hex bytes in the signature
 	 */
-	public static final int SIGNATURE_BYTE_LENGTH = 129;
+	public static final int SIGNATURE_BYTE_LENGTH = 128;
 	
 	/**
 	 * Validate the content of a location packet once it has been broken up into the individual fields
@@ -272,12 +272,12 @@ public class PacketValidator {
 	/*
 	 * private method to validate a sid
 	 */
-	private static boolean isValidSid(String value) {
-		if(value.matches("[0-9A-F]+") == false ) {
-			return false;
+	private static boolean isValidSid(String value) throws ValidationException {
+		if(value.matches("[0-9a-fA-F]+") == false ) {
+			throw new ValidationException("SID contains invalid characters");
 		} else {
 			if(value.length() != (SID_BYTE_LENGTH * 2)) { //33 bytes == 66 characters
-				return false;
+				throw new ValidationException("SID is wrong length, expected '" + (SID_BYTE_LENGTH * 2) + "' found '" + value.length() + "'");
 			} else {
 				return true;
 			}
@@ -288,7 +288,7 @@ public class PacketValidator {
 	 * private method to validate a sid
 	 */
 	private static boolean isValidSignature(String value) {
-		if(value.matches("[0-9A-F]+") == false ) {
+		if(value.matches("[0-9a-fA-F]+") == false ) {
 			return false;
 		} else {
 			if(value.length() != (SIGNATURE_BYTE_LENGTH * 2)) { //129 bytes == 66 characters
