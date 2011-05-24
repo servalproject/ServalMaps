@@ -50,7 +50,7 @@ import android.util.Log;
  * @author corey.wallis@servalproject.org
  *
  */
-public class MappingDataService extends Service {
+public class CoreMappingService extends Service {
 	
 	/**
 	 * port that will be used to listen for incoming incident messages
@@ -95,7 +95,7 @@ public class MappingDataService extends Service {
      * target for clients to send messages to this service
      */
     public final Messenger mMessenger = new Messenger(new IncomingHandler());
-    private final MappingDataService self = this;
+    private final CoreMappingService self = this;
 	
 	/*
 	 * private class level variables

@@ -140,7 +140,7 @@ public class IncidentRepeater implements Runnable{
 				
 				// send the packet
 				try {
-					PacketSender.sendBroadcast(MappingDataService.INCIDENT_PORT, mPacketContent.toString());
+					PacketSender.sendBroadcast(CoreMappingService.INCIDENT_PORT, mPacketContent.toString());
 					
 					// output some debug text
 					if(V_LOG) {

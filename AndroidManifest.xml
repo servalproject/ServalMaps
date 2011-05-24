@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <!-- services -->
-        <service android:name=".services.MappingDataService"></service>
+        <service android:name=".services.CoreMappingService"></service>
         <!-- content providers -->
         <provider android:name=".content.LocationProvider" android:authorities="org.servalproject.mappingservices.content.locationprovider"></provider>
         <provider android:name=".content.IncidentProvider" android:authorities="org.servalproject.mappingservices.content.incidentprovider"></provider>

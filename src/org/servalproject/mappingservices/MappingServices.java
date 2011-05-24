@@ -20,7 +20,7 @@ package org.servalproject.mappingservices;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.servalproject.mappingservices.services.MappingDataService;
+import org.servalproject.mappingservices.services.CoreMappingService;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -88,7 +88,7 @@ public class MappingServices extends Activity implements OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MappingDataService.MSG_SERVICE_STATUS:
+                case CoreMappingService.MSG_SERVICE_STATUS:
                 	Bundle bundle = msg.getData();
                 	
                 	Set<String> keys = bundle.keySet();
@@ -134,7 +134,7 @@ public class MappingServices extends Activity implements OnClickListener {
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        bindService(new Intent(MappingServices.this, MappingDataService.class), connection, Context.BIND_AUTO_CREATE);
+        bindService(new Intent(MappingServices.this, CoreMappingService.class), connection, Context.BIND_AUTO_CREATE);
         isBound = true;
     }
 
@@ -165,7 +165,7 @@ public class MappingServices extends Activity implements OnClickListener {
 		// determine which button was clicked
 		if(v.getId() == R.id.btn_start_service) {
 			// start button was touched
-			Intent intent = new Intent(this, org.servalproject.mappingservices.services.MappingDataService.class);
+			Intent intent = new Intent(this, org.servalproject.mappingservices.services.CoreMappingService.class);
 			startService(intent);
 			
 			
@@ -178,7 +178,7 @@ public class MappingServices extends Activity implements OnClickListener {
 				
 	    		try {
 	    			// send a message to the service to see what its status is
-	    			Message msg = Message.obtain(null, MappingDataService.MSG_SERVICE_STATUS);
+	    			Message msg = Message.obtain(null, CoreMappingService.MSG_SERVICE_STATUS);
 	    			msg.replyTo = messenger;
 	    			serviceMessenger.send(msg);
 	
