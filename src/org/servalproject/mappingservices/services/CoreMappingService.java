@@ -129,7 +129,7 @@ public class CoreMappingService extends Service {
 	 */
 	
 	private final boolean V_LOG = true;
-	private final String TAG = "ServalMaps-MDS";
+	private final String TAG = "ServalMaps-CMS";
 	
 	/*
 	 * called when this service is initially created
