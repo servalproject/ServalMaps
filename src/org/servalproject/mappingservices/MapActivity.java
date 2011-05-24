@@ -29,6 +29,7 @@ import org.mapsforge.android.maps.MapView;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 
 /**
  * Activity that displays the map to the user
@@ -56,6 +57,10 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
+        
+        if(V_LOG) {
+        	Log.v(TAG, "activity created");
+        }
       
         // /sdcard/serval/mapping-services/map-data.map
         
@@ -85,6 +90,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         markerOverlay.addItem(item);
         
         mapView.getOverlays().add(markerOverlay);
+        
+        if(V_LOG) {
+        	Log.v(TAG, "initial map populattion complete");
+        }
     }
-
 }
