@@ -17,11 +17,10 @@
  */
 package org.servalproject.mappingservices;
 
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import org.servalproject.mappingservices.content.IncidentProvider;
+import org.servalproject.mappingservices.content.DatabaseUtils;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -32,6 +31,7 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity that displays details of an incident to the user
@@ -71,16 +71,22 @@ public class ViewIncidentActivity extends Activity {
         	 } catch (NumberFormatException ex) {
         		 // id isn't in the format expected
         		 // do something with the error
-
+        		 
+        		 // show a toast and redirect back to calling activity
         		 if(V_LOG) {
         			 Log.v(TAG, "activity started with an invalid record id");
         		 }
+        		 Toast.makeText(this.getApplicationContext(), R.string.incident_view_error_invalid_id, Toast.LENGTH_LONG).show();
+        		 finish();
+
         	 } 
          } else {
-        	 // show some sort of error message
+        	 // show a toast and redirect back to calling activity
         	 if(V_LOG) {
-         		Log.v(TAG, "activity started without a record id");
-         	}
+        		 Log.v(TAG, "activity started without a record id");
+        	 }
+        	 Toast.makeText(this.getApplicationContext(), R.string.incident_view_error_missing_id, Toast.LENGTH_LONG).show();
+        	 finish();
          }
     }
     
@@ -101,9 +107,12 @@ public class ViewIncidentActivity extends Activity {
     	// check to make sure details have been returned
     	if(mIncidentDetails.moveToFirst() == false) {
     		// no data was found
-    		if(V_LOG) {
-         		Log.v(TAG, "unable to locate a record with supplied id");
-         	}
+    		// show a toast and redirect back to calling activity
+	       	 if(V_LOG) {
+	       		 Log.v(TAG, "no incident data found with record id: " + recordId);
+	       	 }
+	       	 Toast.makeText(this.getApplicationContext(), R.string.incident_view_error_no_data_found, Toast.LENGTH_LONG).show();
+	       	 finish();
     	} else {
     		// populate the activity
     		
@@ -120,11 +129,8 @@ public class ViewIncidentActivity extends Activity {
             TextView mAddedByView = (TextView)findViewById(R.id.lbl_incident_added_by);
             mAddedByView.setText(mPhoneNumber);
             
-            String mTimeStamp = mIncidentDetails.getString(mIncidentDetails.getColumnIndex(IncidentProvider.TIMESTAMP_FIELD));
-            String mTimeZone  = mIncidentDetails.getString(mIncidentDetails.getColumnIndex(IncidentProvider.TIMEZONE_FIELD));
-            
             TextView mIncidentAgeView = (TextView)findViewById(R.id.lbl_incident_age);
-            mIncidentAgeView.setText(getIncidentAge(mTimeStamp, mTimeZone));
+            mIncidentAgeView.setText(this.getIncidentAge(mIncidentDetails.getString(mIncidentDetails.getColumnIndex(IncidentProvider.TIMESTAMP_UTC_FIELD))));
     	}
     	
     	// play nice and release any resources
@@ -134,45 +140,31 @@ public class ViewIncidentActivity extends Activity {
     }
     
     // private method to calculate the incident age
-    private String getIncidentAge(String timestamp, String timezone) {
-    	
-    	//TODO add extensive error checking
-    	//TODO check with different timezones
+    private String getIncidentAge(String timeStampAsUtc) {
     	
     	String mIncidentAge = null;
     	
-    	// get a calendar and time representing the device time
+    	// get device time in UTC
     	Calendar mDeviceCal = Calendar.getInstance();
     	long mDeviceTimeAsLong = mDeviceCal.getTimeInMillis();
+    	mDeviceTimeAsLong = mDeviceTimeAsLong / 1000;
+    	mDeviceTimeAsLong = Long.parseLong(DatabaseUtils.getTimestampAsUtc(Long.toString(mDeviceTimeAsLong), mDeviceCal.getTimeZone().getID()));
     	
-    	// get a calendar and time representing the incident time
-    	long mTimeStampAsLong = Long.parseLong(timestamp); 
-    	Calendar mIncidentCal = Calendar.getInstance(TimeZone.getTimeZone(timezone));
-    	mIncidentCal.setTimeInMillis((mTimeStampAsLong * 1000));
-    	
-    	// get the timestamp in device time using the incident time
-    	mDeviceCal.setTimeInMillis(mIncidentCal.getTimeInMillis());
-    	mTimeStampAsLong = mDeviceCal.getTimeInMillis();
-    	
-    	if(V_LOG) {
-    		DateFormat formatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
-    		Log.v(TAG, "device time: " + formatter.format(mDeviceCal.getTime()));
-    		Log.v(TAG, "incident time: " + formatter.format(mIncidentCal.getTime()));
-    	}
-    	
+    	// convert timestamp string to long
+    	long mTimeStampAsLong = Long.parseLong(timeStampAsUtc);
     	
     	// get the difference
     	long mTimeDifference = mDeviceTimeAsLong - mTimeStampAsLong;
     	
     	// convert to a human readable representation
     	
-    	int mTime = (int) ((mTimeDifference/ 1000) / 60);
+    	int mTime = (int) (mTimeDifference / 60);
     	
     	if(mTime < 1) { // less than one minute
-    		mTime = (int) ((mTimeDifference / 1000) % 60);
+    		mTime = (int) (mTimeDifference % 60);
     		mIncidentAge = String.format(this.getString(R.string.incident_view_seconds), mTime);
     	} else if(mTime > 60) { // more than an hour
-    		mTime = (int) ((mTimeDifference / 1000) / 3600);
+    		mTime = (int) (mTimeDifference / 3600);
     		
     		if(mTime > 24) { // more than 24 hours
     			mIncidentAge = String.format(this.getString(R.string.incident_view_more_than_a_day), mTime);

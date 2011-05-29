@@ -17,6 +17,10 @@
     <string name="incident_view_minutes">%d minutes</string>
     <string name="incident_view_hours">%d hours</string>
     <string name="incident_view_more_than_a_day">more than a day</string>
+    <!--  incident view error messages -->
+    <string name="incident_view_error_invalid_id">Invalid incident report id detected, no report to display</string>
+    <string name="incident_view_error_missing_id">Missing incident report id, no report to display</string>
+    <string name="incident_view_error_no_data_found">No incident data found using supplied report id, no report to display</string>
     <!--  common resources -->
     <string name="common_experimental_software">Experimental Software</string>
     <string name="common_serval_project">Serval Project</string>
