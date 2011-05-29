@@ -39,6 +39,11 @@ import android.util.Log;
  */
 public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	
+	/**
+	 * directory where map data is stored
+	 */
+	public static final String MAP_DATA_DIR = "/sdcard/serval/mapping-services/";
+	
 	/*
 	 * private class level constants
 	 */
@@ -67,7 +72,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         MapView mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(true);
-        mapView.setMapFile("/sdcard/serval/mapping-services/map-data.map");
+        mapView.setMapFile(MAP_DATA_DIR + "map-data.map");
         setContentView(mapView);
         
         // create some markers
