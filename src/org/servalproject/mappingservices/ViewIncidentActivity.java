@@ -145,10 +145,7 @@ public class ViewIncidentActivity extends Activity {
     	String mIncidentAge = null;
     	
     	// get device time in UTC
-    	Calendar mDeviceCal = Calendar.getInstance();
-    	long mDeviceTimeAsLong = mDeviceCal.getTimeInMillis();
-    	mDeviceTimeAsLong = mDeviceTimeAsLong / 1000;
-    	mDeviceTimeAsLong = Long.parseLong(DatabaseUtils.getTimestampAsUtc(Long.toString(mDeviceTimeAsLong), mDeviceCal.getTimeZone().getID()));
+    	long mDeviceTimeAsLong = DatabaseUtils.getCurrentTimeAsUtc();
     	
     	// convert timestamp string to long
     	long mTimeStampAsLong = Long.parseLong(timeStampAsUtc);

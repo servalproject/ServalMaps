@@ -130,4 +130,22 @@ public class DatabaseUtils {
 		
 		return Long.toString(mTime);
 	}
+	
+	/**
+	 * 
+	 * get the current time in seconds as UTC
+	 * 
+	 * @return the current time, as determined by the device, in UTC
+	 * 
+	 */
+	public static long getCurrentTimeAsUtc() {
+		
+		Calendar mDeviceCal = Calendar.getInstance();
+    	long mDeviceTimeAsLong = mDeviceCal.getTimeInMillis();
+    	mDeviceTimeAsLong = mDeviceTimeAsLong / 1000;
+    	mDeviceTimeAsLong = Long.parseLong(DatabaseUtils.getTimestampAsUtc(Long.toString(mDeviceTimeAsLong), mDeviceCal.getTimeZone().getID()));
+    	
+    	return mDeviceTimeAsLong;
+		
+	}
 }
