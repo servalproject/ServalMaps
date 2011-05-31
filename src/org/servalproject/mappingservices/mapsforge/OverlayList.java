@@ -19,6 +19,7 @@ package org.servalproject.mappingservices.mapsforge;
 
 import org.mapsforge.android.maps.ArrayItemizedOverlay;
 
+import org.servalproject.mappingservices.R;
 import org.servalproject.mappingservices.ViewIncidentActivity;
 import org.servalproject.mappingservices.content.RecordTypes;
 
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Extend the ArrayItemizedOverlay class from the mapsforge package to include
@@ -81,8 +83,11 @@ public class OverlayList extends ArrayItemizedOverlay {
 			mIntent.putExtras(mBundle);
 			parentContext.startActivity(mIntent);
 			
+		} else if(item.getRecordType() == RecordTypes.SELF_LOCATION_RECORD_TYPE) {
+			// this is a self location marker
+			Toast.makeText(parentContext, R.string.overlay_list_self_location, Toast.LENGTH_SHORT).show();
 		} else {
-			// this is a location marker
+			// this is a peer location marker
 		}
 		
 		return true;

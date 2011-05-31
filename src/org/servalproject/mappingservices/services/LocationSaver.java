@@ -48,6 +48,16 @@ public class LocationSaver implements Runnable {
 	 */
 	public static final int MAX_LOCATION_AGE = 1000 * 60 * 2;
 	
+	/**
+	 * Fake phone number used for development purposes
+	 */
+	public static final String FAKE_PHONE_NUMBER = "555 555 555";
+	
+	/**
+	 * Fake SID used for development purposes
+	 */
+	public static final String FAKE_SID = "537f22babff853058ef4e7a7e67a487217e6f17fa2409052de432cdfd6f64ba9";
+	
 	/*
 	 * private class level variables
 	 */
@@ -66,6 +76,7 @@ public class LocationSaver implements Runnable {
 	 */
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-LS";
+	private final boolean IN_EMULATOR = true;
 	
 	/**
 	 * constructor for this class
@@ -145,8 +156,14 @@ public class LocationSaver implements Runnable {
 		// values weren't found so we can store this new packet
 		ContentValues mValues = new ContentValues();
 		mValues.put(LocationProvider.TYPE_FIELD, recordType);
-		//mValues.put(LocationProvider.PHONE_NUMBER_FIELD, mFields[1]);
-		//mValues.put(LocationProvider.SID_FIELD, mFields[1]);
+		
+		//populate with the appropriate phone number and sid fields
+		if(IN_EMULATOR) {
+			mValues.put(LocationProvider.PHONE_NUMBER_FIELD, FAKE_PHONE_NUMBER);
+			mValues.put(LocationProvider.SID_FIELD, FAKE_SID);
+		} else {
+			// use values sourced from batman somehow
+		}
 		mValues.put(LocationProvider.LATITUDE_FIELD, location.getLatitude());
 		mValues.put(LocationProvider.LONGITUDE_FIELD, location.getLongitude());
 		mValues.put(LocationProvider.TIMESTAMP_FIELD, mSeconds);

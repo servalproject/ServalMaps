@@ -81,7 +81,7 @@ public class OverlayItem extends org.mapsforge.android.maps.OverlayItem {
 	 */
 	public void setRecordType(int value) {
 		// TODO expand validation for other record types
-		if(value != RecordTypes.INCIDENT_RECORD_TYPE && value != RecordTypes.LOCATION_RECORD_TYPE) {
+		if(RecordTypes.isValidType(value) == false) {
 			throw new IllegalArgumentException("the record type is invalid");
 		} else {
 			recordType = value;

@@ -40,6 +40,11 @@ public class RecordTypes {
 	public static int INCIDENT_RECORD_TYPE = 1;
 	
 	/**
+	 * Constant to identify the self location record type
+	 */
+	public static int SELF_LOCATION_RECORD_TYPE = 2;
+	
+	/**
 	 * a method to determine if a type is a valid record type
 	 * 
 	 * @param type the type to valid
@@ -50,7 +55,7 @@ public class RecordTypes {
 		/*
 		 * don't forget to update this when adding record types
 		 */
-		if(type >= 0 && type <= 1) {
+		if(type >= 0 && type <= 2) {
 			return true;
 		} else {
 			return false;

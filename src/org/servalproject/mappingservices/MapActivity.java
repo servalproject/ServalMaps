@@ -78,7 +78,12 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	private HashMap<String, OverlayItem> peerLocations;
 	
 	private Drawable peerLocationMarker;
+	private Drawable selfLocationMarker;
     private Drawable incidentLocationMarker;
+    
+    private volatile boolean keepGoing = true;
+    
+    Thread updateThread = null;
     
     //TODO add incident markers
     //TODO work out how to stop thread gracefully
@@ -108,6 +113,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         setContentView(mapView);
         
         peerLocationMarker     = getResources().getDrawable(R.drawable.android_logo_marker);
+        selfLocationMarker     = getResources().getDrawable(R.drawable.android_logo_marker_red_chest);
         incidentLocationMarker = getResources().getDrawable(R.drawable.cupcake_logo_marker);
         
         peerLocations = new HashMap<String, OverlayItem>();
@@ -118,20 +124,23 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 
         mapView.getOverlays().add(markerOverlay);
         
-        Thread thread = new Thread(this);
-        thread.start();
+        updateThread = new Thread(this);
+        updateThread.start();
         
         if(V_LOG) {
         	Log.v(TAG, "initial map population complete");
         }
     }
 
-
+    /*
+     * run the activity as a thread updating the overlay with new information
+     * (non-Javadoc)
+     * @see java.lang.Runnable#run()
+     */
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		
-		while(true) {
+		while(keepGoing) {
 			
 			// declare helper variables
 			long mMaximumAge;
@@ -152,11 +161,12 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			// start with the peer location data
 			mContentUri = LocationProvider.CONTENT_URI;
 
-			mColumns = new String[4];
+			mColumns = new String[5];
 			mColumns[0] = LocationProvider._ID;
 			mColumns[1] = LocationProvider.PHONE_NUMBER_FIELD;
 			mColumns[2] = LocationProvider.LATITUDE_FIELD;
 			mColumns[3] = LocationProvider.LONGITUDE_FIELD;
+			mColumns[4] = LocationProvider.SELF_FIELD;
 
 			mSelection = LocationProvider.TIMESTAMP_UTC_FIELD + " > ? ";
 
@@ -166,28 +176,32 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			mOrderBy = LocationProvider.TIMESTAMP_UTC_FIELD + " DESC";
 
 			mCursor = contentResolver.query(mContentUri, mColumns, mSelection, mSelectionArgs, mOrderBy);
-			
-			// reset the list of markers
-			peerLocations.clear();
 
 			// check to see if data was returned and if so process it
-			if(mCursor.moveToFirst() == true) {
+			while(mCursor.moveToNext() == true) {
 
 				// check to see if we've seen a location for this phone number before
 				if(peerLocations.containsKey(mCursor.getString(mCursor.getColumnIndex(LocationProvider.PHONE_NUMBER_FIELD))) == false) {
 					// not in key list so create a new overlay item
 
 					mGeoPoint = new GeoPoint(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex(LocationProvider.LATITUDE_FIELD))), Double.parseDouble(mCursor.getString(mCursor.getColumnIndex(LocationProvider.LONGITUDE_FIELD))));
-					mOverlayItem = new OverlayItem(mGeoPoint, "Peer Location", "Location for: " + mCursor.getString(mCursor.getColumnIndex(LocationProvider.PHONE_NUMBER_FIELD)), ItemizedOverlay.boundCenterBottom(peerLocationMarker));
-					mOverlayItem.setRecordId(mCursor.getString(mCursor.getColumnIndex(LocationProvider._ID)));
-					mOverlayItem.setRecordType(RecordTypes.LOCATION_RECORD_TYPE);
+					
+					// determine which icon to use
+					if(mCursor.getString(mCursor.getColumnIndex(LocationProvider.SELF_FIELD)) == null) {
+						mOverlayItem = new OverlayItem(mGeoPoint, null, null, ItemizedOverlay.boundCenterBottom(peerLocationMarker));
+						mOverlayItem.setRecordId(mCursor.getString(mCursor.getColumnIndex(LocationProvider._ID)));
+						mOverlayItem.setRecordType(RecordTypes.LOCATION_RECORD_TYPE);
+					} else {
+						mOverlayItem = new OverlayItem(mGeoPoint, null, null, ItemizedOverlay.boundCenterBottom(selfLocationMarker));
+						//mOverlayItem.setRecordId(mCursor.getString(mCursor.getColumnIndex(LocationProvider._ID)));
+						mOverlayItem.setRecordType(RecordTypes.SELF_LOCATION_RECORD_TYPE);
+					}
 
 					peerLocations.put(mCursor.getString(mCursor.getColumnIndex(LocationProvider.PHONE_NUMBER_FIELD)), mOverlayItem);
 					
 					if(V_LOG) {
 						Log.v(TAG, mCursor.getString(mCursor.getColumnIndex(LocationProvider.LATITUDE_FIELD)) + " - " + mCursor.getString(mCursor.getColumnIndex(LocationProvider.LONGITUDE_FIELD)));
 					}
-					
 				}
 			}
 
@@ -204,6 +218,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			markerOverlay.clear();
 			markerOverlay.addItems(peerLocations.values());
 			markerOverlay.requestRedraw();
+			
+			// play nice and tidy up
+			peerLocations.clear();
 
 			try {
 				Thread.sleep(SLEEP_TIME * 1000);
@@ -215,4 +232,69 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 		}
 		
 	}
+	
+	/**
+	 * request that the thread stops
+	 */
+	public void requestStop() {
+		keepGoing = false;
+	}
+	
+	/*
+	 * activity life cycle methods overridden here to better manage the update thread 
+	 */
+	@Override
+    protected void onStart() {
+        super.onStart();
+        // The activity is about to become visible.
+        if(updateThread != null) {
+        	if(updateThread.isAlive() == false) {
+        		updateThread.start();
+        	}
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // The activity has become visible (it is now "resumed").
+        if(updateThread != null) {
+        	if(updateThread.isAlive() == false) {
+        		updateThread.start();
+        	}
+        }
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Another activity is taking focus (this activity is about to be "paused").
+        if(updateThread != null) {
+        	if(updateThread.isAlive() == false) {
+        		this.requestStop();
+        		updateThread.interrupt();
+        	}
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // The activity is no longer visible (it is now "stopped")
+        if(updateThread != null) {
+        	if(updateThread.isAlive() == false) {
+        		this.requestStop();
+        		updateThread.interrupt();
+        	}
+        }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // The activity is about to be destroyed.
+        if(updateThread != null) {
+        	if(updateThread.isAlive() == false) {
+        		this.requestStop();
+        		updateThread.interrupt();
+        		updateThread = null;
+        	}
+        }
+    }
 }
