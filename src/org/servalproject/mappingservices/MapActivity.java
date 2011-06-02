@@ -20,6 +20,7 @@ package org.servalproject.mappingservices;
 import java.util.HashMap;
 
 import org.servalproject.mappingservices.content.DatabaseUtils;
+import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.LocationProvider;
 import org.servalproject.mappingservices.content.RecordTypes;
 import org.servalproject.mappingservices.mapsforge.OverlayItem;
@@ -73,9 +74,10 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	 * private class level variables
 	 */
 	//private MapActivityThread mapUpdater;
-	private  OverlayList markerOverlay;
+	private OverlayList markerOverlay;
 	private ContentResolver contentResolver;
 	private HashMap<String, OverlayItem> peerLocations;
+	private HashMap<String, OverlayItem> incidentLocations;
 	
 	private Drawable peerLocationMarker;
 	private Drawable selfLocationMarker;
@@ -84,8 +86,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     private volatile boolean keepGoing = true;
     
     Thread updateThread = null;
+    MapActivity self;
     
-    //TODO add incident markers
     //TODO work out how to stop thread gracefully
 	
 	
@@ -112,11 +114,13 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         mapView.setMapFile(MAP_DATA_DIR + "map-data.map");
         setContentView(mapView);
         
-        peerLocationMarker     = getResources().getDrawable(R.drawable.android_logo_marker);
-        selfLocationMarker     = getResources().getDrawable(R.drawable.android_logo_marker_red_chest);
-        incidentLocationMarker = getResources().getDrawable(R.drawable.cupcake_logo_marker);
+        // load map marker images
+        peerLocationMarker     = getResources().getDrawable(R.drawable.peer_location);
+        selfLocationMarker     = getResources().getDrawable(R.drawable.peer_location_self);
+        incidentLocationMarker = getResources().getDrawable(R.drawable.incident_marker);
         
         peerLocations = new HashMap<String, OverlayItem>();
+        incidentLocations = new HashMap<String, OverlayItem>();
         
         contentResolver = getContentResolver();
         
@@ -124,7 +128,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 
         mapView.getOverlays().add(markerOverlay);
         
-        updateThread = new Thread(this);
+        self = this;
+        
+        updateThread = new Thread(self);
         updateThread.start();
         
         if(V_LOG) {
@@ -143,7 +149,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 		while(keepGoing) {
 			
 			// declare helper variables
-			long mMaximumAge;
+			//long mMaximumAge;
 			Uri mContentUri;
 			Cursor mCursor;
 			
@@ -156,7 +162,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			GeoPoint mGeoPoint;
 				
 			// calculate the maximum age
-			mMaximumAge = DatabaseUtils.getCurrentTimeAsUtc() - (MAX_AGE * 60);
+			long mMaximumAge = DatabaseUtils.getCurrentTimeAsUtc() - (MAX_AGE * 60);
 
 			// start with the peer location data
 			mContentUri = LocationProvider.CONTENT_URI;
@@ -198,10 +204,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 					}
 
 					peerLocations.put(mCursor.getString(mCursor.getColumnIndex(LocationProvider.PHONE_NUMBER_FIELD)), mOverlayItem);
-					
-					if(V_LOG) {
-						Log.v(TAG, mCursor.getString(mCursor.getColumnIndex(LocationProvider.LATITUDE_FIELD)) + " - " + mCursor.getString(mCursor.getColumnIndex(LocationProvider.LONGITUDE_FIELD)));
-					}
 				}
 			}
 
@@ -212,15 +214,68 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			// play nice and tidy up
 			mCursor.close();
 
-			//TODO add code to get incidents
+			// get the incidents
+			mContentUri = IncidentProvider.CONTENT_URI;
+
+			mColumns = new String[4];
+			mColumns[0] = IncidentProvider._ID;
+			mColumns[1] = IncidentProvider.PHONE_NUMBER_FIELD;
+			mColumns[2] = IncidentProvider.LATITUDE_FIELD;
+			mColumns[3] = IncidentProvider.LONGITUDE_FIELD;
+
+			mSelection = IncidentProvider.TIMESTAMP_UTC_FIELD + " > ? ";
+
+			mSelectionArgs = new String[1];
+			mSelectionArgs[0] = Long.toString(mMaximumAge);
+
+			mOrderBy = IncidentProvider.TIMESTAMP_UTC_FIELD + " DESC";
+
+			mCursor = contentResolver.query(mContentUri, mColumns, mSelection, mSelectionArgs, mOrderBy);
+			
+			String mIncidentIndex;
+
+			// check to see if data was returned and if so process it
+			while(mCursor.moveToNext() == true) {
+				
+				//TODO fix this hack into something more elegant
+				//explore how the mapsforge library deals with overlay items at the exact same location
+				mIncidentIndex = mCursor.getString(mCursor.getColumnIndex(IncidentProvider.LATITUDE_FIELD));
+				mIncidentIndex += mCursor.getString(mCursor.getColumnIndex(IncidentProvider.LONGITUDE_FIELD));
+				mIncidentIndex.replace(".","").replace(",", "").replace("-","");
+				mIncidentIndex.replace(".","").replace(",", "").replace("-","");
+
+				// check to see if we've seen a location for this phone number before
+				if(incidentLocations.containsKey(mIncidentIndex) == false) {
+					// not in key list so create a new overlay item
+
+					mGeoPoint = new GeoPoint(Double.parseDouble(mCursor.getString(mCursor.getColumnIndex(LocationProvider.LATITUDE_FIELD))), Double.parseDouble(mCursor.getString(mCursor.getColumnIndex(LocationProvider.LONGITUDE_FIELD))));
+					
+					mOverlayItem = new OverlayItem(mGeoPoint, null, null, ItemizedOverlay.boundCenterBottom(incidentLocationMarker));
+					mOverlayItem.setRecordId(mCursor.getString(mCursor.getColumnIndex(LocationProvider._ID)));
+					mOverlayItem.setRecordType(RecordTypes.INCIDENT_RECORD_TYPE);
+					
+
+					incidentLocations.put(mIncidentIndex, mOverlayItem);
+					
+				}
+			}
+
+			if(V_LOG) {
+				Log.v(TAG, "found '" + incidentLocations.size() + "' incident markers");
+			}
+			
+			// play nice and tidy up
+			mCursor.close();
 
 			// update the map
 			markerOverlay.clear();
 			markerOverlay.addItems(peerLocations.values());
+			markerOverlay.addItems(incidentLocations.values());
 			markerOverlay.requestRedraw();
 			
 			// play nice and tidy up
 			peerLocations.clear();
+			incidentLocations.clear();
 
 			try {
 				Thread.sleep(SLEEP_TIME * 1000);
@@ -269,7 +324,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         // Another activity is taking focus (this activity is about to be "paused").
         if(updateThread != null) {
         	if(updateThread.isAlive() == false) {
-        		this.requestStop();
+        		self.requestStop();
         		updateThread.interrupt();
         	}
         }
@@ -280,7 +335,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         // The activity is no longer visible (it is now "stopped")
         if(updateThread != null) {
         	if(updateThread.isAlive() == false) {
-        		this.requestStop();
+        		self.requestStop();
         		updateThread.interrupt();
         	}
         }
@@ -291,7 +346,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         // The activity is about to be destroyed.
         if(updateThread != null) {
         	if(updateThread.isAlive() == false) {
-        		this.requestStop();
+        		self.requestStop();
         		updateThread.interrupt();
         		updateThread = null;
         	}

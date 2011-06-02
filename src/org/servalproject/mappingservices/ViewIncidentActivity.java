@@ -17,8 +17,6 @@
  */
 package org.servalproject.mappingservices;
 
-import java.util.Calendar;
-
 import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 
