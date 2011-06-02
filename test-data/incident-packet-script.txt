@@ -1,5 +1,6 @@
 # Techxplorer's UdpSender App packet script for testing the saving of incident packets
 #
 #
-10	555123456|first test incident|an incident that is first|1|-34.93|138.6|{ts}|{tz}
-10	555234567|second test incident|an incident that is second|1|-34.9345|138.645|{ts}|{tz}
+# delay 	 phone number | sid | title | description | category | lat | lng | timestamp | timezone | signature
+10	555123456|a7e67a487217e6f17fa2409052de432cdfd6f64ba95353058ef4e77f22babff8|Road is blocked here|The road is blocked here due to flood damage. It is expected to be resolved in the next couple of days.|1|-35.026772|138.571512|{ts}|{tz}|595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f1d595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f1d595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f1d595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f12
+10	555222333|c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f12db5|Incident Response Centre|The incident response centre is located here, anyone wishing to volunteer to help is encouraged to call on the number attached to this incident report|1|-35.025929|138.57208|{ts}|{tz}|595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f1d595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f1d595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f1d595c1b5bb58d8f0ae831d872248fa842c0ae0cfa4b49ae83aa2351bd74361f12
