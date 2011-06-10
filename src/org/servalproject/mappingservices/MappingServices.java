@@ -79,6 +79,10 @@ public class MappingServices extends Activity implements OnClickListener {
         
         button = (Button)findViewById(R.id.btn_launch_map_activity);
         button.setOnClickListener(this);
+        
+        button = (Button)findViewById(R.id.btn_launch_view_incident_activity);
+        button.setOnClickListener(this);
+        
     }
     
     /*
@@ -200,6 +204,12 @@ public class MappingServices extends Activity implements OnClickListener {
 		} else if(v.getId() == R.id.btn_launch_map_activity) {
 			Intent intent = new Intent(MappingServices.this, MapActivity.class);
 	        startActivity(intent);
+		} else if(v.getId() == R.id.btn_launch_view_incident_activity) {
+			Intent mIntent = new Intent(MappingServices.this, ViewIncidentActivity.class);
+			Bundle mBundle = new Bundle();
+			mBundle.putString("id", "12");
+			mIntent.putExtras(mBundle);
+			startActivity(mIntent);
 		}
 	}
 }

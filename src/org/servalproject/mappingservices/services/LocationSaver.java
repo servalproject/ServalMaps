@@ -44,9 +44,10 @@ public class LocationSaver implements Runnable {
 	 * public class constants
 	 */
 	/**
-	 * the maximum allowed age of location information (in minutes)
+	 * the maximum allowed age of location information (in seconds)
 	 */
-	public static final int MAX_LOCATION_AGE = 1000 * 60 * 2;
+	//public static final int MAX_LOCATION_AGE = 1000 * 60 * 2;
+	public static final int MAX_LOCATION_AGE = 1000 * 30;
 	
 	/**
 	 * Fake phone number used for development purposes

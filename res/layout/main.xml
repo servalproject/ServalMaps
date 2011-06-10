@@ -27,4 +27,10 @@
 	android:text="@string/btn_launch_map_activity" 
 	android:id="@+id/btn_launch_map_activity"
 	/>
+<Button
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content" 
+	android:text="@string/btn_launch_view_incident_activity" 
+	android:id="@+id/btn_launch_view_incident_activity"
+	/>
 </LinearLayout>

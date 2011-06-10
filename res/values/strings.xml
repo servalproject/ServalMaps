@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Serval Standard Files -->
+    <!-- Serval Header -->
+    <string name="header">Serval</string>
+    <string name="url">servalproject.org</string>
+    <!-- Serval Footer -->
+    <string name="warning">EXPERIMENTAL SOFTWARE</string>
+    <!-- End Serval Standard Files -->
     <string name="app_name">Serval Mapping Services</string>
     <!-- labels -->
     <string name="debug_info">Buttons are here for development / testing / debugging will be moved to a menu and then possibly moved out all together. Will be replaced with the map</string>
@@ -7,6 +14,7 @@
     <string name="btn_start_service">Start Mapping Data Service</string>
     <string name="btn_status_service">Determine Service Status</string>
     <string name="btn_launch_map_activity">Show the Map</string>
+    <string name="btn_launch_view_incident_activity">View Incident (12)</string>
     <!-- resources for the MapActivity -->
     <string name="ma_lbl_debug">This is the MapActivity</string>
     <!--  resources for the ViewIncidentActivity -->
@@ -26,4 +34,8 @@
     <!--  common resources -->
     <string name="common_experimental_software">Experimental Software</string>
     <string name="common_serval_project">Serval Project</string>
+    <!--  menu resources -->
+    <string name="map_menu_new_incident">Add Incident</string>
+    <string name="menu_shutdown">Shutdown Services</string>
+    <string name="menu_about">About</string>
 </resources>

@@ -38,6 +38,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 /**
  * Activity that displays the map to the user
@@ -136,6 +139,45 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         if(V_LOG) {
         	Log.v(TAG, "initial map population complete");
         }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	// build the menu using the XML file as a template
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.map_menu, menu);
+        return true;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	
+    	boolean status;
+    	
+    	// respond to the user selecting a menu item
+    	switch (item.getItemId()) {
+        case R.id.map_menu_new_incident:
+            // start entering a new incident
+            status = true;
+        case R.id.menu_shutdown:
+        	// shutdown the services
+        	status = true;
+        case R.id.menu_about:
+        	// show the about activity
+        	status = true;
+        default:
+        	status = super.onOptionsItemSelected(item);
+        }
+    	
+    	return status;
     }
 
     /*
