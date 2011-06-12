@@ -33,6 +33,7 @@ import org.mapsforge.android.maps.MapView;
 //import org.mapsforge.android.maps.OverlayItem;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -166,6 +167,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     	switch (item.getItemId()) {
         case R.id.map_menu_new_incident:
             // start entering a new incident
+        	Intent mIntent = new Intent(MapActivity.this, AddIncidentActivity.class);
+			startActivity(mIntent);
             status = true;
         case R.id.menu_shutdown:
         	// shutdown the services

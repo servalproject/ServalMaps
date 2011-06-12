@@ -27,6 +27,7 @@
         <!--  other activities -->
         <activity android:name="MapActivity"></activity>
         <activity android:name="ViewIncidentActivity"></activity>
+        <activity android:name="AddIncidentActivity"></activity>
 
     </application>
 </manifest>

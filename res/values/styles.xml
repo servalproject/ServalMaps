@@ -80,12 +80,11 @@
    		<item name="android:textSize">11sp</item>
   	</style>     
  	
- 	<style name="sbtnwizard" parent="scontent"> 	
+ 	<!-- Button -->
+ 	<style name="sbutton" parent="scontent"> 	
  		<item name="android:textSize">12sp</item>
 		<item name="android:layout_marginBottom">12sp</item>
 		<item name="android:textStyle">bold</item>
-		<item name="android:layout_height">40px</item>
-		<item name="android:layout_width">90px</item>
 		<item name="android:textColor">@drawable/button_txt</item>  
 		<item name="android:background">@drawable/button_bg</item> 		 		
 		<item name="android:layout_centerHorizontal">true</item>
@@ -103,7 +102,7 @@
 		<item name="android:gravity">center</item>
 		<item name="android:padding">5dp</item>
  	</style>
- 	
+
  	
 </resources>
  			

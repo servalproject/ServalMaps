@@ -38,4 +38,15 @@
     <string name="map_menu_new_incident">Add Incident</string>
     <string name="menu_shutdown">Shutdown Services</string>
     <string name="menu_about">About</string>
+    <!--  add incident resources -->
+    <string name="btn_save_incident">Save Incident Report</string>
+    <string name="lbl_incident_title">Incident Title</string>
+    <string name="lbl_incident_description">Incident Description</string>
+    <!--  add incident errors -->
+    <string name="incident_add_error_empty_title">The Incident Title field is required</string>
+    <string name="incident_add_error_empty_description">The Incident Description field is required</string>
+    <string name="incident_add_error_null_location">Cannot save report at this time - Unable to determine your location</string>
+    <string name="incident_add_error_sql_ex">Cannot save report at this time - A database error occurred</string>
+    <string name="incident_add_error_no_send">Cannot send report at this time - It was not saved to the database</string>
+    <string name="incident_add_error_send_failed">Cannot send report at this time - A Network error occured</string>
 </resources>

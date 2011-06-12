@@ -154,7 +154,7 @@ public class LocationSaver implements Runnable {
 		long mSeconds = mDate.getTime();
 		mSeconds = mSeconds / 1000;
 		
-		// values weren't found so we can store this new packet
+		// start a new list of values
 		ContentValues mValues = new ContentValues();
 		mValues.put(LocationProvider.TYPE_FIELD, recordType);
 		
@@ -165,6 +165,7 @@ public class LocationSaver implements Runnable {
 		} else {
 			// use values sourced from batman somehow
 		}
+		
 		mValues.put(LocationProvider.LATITUDE_FIELD, location.getLatitude());
 		mValues.put(LocationProvider.LONGITUDE_FIELD, location.getLongitude());
 		mValues.put(LocationProvider.TIMESTAMP_FIELD, mSeconds);

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    			android:layout_width="fill_parent"
+    			android:layout_height="fill_parent">
+       <!-- header -->		
+    			
+    <ImageView android:id="@+id/logot_image"
+   			   style="@style/slogo"/> 
+
+    <TextView android:id="@+id/header"
+              android:text="@string/header"
+              style="@style/sheader" /> 
+
+    <TextView android:id="@+id/url"
+    		  android:text="@string/url"	  
+              android:layout_below="@+id/header" 
+              style="@style/surl"/> 
+   
+     <!-- Content -->
+     
+     <TextView android:id="@+id/lbl_incident_title" 
+        	  android:text="@string/lbl_incident_title"
+        	  android:layout_below="@+id/url"
+        	  style="@style/stitle" 
+        	  android:layout_centerHorizontal="true"/>
+        	  
+     <EditText android:text="title" 
+        	  android:id="@+id/txt_incident_title" 
+        	  android:layout_below="@+id/lbl_incident_title"
+        	  style="@style/stext"/>
+        	  
+    <TextView android:text="@string/lbl_incident_description" 
+        	  android:id="@+id/lbl_incident_description" 
+        	  android:layout_below="@+id/txt_incident_title"
+        	  style="@style/stitle" 
+        	  android:layout_centerHorizontal="true"/>
+        	  
+    <EditText android:text="description" 
+        	  android:id="@+id/txt_incident_description" 
+        	  android:layout_below="@+id/lbl_incident_description"
+        	  style="@style/sinput_text"
+        	  android:minHeight="140sp"/>
+        	  
+    <Button android:id="@+id/btn_save_incident"
+			android:text="@string/btn_save_incident"
+			style="@style/sbutton"
+    		android:layout_below="@+id/txt_incident_description"
+    		android:layout_centerHorizontal="true"
+    		android:layout_height="40sp"
+    		android:layout_width="180sp"/>
+    	  
+ <!-- Footer -->
+	   	
+		  <TextView android:id="@+id/warning"
+		          	  android:layout_below="@+id/btn_save_incident"
+        	  android:text="@string/warning" 
+        	  style="@style/swarning"/> 
+
+   
+</RelativeLayout>
