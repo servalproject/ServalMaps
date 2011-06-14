@@ -333,6 +333,24 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 		
 	}
 	
+	/*
+	 * intercept the back key press
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		// set a result that indicates to the calling activity to stop everything
+		setResult(0);
+		finish();
+		return;
+	}
+	
+	
+	/*
+	 * thread management methods
+	 */
+	
 	/**
 	 * request that the thread stops
 	 */
@@ -348,7 +366,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	}
 	
 	/*
-	 * activity life cycle methods overridden here to better manage the update thread 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onStart()
 	 */
 	@Override
     protected void onStart() {
@@ -361,6 +380,10 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         }
     }
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.mapsforge.android.maps.MapActivity#onResume()
+	 */
     @Override
     protected void onResume() {
         super.onResume();
@@ -371,6 +394,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     	    updateThread.start();
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.mapsforge.android.maps.MapActivity#onPause()
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -383,6 +411,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         	}
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onStop()
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -395,6 +428,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         	}
         }
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.mapsforge.android.maps.MapActivity#onDestroy()
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();

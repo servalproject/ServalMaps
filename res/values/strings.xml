@@ -48,5 +48,9 @@
     <string name="incident_add_error_null_location">Cannot save report at this time - Unable to determine your location</string>
     <string name="incident_add_error_sql_ex">Cannot save report at this time - A database error occurred</string>
     <string name="incident_add_error_no_send">Cannot send report at this time - It was not saved to the database</string>
-    <string name="incident_add_error_send_failed">Cannot send report at this time - A Network error occured</string>
+    <string name="incident_add_error_send_failed">Cannot send report at this time - A Network error occurred</string>
+    <!--  disclaimer resources -->
+    <string name="lbl_disclaimer_title">Serval Mapping Services</string>
+    <string name="lbl_disclaimer_text">By continuing to use this app you agree not to do bad things and provide us with a trip through space and time.\n (To be replaced with real disclaimer)</string>
+    <string name="btn_disclaimer_continue">I Agree</string>
 </resources>
