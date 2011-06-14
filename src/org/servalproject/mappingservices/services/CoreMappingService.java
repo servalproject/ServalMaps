@@ -158,11 +158,11 @@ public class CoreMappingService extends Service {
 			
 			// initialise the incident repeater object
 			SQLiteOpenHelper incidentOpenHelper = new IncidentOpenHelper(this.getApplicationContext());
-			incidentRepeater = new IncidentRepeater(incidentOpenHelper.getReadableDatabase());
+			incidentRepeater = new IncidentRepeater(incidentOpenHelper.getReadableDatabase(), this.getApplicationContext());
 			
 			// initialise the geo location objects
 			incomingLocations = new LocationCollector(incomingLocationQueue);
-			incomingLocationsSaver = new LocationSaver(incomingLocationQueue, contentResolver);
+			incomingLocationsSaver = new LocationSaver(incomingLocationQueue, this.getApplicationContext());
 			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 			
 			if(V_LOG) {

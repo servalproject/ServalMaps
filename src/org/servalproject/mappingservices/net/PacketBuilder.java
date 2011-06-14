@@ -22,6 +22,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import org.servalproject.mappingservices.content.IncidentProvider;
+import org.servalproject.mappingservices.content.LocationProvider;
 import org.servalproject.mappingservices.services.CoreMappingService;
 
 import android.content.ContentResolver;
@@ -179,7 +180,107 @@ public class PacketBuilder {
 		// add the signature field
 		if(withSignature == true) {
 			builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.SIGNATURE_FIELD)));
-			return builder.toString();
+		}
+		
+		// return without the signature field
+		return builder.toString();
+	}
+	
+	/**
+	 * build and send a location packet using fields in the database
+	 * 
+	 * @param recordId the unique record id to use
+	 * @param update a flag to indicate if the record should be updated with the signature
+	 * 
+	 */
+	public void buildAndSendLocation(String recordId, boolean update) throws NetworkException {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(recordId) == true) {
+			throw new IllegalArgumentException("the id parameter is required");
+		}
+		
+		if(TextUtils.isDigitsOnly(recordId) == false) {
+			throw new IllegalArgumentException("the id parameter must be a valid integer");
+		}
+		
+		// get the details of the incident to send
+		ContentResolver mContentResolver = context.getContentResolver();
+		Uri mLocationContentUri = ContentUris.withAppendedId(LocationProvider.CONTENT_URI, Long.parseLong(recordId));
+		Cursor mLocationDetails = mContentResolver.query(mLocationContentUri, null, null, null, null);
+		
+		// check to ensure something was returned
+		if(mLocationDetails.moveToFirst() == false) {
+    		// no data was found
+	       	 if(V_LOG) {
+	       		 Log.v(TAG, "no location data found with record id: " + recordId);
+	       	 }
+	       	 
+	       	 throw new NetworkException("no location data found with record id: " + recordId);
+		}
+		
+		// build the packet
+		String mPacketContent = null;
+		
+		if(update == true) {
+			mPacketContent = buildLocationFromCursor(mLocationDetails, false);
+			
+			String mSignature = buildSignature(mPacketContent);
+			
+			mPacketContent = mPacketContent + DEFAULT_FIELD_SEPARATOR + mSignature;
+
+			// update the database record
+			
+		} else {
+			mPacketContent = buildLocationFromCursor(mLocationDetails, true);
+		}
+		
+		try {
+			PacketSender.sendBroadcast(CoreMappingService.LOCATION_PORT, mPacketContent);
+		} catch (UnknownHostException e) {
+			throw new NetworkException("unable to send incident packet", e);
+		} catch (SocketException e) {
+			throw new NetworkException("unable to send incident packet", e);
+		} catch (IOException e) {
+			throw new NetworkException("unable to send incident packet", e);
+		}
+	}
+	
+	/**
+	 * build a packet using data in the supplied cursor
+	 * 
+	 * @param cursor containing a record with incident data
+	 * @param withSignature add the signature from the record to the packet
+	 * 
+	 * @return the packet content
+	 */
+	public String buildLocationFromCursor(Cursor cursor, boolean withSignature) {
+		
+		// check the parameter
+		if(cursor == null) {
+			throw new IllegalArgumentException("the cursor must be a valid object");
+		}
+		
+		if(cursor.moveToFirst() == false) {
+			// no data is available
+			throw new IllegalArgumentException("the cursor must contain at least one record");
+		}
+		
+		// start to build the packet
+		StringBuilder builder = new StringBuilder();
+		
+		// add the required fields
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.TYPE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.PHONE_NUMBER_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.SID_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.LATITUDE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.LONGITUDE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.TIMESTAMP_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.TIMEZONE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		
+		// add the signature field
+		if(withSignature == true) {
+			builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.SIGNATURE_FIELD)));
 		}
 		
 		// return without the signature field

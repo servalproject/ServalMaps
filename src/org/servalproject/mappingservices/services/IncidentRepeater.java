@@ -17,15 +17,13 @@
  */
 package org.servalproject.mappingservices.services;
 
-import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Random;
 
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
+import org.servalproject.mappingservices.net.NetworkException;
 import org.servalproject.mappingservices.net.PacketBuilder;
-import org.servalproject.mappingservices.net.PacketSender;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -53,6 +51,8 @@ public class IncidentRepeater implements Runnable{
 	
 	private Random randomNumbers = null;
 	
+	private PacketBuilder packetBuilder;
+	
 	
 	/*
 	 * private class level constants
@@ -66,7 +66,7 @@ public class IncidentRepeater implements Runnable{
 	 * @param database a handle to the incident database
 	 * 
 	 */
-	public IncidentRepeater(SQLiteDatabase database) {
+	public IncidentRepeater(SQLiteDatabase database, Context context) {
 		
 		// double check the parameters
 		if(database == null) {
@@ -75,6 +75,8 @@ public class IncidentRepeater implements Runnable{
 		
 		this.database = database;
 		randomNumbers = new Random();
+		
+		packetBuilder = new PacketBuilder(context);
 		
 	}
 
@@ -91,7 +93,6 @@ public class IncidentRepeater implements Runnable{
 		String mSql = null;
 		int mMaxId = 0;
 		int mSelectId = 0;
-		StringBuilder mPacketContent = null;
 		
 		// loop until requested to stop
 		while(keepGoing == true) {
@@ -104,17 +105,10 @@ public class IncidentRepeater implements Runnable{
 			
 			if(mCursor.getCount() > 0) {
 				mMaxId = mCursor.getInt(0);
-			} else {
-				mMaxId = -1;
-			}
-			
-			// play nice and close the cursor
-			mCursor.close();
-			mCursor = null;
-			
-			// check to see if we should continue
-			if(mMaxId > 0) {
-				// there is at least one record that we can repeat
+				
+				// play nice and close the cursor
+				mCursor.close();
+				mCursor = null;
 				
 				// get a random number between 1 and the maximum to use as an id in the select
 				mSelectId = randomNumbers.nextInt(mMaxId);
@@ -124,42 +118,13 @@ public class IncidentRepeater implements Runnable{
 					mSelectId = 1;
 				}
 				
-				// get the selected record
-				mCursor = database.query(IncidentOpenHelper.TABLE_NAME, null, IncidentOpenHelper._ID + " = " + mSelectId, null, null, null, null);
-				mCursor.moveToFirst();
-				
-				// build the content of the packet
-				mPacketContent = new StringBuilder();
-				mPacketContent.append(mCursor.getString(1) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(3) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(4) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(5) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(6) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(7) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(8) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
-				mPacketContent.append(mCursor.getString(9));
-				
-				// send the packet
+				// build and send the packet
 				try {
-					PacketSender.sendBroadcast(CoreMappingService.INCIDENT_PORT, mPacketContent.toString());
-					
-					// output some debug text
-					if(V_LOG) {
-						Log.v(TAG, "incident repeater sent an incident");
-					}
-					
-				} catch (UnknownHostException e) {
-					Log.e(TAG, "unable to send an incident packet", e);
-				} catch (SocketException e) {
-					Log.e(TAG, "unable to send an incident packet", e);
-				} catch (IOException e) {
-					Log.e(TAG, "unable to send an incident packet", e);
+					packetBuilder.buildAndSendIncident(Integer.toString(mSelectId), false);
+				} catch (NetworkException e) {
+					Log.e(TAG, "unable to send the incident packet", e);
 				}
-				
-				// play nice and tidy up
-				mCursor.close();
-				mCursor = null;	
-			}
+			} 
 			
 			// sleep for specified time
 			try {

@@ -24,9 +24,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.LocationProvider;
+import org.servalproject.mappingservices.net.NetworkException;
+import org.servalproject.mappingservices.net.PacketBuilder;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.SQLException;
 import android.location.Location;
 import android.net.Uri;
@@ -72,6 +75,8 @@ public class LocationSaver implements Runnable {
 	private String timeZone = TimeZone.getDefault().getID();
 	private String recordType = "1";
 	
+	private PacketBuilder packetBuilder;
+	
 	/*
 	 * private class level constants
 	 */
@@ -84,7 +89,7 @@ public class LocationSaver implements Runnable {
 	 * 
 	 * @param queue a LinkedBlockingQueue used to receive location data for further processing from the LocationCollector class
 	 */
-	public LocationSaver(LinkedBlockingQueue<Location> queue, ContentResolver contentResolver) {
+	public LocationSaver(LinkedBlockingQueue<Location> queue, Context context) {
 		
 		if(queue == null || contentResolver == null) {
 			throw new IllegalArgumentException("all parameters are required");
@@ -92,8 +97,10 @@ public class LocationSaver implements Runnable {
 		
 		locationQueue = queue;
 		
-		this.contentResolver = contentResolver;
+		this.contentResolver = context.getContentResolver();
 		locationContentUri = LocationProvider.CONTENT_URI;
+		
+		packetBuilder = new PacketBuilder(context);
 		
 		if(V_LOG) {
 			Log.v(TAG, "location saver instantiated");
@@ -126,8 +133,7 @@ public class LocationSaver implements Runnable {
 				// see if this location is better than the one we had before
 				if(isBetterLocation(mNewLocation, mOldLocation) == true) {
 					
-					saveLocation(mNewLocation);
-					sendLocation(mNewLocation);
+					saveAndSendLocation(mNewLocation);
 					
 					mOldLocation = mNewLocation;
 					
@@ -147,7 +153,7 @@ public class LocationSaver implements Runnable {
 	 * 
 	 * @param location details of the location to save
 	 */
-	private void saveLocation(Location location) {
+	private void saveAndSendLocation(Location location) {
 		
 		// get the timestamp
 		Date mDate = new Date();
@@ -175,24 +181,24 @@ public class LocationSaver implements Runnable {
 		
 		// add the row
 		try {
-			contentResolver.insert(locationContentUri, mValues);
+			Uri mNewRecord = contentResolver.insert(locationContentUri, mValues);
+			
+			if(mNewRecord != null) {
+	        	try {
+	        		packetBuilder.buildAndSendLocation(mNewRecord.getLastPathSegment(), true);
+	        	} catch(NetworkException e) {
+	        		Log.e(TAG, "unable to send new location packet", e);
+	        	}
+			}
+			
 		} catch (SQLException e) {
 			Log.e(TAG, "unable to save new location data", e);
 		}
 		
 		//status message
 		if(V_LOG) {
-			Log.v(TAG, "new location data saved to database");
+			Log.v(TAG, "new location data saved to database and a new packet sent");
 		}
-	}
-	
-	/*
-	 * private method to send a packet using of this location
-	 * 
-	 * @param location details of the location to send
-	 */
-	private void sendLocation(Location location) {
-		
 	}
 	
 	/*
