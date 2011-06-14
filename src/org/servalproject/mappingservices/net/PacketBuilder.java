@@ -134,6 +134,10 @@ public class PacketBuilder {
 			mPacketContent = buildIncidentFromCursor(mIncidentDetails, true);
 		}
 		
+		// play nice and tidy up
+		mIncidentDetails.close();
+		mIncidentDetails = null;
+		
 		try {
 			PacketSender.sendBroadcast(CoreMappingService.INCIDENT_PORT, mPacketContent);
 		} catch (UnknownHostException e) {
@@ -239,6 +243,10 @@ public class PacketBuilder {
 		} else {
 			mPacketContent = buildLocationFromCursor(mLocationDetails, true);
 		}
+		
+		// play nice and tidy up
+		mLocationDetails.close();
+		mLocationDetails = null;
 		
 		try {
 			PacketSender.sendBroadcast(CoreMappingService.LOCATION_PORT, mPacketContent);
