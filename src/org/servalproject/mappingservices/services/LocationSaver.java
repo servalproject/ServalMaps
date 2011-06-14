@@ -91,7 +91,7 @@ public class LocationSaver implements Runnable {
 	 */
 	public LocationSaver(LinkedBlockingQueue<Location> queue, Context context) {
 		
-		if(queue == null || contentResolver == null) {
+		if(queue == null || context == null) {
 			throw new IllegalArgumentException("all parameters are required");
 		}
 		
