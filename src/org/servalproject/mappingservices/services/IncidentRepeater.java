@@ -23,6 +23,7 @@ import java.net.UnknownHostException;
 import java.util.Random;
 
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
+import org.servalproject.mappingservices.net.PacketBuilder;
 import org.servalproject.mappingservices.net.PacketSender;
 
 import android.database.Cursor;
@@ -40,7 +41,7 @@ import android.util.Log;
 public class IncidentRepeater implements Runnable{
 	
 	/**
-	 * the amount of time, in seconds, that this thread sleeps before sending a new incident
+	 * the amount of time (in seconds) that this thread sleeps before sending a new packet
 	 */
 	public static final int SLEEP_TIME = 30;
 	
@@ -129,13 +130,13 @@ public class IncidentRepeater implements Runnable{
 				
 				// build the content of the packet
 				mPacketContent = new StringBuilder();
-				mPacketContent.append(mCursor.getString(1) + "|");
-				mPacketContent.append(mCursor.getString(3) + "|");
-				mPacketContent.append(mCursor.getString(4) + "|");
-				mPacketContent.append(mCursor.getString(5) + "|");
-				mPacketContent.append(mCursor.getString(6) + "|");
-				mPacketContent.append(mCursor.getString(7) + "|");
-				mPacketContent.append(mCursor.getString(8) + "|");
+				mPacketContent.append(mCursor.getString(1) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				mPacketContent.append(mCursor.getString(3) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				mPacketContent.append(mCursor.getString(4) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				mPacketContent.append(mCursor.getString(5) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				mPacketContent.append(mCursor.getString(6) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				mPacketContent.append(mCursor.getString(7) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				mPacketContent.append(mCursor.getString(8) + PacketBuilder.DEFAULT_FIELD_SEPARATOR);
 				mPacketContent.append(mCursor.getString(9));
 				
 				// send the packet

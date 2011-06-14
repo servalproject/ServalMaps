@@ -24,6 +24,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.LocationProvider;
+import org.servalproject.mappingservices.net.PacketBuilder;
 import org.servalproject.mappingservices.net.PacketCollector;
 
 import android.content.ContentResolver;
@@ -152,7 +153,7 @@ public class PacketSaver implements Runnable {
 		mContent = mContent.trim();
 		
 		// get the fields from the packet
-		String[] mFields = mContent.split("\\|");
+		String[] mFields = mContent.split(PacketBuilder.DEFAULT_FIELD_SEPARATOR_REGEX);
 		
 		//validate the packet according to business rules
 		try {
@@ -236,7 +237,7 @@ public class PacketSaver implements Runnable {
 		mContent = mContent.trim();
 		
 		// get the fields from the packet
-		String[] mFields = mContent.split("\\|");
+		String[] mFields = mContent.split(PacketBuilder.DEFAULT_FIELD_SEPARATOR_REGEX);
 		
 		//validate the packet according to business rules
 		try {
