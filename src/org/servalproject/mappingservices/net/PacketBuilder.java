@@ -27,6 +27,7 @@ import org.servalproject.mappingservices.services.CoreMappingService;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -124,9 +125,10 @@ public class PacketBuilder {
 			
 			mPacketContent = mPacketContent + DEFAULT_FIELD_SEPARATOR + mSignature;
 			
-			// get the signature
-			// add it to the packet content
-			// update the database record
+			// update the record with the new signature
+			ContentValues mValues = new ContentValues();
+			mValues.put(IncidentProvider.SIGNATURE_FIELD, mSignature);
+			mContentResolver.update(mIncidentContentUri, mValues, null, null);
 			
 		} else {
 			mPacketContent = buildIncidentFromCursor(mIncidentDetails, true);
@@ -229,7 +231,10 @@ public class PacketBuilder {
 			
 			mPacketContent = mPacketContent + DEFAULT_FIELD_SEPARATOR + mSignature;
 
-			// update the database record
+			// update the record with the new signature
+			ContentValues mValues = new ContentValues();
+			mValues.put(LocationProvider.SIGNATURE_FIELD, mSignature);
+			mContentResolver.update(mLocationContentUri, mValues, null, null);
 			
 		} else {
 			mPacketContent = buildLocationFromCursor(mLocationDetails, true);
