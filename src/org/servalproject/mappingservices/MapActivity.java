@@ -134,8 +134,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         
         self = this;
         
-        updateThread = new Thread(self);
-        updateThread.start();
+//        updateThread = new Thread(self);
+//        updateThread.start();
         
         if(V_LOG) {
         	Log.v(TAG, "initial map population complete");
@@ -325,9 +325,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			try {
 				Thread.sleep(SLEEP_TIME * 1000);
 			} catch (InterruptedException e) {
-				if(V_LOG) {
-					Log.v(TAG, "interrupted while sleeping", e);
-				}
+//				if(V_LOG) {
+//					Log.v(TAG, "interrupted while sleeping", e);
+//				}
 			}
 		}
 		
@@ -340,6 +340,13 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 		keepGoing = false;
 	}
 	
+	/**
+	 * request the the thread starts again
+	 */
+	public void requestStart() {
+		keepGoing = true;
+	}
+	
 	/*
 	 * activity life cycle methods overridden here to better manage the update thread 
 	 */
@@ -347,20 +354,21 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     protected void onStart() {
         super.onStart();
         // The activity is about to become visible.
-        if(updateThread != null) {
-        	if(updateThread.isAlive() == false) {
-        		updateThread.start();
-        	}
+        if(updateThread == null) {
+    		self.requestStart();
+    		updateThread = new Thread(self);
+    	    updateThread.start();
         }
     }
+	
     @Override
     protected void onResume() {
         super.onResume();
         // The activity has become visible (it is now "resumed").
-        if(updateThread != null) {
-        	if(updateThread.isAlive() == false) {
-        		updateThread.start();
-        	}
+        if(updateThread == null) {
+    		self.requestStart();
+    		updateThread = new Thread(self);
+    	    updateThread.start();
         }
     }
     @Override
@@ -368,9 +376,10 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         super.onPause();
         // Another activity is taking focus (this activity is about to be "paused").
         if(updateThread != null) {
-        	if(updateThread.isAlive() == false) {
+        	if(updateThread.isAlive() == true) {
         		self.requestStop();
         		updateThread.interrupt();
+        		updateThread = null;
         	}
         }
     }
@@ -379,9 +388,10 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         super.onStop();
         // The activity is no longer visible (it is now "stopped")
         if(updateThread != null) {
-        	if(updateThread.isAlive() == false) {
+        	if(updateThread.isAlive() == true) {
         		self.requestStop();
         		updateThread.interrupt();
+        		updateThread = null;
         	}
         }
     }
@@ -390,7 +400,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         super.onDestroy();
         // The activity is about to be destroyed.
         if(updateThread != null) {
-        	if(updateThread.isAlive() == false) {
+        	if(updateThread.isAlive() == true) {
         		self.requestStop();
         		updateThread.interrupt();
         		updateThread = null;
