@@ -57,6 +57,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	public static final String MAP_DATA_DIR = "/sdcard/serval/mapping-services/";
 	
 	/**
+	 * name of the default map data file
+	 */
+	public static final String MAP_DATA_FILE = "map-data.map";
+	
+	/**
 	 * delay between updates (in seconds)
 	 */
 	public static final int SLEEP_TIME = 30;
@@ -115,7 +120,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         MapView mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(true);
-        mapView.setMapFile(MAP_DATA_DIR + "map-data.map");
+        mapView.setMapFile(MAP_DATA_DIR + MAP_DATA_FILE);
         setContentView(mapView);
         
         // load map marker images
