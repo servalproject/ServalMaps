@@ -24,7 +24,6 @@ import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.net.NetworkException;
 import org.servalproject.mappingservices.net.PacketBuilder;
-import org.servalproject.mappingservices.services.LocationSaver;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -56,7 +55,6 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 	 */
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-AIA";
-	private final boolean IN_EMULATOR = true;
 	
 	/*
 	 * private class level variables
@@ -133,16 +131,9 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 	        }
 	        
 	        // get the device phone number and SID
-	        String mPhoneNumber = null;
-	        String mSid = null;
-	        
-	        if(IN_EMULATOR) {
-	        	// get the fake values
-	        	mPhoneNumber = LocationSaver.FAKE_PHONE_NUMBER;
-	        	mSid         = LocationSaver.FAKE_SID;
-	        } else {
-	        	// get the real values
-	        }
+	        MappingServicesApplication mApplication = (MappingServicesApplication)this.getApplicationContext();
+	        String mPhoneNumber = mApplication.getPhoneNumber();
+	        String mSid = mApplication.getSid();
 	        
 	        // save the incident
 	        Uri mNewRecord = saveIncident(mPhoneNumber, mSid, mLocation, mTitle, mDescription);

@@ -22,7 +22,7 @@
     <TextView android:text="TextView" 
         	  android:id="@+id/lbl_incident_title" 
         	  android:layout_below="@+id/url"
-        	  style="@style/stitle" android:layout_centerHorizontal="true"/>
+        	  style="@style/stitle"/>
         	  
     <TextView android:text="TextView" 
         	  android:id="@+id/lbl_incident_description" 

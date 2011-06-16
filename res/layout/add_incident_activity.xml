@@ -18,29 +18,34 @@
               style="@style/surl"/> 
    
      <!-- Content -->
+
+     <TextView android:id="@+id/lbl_add_incident" 
+        	  android:text="@string/lbl_add_incident"
+        	  android:layout_below="@+id/url"
+        	  style="@style/stitle" />
      
      <TextView android:id="@+id/lbl_incident_title" 
         	  android:text="@string/lbl_incident_title"
-        	  android:layout_below="@+id/url"
-        	  style="@style/stitle" 
-        	  android:layout_centerHorizontal="true"/>
+        	  android:layout_below="@+id/lbl_add_incident"
+        	  style="@style/sfieldtitle" />
         	  
-     <EditText android:text="title" 
+    <EditText android:text="title" 
         	  android:id="@+id/txt_incident_title" 
-        	  android:layout_below="@+id/lbl_incident_title"
+        	  android:layout_toRightOf="@+id/lbl_incident_title"
+        	  android:layout_below="@+id/lbl_add_incident"
+        	  android:layout_marginLeft="5sp"
         	  style="@style/stext"/>
         	  
     <TextView android:text="@string/lbl_incident_description" 
         	  android:id="@+id/lbl_incident_description" 
         	  android:layout_below="@+id/txt_incident_title"
-        	  style="@style/stitle" 
-        	  android:layout_centerHorizontal="true"/>
+        	  style="@style/sfieldtitle"/>
         	  
     <EditText android:text="description" 
         	  android:id="@+id/txt_incident_description" 
         	  android:layout_below="@+id/lbl_incident_description"
         	  style="@style/sinput_text"
-        	  android:minHeight="140sp"/>
+        	  android:minHeight="130sp"/>
         	  
     <Button android:id="@+id/btn_save_incident"
 			android:text="@string/btn_save_incident"
