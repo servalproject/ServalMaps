@@ -115,13 +115,15 @@ public class MapDataService extends Service {
 		
 		// define the default bundle
 		Bundle mBundle = new Bundle();
-		mBundle.putInt("fileCount", 0);
 		
 		// get the file list
 		String[] mFileList = getFileList();
 		
 		if(mFileList != null) {
+			mBundle.putInt("fileCount", mFileList.length);
 			mBundle.putStringArray("fileList", mFileList);
+		} else {
+			mBundle.putInt("fileCount", 0);
 		}
 		
 		return mBundle;

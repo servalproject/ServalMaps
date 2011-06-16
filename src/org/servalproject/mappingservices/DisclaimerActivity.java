@@ -114,12 +114,26 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-            case MapDataService.MSG_FILES_AVAILABLE:
+            case MapDataService.MSG_FILE_LIST:
             	Bundle mBundle = msg.getData();
             	
             	if(mBundle.getInt("fileCount") > 0) {
-            		// enable the button
-            		continueButton.setClickable(true);
+            		// check to see if the list contains the file we expect
+            		boolean mFound = false;
+            		String[] mFileList = mBundle.getStringArray("fileList");
+            		
+            		for(int i = 0; i < mFileList.length; i++) {
+            			if(mFileList[i].equals(MapActivity.MAP_DATA_FILE) == true) {
+            				mFound = true;
+            				continue;
+            			}
+            		}
+            		
+            		if(mFound == false) {
+            			//TODO be gentler about the fact that map data cannot be found
+                		Toast.makeText(self.getApplicationContext(), String.format(self.getString(R.string.disclaimer_missing_map_file_error), MapActivity.MAP_DATA_FILE) , Toast.LENGTH_LONG).show();
+                		self.onActivityResult(0, 0, null);
+            		}
             	} else {
             		// show toast and exit
             		//TODO be gentler about the fact that map data cannot be found
@@ -152,15 +166,13 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
     		
     		try {
     			// send a message to the service to see what its status is
-    			Message msg = Message.obtain(null, MapDataService.MSG_FILES_AVAILABLE);
+    			Message msg = Message.obtain(null, MapDataService.MSG_FILE_LIST);
     			msg.replyTo = messenger;
     			mMessenger.send(msg);
 
     		} catch (RemoteException e) {
     			Log.e(TAG, "unable to send a message to the MapDataService", e);
     		}
-    		
-    		
     	}
 
     	/*

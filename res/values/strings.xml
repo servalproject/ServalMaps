@@ -54,4 +54,5 @@
     <string name="lbl_disclaimer_text">By continuing to use this app you agree not to do bad things and provide us with a trip through space and time.\n (To be replaced with real disclaimer)</string>
     <string name="btn_disclaimer_continue">I Agree</string>
     <string name="disclaimer_no_map_file_error">Cannot use application at this time - No map data files available</string>
+    <string name="disclaimer_missing_map_file_error">Cannot use application at this time - Unable to locate the \'%s\' file</string>
 </resources>
