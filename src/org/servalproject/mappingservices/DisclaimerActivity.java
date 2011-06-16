@@ -20,9 +20,11 @@ package org.servalproject.mappingservices;
 import org.servalproject.mappingservices.services.MapDataService;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,6 +72,12 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
         
         // bind to the service
         bindService(new Intent(this, MapDataService.class), connection, Context.BIND_AUTO_CREATE);
+        
+        // get the phone number and sid from the Serval batphone sticky
+        BatphoneBroadcast mBroadcast = new BatphoneBroadcast(this.getApplicationContext());
+        IntentFilter mBroadcastFilter = new IntentFilter("org.servalproject.SET_PRIMARY");
+        //mBroadcastFilter.addDataScheme("tel");
+        this.getApplicationContext().registerReceiver(mBroadcast, mBroadcastFilter);
     }
 	
 	@Override
@@ -184,5 +192,40 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
     		
     	}
     };
+    
+    /*
+     * broadcast receiver to receive the sticky broadcast from Serval batphone
+     * containing the phone number and sid
+     */
+    private class BatphoneBroadcast extends BroadcastReceiver {
+    	
+    	/*
+    	 * private class level variables
+    	 */
+    	private MappingServicesApplication context;
+    	
+    	/**
+    	 * construct a new BatphoneBroadcast class which receives the sticky broadbast from
+    	 * the serval batphone software
+    	 * 
+    	 * @param context the application context
+    	 */
+    	public BatphoneBroadcast(Context context) {
+    		super();
+    		this.context = (MappingServicesApplication)context;
+    	}
+    	
+    	/*
+    	 * (non-Javadoc)
+    	 * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
+    	 */
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			this.context.setPhoneNumber(intent.getStringExtra("did"));
+			this.context.setSid(intent.getStringExtra("sid"));
+		}
+        
+    }
 
 }

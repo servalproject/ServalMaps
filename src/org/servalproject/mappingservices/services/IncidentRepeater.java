@@ -110,19 +110,21 @@ public class IncidentRepeater implements Runnable{
 				mCursor.close();
 				mCursor = null;
 				
-				// get a random number between 1 and the maximum to use as an id in the select
-				mSelectId = randomNumbers.nextInt(mMaxId);
-				
-				// adjust the value if we get a zero
-				if(mSelectId == 0) {
-					mSelectId = 1;
-				}
-				
-				// build and send the packet
-				try {
-					packetBuilder.buildAndSendIncident(Integer.toString(mSelectId), false);
-				} catch (NetworkException e) {
-					Log.e(TAG, "unable to send the incident packet", e);
+				if(mMaxId > 0) {
+					// get a random number between 1 and the maximum to use as an id in the select
+					mSelectId = randomNumbers.nextInt(mMaxId);
+					
+					// adjust the value if we get a zero
+					if(mSelectId == 0) {
+						mSelectId = 1;
+					}
+					
+					// build and send the packet
+					try {
+						packetBuilder.buildAndSendIncident(Integer.toString(mSelectId), false);
+					} catch (NetworkException e) {
+						Log.e(TAG, "unable to send the incident packet", e);
+					}
 				}
 			} 
 			

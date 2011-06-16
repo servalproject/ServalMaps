@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import org.servalproject.mappingservices.MappingServicesApplication;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.LocationProvider;
 import org.servalproject.mappingservices.net.NetworkException;
@@ -52,15 +53,6 @@ public class LocationSaver implements Runnable {
 	//public static final int MAX_LOCATION_AGE = 1000 * 60 * 2;
 	public static final int MAX_LOCATION_AGE = 1000 * 30;
 	
-	/**
-	 * Fake phone number used for development purposes
-	 */
-	public static final String FAKE_PHONE_NUMBER = "555 555 555";
-	
-	/**
-	 * Fake SID used for development purposes
-	 */
-	public static final String FAKE_SID = "537f22babff853058ef4e7a7e67a487217e6f17fa2409052de432cdfd6f64ba9";
 	
 	/*
 	 * private class level variables
@@ -77,12 +69,13 @@ public class LocationSaver implements Runnable {
 	
 	private PacketBuilder packetBuilder;
 	
+	private Context context;
+	
 	/*
 	 * private class level constants
 	 */
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-LS";
-	private final boolean IN_EMULATOR = true;
 	
 	/**
 	 * constructor for this class
@@ -101,6 +94,8 @@ public class LocationSaver implements Runnable {
 		locationContentUri = LocationProvider.CONTENT_URI;
 		
 		packetBuilder = new PacketBuilder(context);
+		
+		this.context = context;
 		
 		if(V_LOG) {
 			Log.v(TAG, "location saver instantiated");
@@ -164,13 +159,10 @@ public class LocationSaver implements Runnable {
 		ContentValues mValues = new ContentValues();
 		mValues.put(LocationProvider.TYPE_FIELD, recordType);
 		
-		//populate with the appropriate phone number and sid fields
-		if(IN_EMULATOR) {
-			mValues.put(LocationProvider.PHONE_NUMBER_FIELD, FAKE_PHONE_NUMBER);
-			mValues.put(LocationProvider.SID_FIELD, FAKE_SID);
-		} else {
-			// use values sourced from batman somehow
-		}
+		 // get the device phone number and SID
+        MappingServicesApplication mApplication = (MappingServicesApplication)context.getApplicationContext();
+        mValues.put(LocationProvider.PHONE_NUMBER_FIELD, mApplication.getPhoneNumber());
+        mValues.put(LocationProvider.SID_FIELD,mApplication.getSid());
 		
 		mValues.put(LocationProvider.LATITUDE_FIELD, location.getLatitude());
 		mValues.put(LocationProvider.LONGITUDE_FIELD, location.getLongitude());
