@@ -142,12 +142,11 @@ public class MappingServices extends Activity implements OnClickListener {
         isBound = true;
     }
 
-    void doUnbindService() {
-        if (isBound) {
-
+    // unbind from the service
+    private void doUnbindService() {
+        if(serviceMessenger != null) {
             // Detach our existing connection.
             unbindService(connection);
-            isBound = false;
         }
     }
 

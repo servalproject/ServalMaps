@@ -106,12 +106,14 @@ public class CoreMappingService extends Service {
 	private IncidentRepeater incidentRepeater = null;
 	private LocationCollector incomingLocations = null;
 	private LocationSaver     incomingLocationsSaver = null;
+	private BatmanServiceClient batmanServiceClient = null;
 	
 	private Thread incidentThread    = null;
 	private Thread locationThread    = null;
 	private Thread packetSaverThread = null;
 	private Thread incidentRepeaterThread = null;
 	private Thread incomingLocationsThread = null;
+	private Thread batmanServiceThread = null;
 	
 	private AtomicInteger incidentCount = null;
 	private AtomicInteger locationCount = null;
@@ -164,6 +166,9 @@ public class CoreMappingService extends Service {
 			incomingLocations = new LocationCollector(incomingLocationQueue);
 			incomingLocationsSaver = new LocationSaver(incomingLocationQueue, this.getApplicationContext());
 			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+			
+			// initialise the batman service objects
+			batmanServiceClient = new BatmanServiceClient(this.getApplicationContext());
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -231,6 +236,11 @@ public class CoreMappingService extends Service {
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, incomingLocations);
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, incomingLocations);
 			
+		}
+		
+		if(batmanServiceThread == null) {
+			batmanServiceThread = new Thread(batmanServiceClient);
+			batmanServiceThread.start();
 		}
 		
 		if(V_LOG) {
