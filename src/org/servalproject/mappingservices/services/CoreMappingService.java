@@ -23,6 +23,7 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.servalproject.mappingservices.MappingServicesApplication;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.RecordTypes;
@@ -67,6 +68,16 @@ public class CoreMappingService extends Service {
 	 * message to return the status of the service
 	 */
 	public static final int MSG_SERVICE_STATUS = 1;
+	
+	/**
+	 * the requested minimum amount of time between GPS updates (in seconds)
+	 */
+	public static final int LOCATION_UPDATE_MIN_TIME = 30;
+	
+	/**
+	 * the requested minimum amount of distance between GPS updates (in metres)
+	 */
+	public static final int LOCATION_UPDATE_MIN_DISTANCE = 5;
 	
 	/*
      * Handler of incoming messages from clients.
@@ -172,6 +183,9 @@ public class CoreMappingService extends Service {
 			
 			// initialise the batman service objects
 			batmanServiceClient = new BatmanServiceClient(this.getApplicationContext(), batmanPeerList);
+			MappingServicesApplication mApplication = (MappingServicesApplication)this.getApplicationContext();
+			mApplication.setBatmanPeerList(batmanPeerList);
+			mApplication = null;
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");
@@ -236,8 +250,8 @@ public class CoreMappingService extends Service {
 			
 			// listen for both GPS and Network locations
 			//TODO see if the time internal and minimum distance parameters need to be adjusted
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, incomingLocations);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, incomingLocations);
+			//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, incomingLocations);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_UPDATE_MIN_TIME * 1000, LOCATION_UPDATE_MIN_DISTANCE, incomingLocations);
 			
 		}
 		

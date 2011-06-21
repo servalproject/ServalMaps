@@ -173,15 +173,18 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         case R.id.map_menu_new_incident:
             // start entering a new incident
         	Intent mIntent = new Intent(MapActivity.this, AddIncidentActivity.class);
-			startActivity(mIntent);
+        	this.startActivityForResult(mIntent, 0);
             status = true;
+            break;
         case R.id.menu_shutdown:
         	// works the same if the back button is pressed
         	this.onBackPressed();
         	status = true;
+        	break;
         case R.id.menu_about:
         	// show the about activity
         	status = true;
+        	break;
         default:
         	status = super.onOptionsItemSelected(item);
         }
@@ -378,6 +381,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	@Override
     protected void onStart() {
         super.onStart();
+        
+        Log.v(TAG, "activity onStart");
+        
         // The activity is about to become visible.
         if(updateThread == null) {
     		self.requestStart();
@@ -393,6 +399,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     @Override
     protected void onResume() {
         super.onResume();
+        
+        Log.v(TAG, "activity onResume");
         // The activity has become visible (it is now "resumed").
         if(updateThread == null) {
     		self.requestStart();
@@ -408,6 +416,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     @Override
     protected void onPause() {
         super.onPause();
+        
+        Log.v(TAG, "activity onPause");
         // Another activity is taking focus (this activity is about to be "paused").
         if(updateThread != null) {
         	if(updateThread.isAlive() == true) {
@@ -425,6 +435,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     @Override
     protected void onStop() {
         super.onStop();
+        
+        Log.v(TAG, "activity onStop");
         // The activity is no longer visible (it is now "stopped")
         if(updateThread != null) {
         	if(updateThread.isAlive() == true) {
@@ -442,6 +454,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.v(TAG, "activity onDestroy");
         // The activity is about to be destroyed.
         if(updateThread != null) {
         	if(updateThread.isAlive() == true) {

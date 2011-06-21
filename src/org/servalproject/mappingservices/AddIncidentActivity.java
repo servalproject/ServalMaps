@@ -148,6 +148,7 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 	        		packetBuilder.buildAndSendIncident(mNewRecord.getLastPathSegment(), true);
 	    	        
 	    	        // go back to the map
+	        		setResult(0);
 	    	        finish();
 	    	        
 	        	} catch(NetworkException e) {

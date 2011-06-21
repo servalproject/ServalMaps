@@ -44,7 +44,7 @@ public class PacketSender {
 	private static final String TAG = "ServalMaps-PS";
 	
 	// use the address that is valid for use in the emulator
-	private static final boolean IN_EMULATOR = true;
+	private static final boolean IN_EMULATOR = false;
 	private static final String EMULATOR_ADDRESS = "10.0.2.2";
 	
 	/**
@@ -69,7 +69,7 @@ public class PacketSender {
 			throw new IllegalArgumentException("port parameter must be between: " + PacketCollector.MIN_PORT + " and " + PacketCollector.MAX_PORT);
 		}
 		
-		if(TextUtils.isEmpty(content) == false) {
+		if(TextUtils.isEmpty(content) == true) {
 			throw new IllegalArgumentException("content must be a valid non zero length string");
 		}
 		
