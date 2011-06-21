@@ -65,7 +65,11 @@ public class BatmanPeerList {
 	 * @return a string array containing the peer list
 	 */
 	public synchronized String[] getPeerList() {
-		return peerList.toArray(new String[1]);
+		if(peerList.size() == 0) {
+			return new String[0];
+		} else {
+			return peerList.toArray(new String[0]);
+		}
 	}
 	
 	/**

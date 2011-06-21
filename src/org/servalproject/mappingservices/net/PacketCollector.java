@@ -50,6 +50,11 @@ public class PacketCollector implements Runnable{
 	 */
 	public static final Integer DEFAULT_BUFFER_SIZE = 1024;
 	
+	/**
+	 * set the amount of time, in seconds, that the socket will wait for data
+	 */
+	public static final Integer DEFAULT_SOCKET_TIMEOUT = 30;
+	
 	/*
 	 * private class level variables
 	 */
@@ -88,6 +93,7 @@ public class PacketCollector implements Runnable{
 		// instantiate the required objects
 		this.port = port;
 		socket = new DatagramSocket(this.port);
+		socket.setSoTimeout(DEFAULT_SOCKET_TIMEOUT * 1000);
 		
 		packetCount = count;
 		packetQueue = queue;
@@ -128,6 +134,8 @@ public class PacketCollector implements Runnable{
 			// wait for a packet
 			try {
 				socket.receive(mPacket);
+			} catch (java.net.SocketTimeoutException e) {
+				continue;
 			} catch (IOException e) {
 				Log.e(TAG, "io exception occured while receiving packet", e);
 			}
