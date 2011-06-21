@@ -17,6 +17,8 @@
  */
 package org.servalproject.mappingservices.services;
 
+import org.servalproject.mappingservices.net.BatmanPeerList;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +31,13 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
 
+/**
+ * A client class to the ServiceStatus service in the batphone software
+ * Used to get a list of available peers
+ * 
+ * @author corey.wallis@servalproject.org
+ *
+ */
 public class BatmanServiceClient implements Runnable {
 	
 	/**
@@ -48,6 +57,7 @@ public class BatmanServiceClient implements Runnable {
 	 */
 	private Messenger serviceMessenger = null;
 	private Context context;
+	private BatmanPeerList peerList;
 	
 	private volatile boolean keepGoing = true;
 	
@@ -69,18 +79,15 @@ public class BatmanServiceClient implements Runnable {
             case 3:
             	// this is the route table message
             	if(msg.arg1 > 0) {
-            		// the route table has entries
-            		Log.v(TAG, "a route table with entries as detected");
             		Bundle mBundle = msg.getData();
             		String[] mPeerRecords = mBundle.getStringArray("batmanRoutTable");
-            		//ArrayList<PeerRecord> mPeerRecords = mBundle.getParcelableArrayList("batmanRouteTable");
             		
-            		Log.v(TAG, "peer records size: " + mPeerRecords.length);
+            		// update the peer list
+            		peerList.updatePeerList(mPeerRecords);
             		
-            		for(int i = 0; i < mPeerRecords.length; i++) {
-            			Log.v(TAG, "peer: " + mPeerRecords[i]);
+            		if(V_LOG) {
+            			Log.v(TAG, "peer list updated, size: " + mPeerRecords.length);
             		}
-            		// TODO figure out how to work with parcelable objects
             	}
             	break;
             default:
@@ -134,14 +141,16 @@ public class BatmanServiceClient implements Runnable {
      * constructor for this class
      * 
      * @param context the parent context
-     * @throws IllegalArgumentException of the context parameter is null
+     * @param peerList an object that will be shared with other threads to store the peer list
+     * @throws IllegalArgumentException if any parameter is null
      */
-    public BatmanServiceClient(Context context) {
-    	if(context == null) {
-    		throw new IllegalArgumentException("the context parameter cannot be null");
+    public BatmanServiceClient(Context context, BatmanPeerList peerList) {
+    	if(context == null || peerList == null) {
+    		throw new IllegalArgumentException("all parameters to this method are required");
     	}
     	
     	this.context = context;
+    	this.peerList = peerList;
     	
     	doBindService();
     }

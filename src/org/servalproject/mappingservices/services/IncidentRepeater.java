@@ -20,6 +20,7 @@ package org.servalproject.mappingservices.services;
 import java.util.Random;
 
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
+import org.servalproject.mappingservices.net.BatmanPeerList;
 import org.servalproject.mappingservices.net.NetworkException;
 import org.servalproject.mappingservices.net.PacketBuilder;
 
@@ -66,7 +67,7 @@ public class IncidentRepeater implements Runnable{
 	 * @param database a handle to the incident database
 	 * 
 	 */
-	public IncidentRepeater(SQLiteDatabase database, Context context) {
+	public IncidentRepeater(SQLiteDatabase database, Context context, BatmanPeerList peerList) {
 		
 		// double check the parameters
 		if(database == null) {
@@ -76,7 +77,7 @@ public class IncidentRepeater implements Runnable{
 		this.database = database;
 		randomNumbers = new Random();
 		
-		packetBuilder = new PacketBuilder(context);
+		packetBuilder = new PacketBuilder(context, peerList);
 		
 	}
 

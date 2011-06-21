@@ -22,6 +22,7 @@ import java.util.TimeZone;
 
 import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.DatabaseUtils;
+import org.servalproject.mappingservices.net.BatmanPeerList;
 import org.servalproject.mappingservices.net.NetworkException;
 import org.servalproject.mappingservices.net.PacketBuilder;
 
@@ -60,6 +61,7 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 	 * private class level variables
 	 */
 	private PacketBuilder packetBuilder;
+	private MappingServicesApplication application;
 	
 	/*
      * Called when the activity is first created
@@ -80,7 +82,11 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
          Button button = (Button)findViewById(R.id.btn_save_incident);
          button.setOnClickListener(this);
          
-         packetBuilder = new PacketBuilder(this.getApplicationContext());
+         application = (MappingServicesApplication)this.getApplicationContext();
+         
+         BatmanPeerList peerList = application.getBatmanPeerList();
+         
+         packetBuilder = new PacketBuilder(this.getApplicationContext(), peerList);
          
     }
     
@@ -131,9 +137,8 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 	        }
 	        
 	        // get the device phone number and SID
-	        MappingServicesApplication mApplication = (MappingServicesApplication)this.getApplicationContext();
-	        String mPhoneNumber = mApplication.getPhoneNumber();
-	        String mSid = mApplication.getSid();
+	        String mPhoneNumber = application.getPhoneNumber();
+	        String mSid = application.getSid();
 	        
 	        // save the incident
 	        Uri mNewRecord = saveIncident(mPhoneNumber, mSid, mLocation, mTitle, mDescription);

@@ -26,6 +26,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -51,15 +52,16 @@ public class PacketSender {
 	 * 
 	 * @param port the port number to use
 	 * @param content the content of the packet
+	 * @param address the destination address
 	 * 
 	 * @throws UnknownHostException if the host name cannot be used
 	 * @throws SocketException if a UDP socket cannot be created
 	 * @throws IOException if an IOException occurs while sending the packet
 	 */
-	public static void sendBroadcast(Integer port, String content) throws UnknownHostException, SocketException, IOException {
+	public static void sendBroadcast(Integer port, String content, String address) throws UnknownHostException, SocketException, IOException {
 		
 		// validate the parameters
-		if(port == null || content == null) {
+		if(port == null || content == null || address == null) {
 			throw new IllegalArgumentException("all parameters are required");
 		}
 		
@@ -67,7 +69,7 @@ public class PacketSender {
 			throw new IllegalArgumentException("port parameter must be between: " + PacketCollector.MIN_PORT + " and " + PacketCollector.MAX_PORT);
 		}
 		
-		if(isValidString(content) == false) {
+		if(TextUtils.isEmpty(content) == false) {
 			throw new IllegalArgumentException("content must be a valid non zero length string");
 		}
 		
@@ -76,6 +78,12 @@ public class PacketSender {
 		
 		if(IN_EMULATOR) {
 			mAddress = InetAddress.getByName(EMULATOR_ADDRESS);
+		} else {
+			if(TextUtils.isEmpty(address)) {
+				throw new IllegalArgumentException("the address parameter must be a valid string");
+			} else {
+				mAddress = InetAddress.getByName(address);
+			}
 		}
 		
 		// get a new datagram socket
@@ -105,16 +113,4 @@ public class PacketSender {
 		socket = null;
 		packet = null;
 	}
-	
-	/*
-	 * private method to validate a string field
-	 */
-	private static boolean isValidString(String value) {
-		if(value.trim().length() > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 }

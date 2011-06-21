@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.RecordTypes;
+import org.servalproject.mappingservices.net.BatmanPeerList;
 import org.servalproject.mappingservices.net.PacketCollector;
 
 import android.app.Service;
@@ -125,6 +126,8 @@ public class CoreMappingService extends Service {
 	
 	private LocationManager locationManager = null;
 	
+	private BatmanPeerList batmanPeerList = new BatmanPeerList();
+	
 	
 	/*
 	 * private class level constants
@@ -160,15 +163,15 @@ public class CoreMappingService extends Service {
 			
 			// initialise the incident repeater object
 			SQLiteOpenHelper incidentOpenHelper = new IncidentOpenHelper(this.getApplicationContext());
-			incidentRepeater = new IncidentRepeater(incidentOpenHelper.getReadableDatabase(), this.getApplicationContext());
+			incidentRepeater = new IncidentRepeater(incidentOpenHelper.getReadableDatabase(), this.getApplicationContext(), batmanPeerList);
 			
 			// initialise the geo location objects
 			incomingLocations = new LocationCollector(incomingLocationQueue);
-			incomingLocationsSaver = new LocationSaver(incomingLocationQueue, this.getApplicationContext());
+			incomingLocationsSaver = new LocationSaver(incomingLocationQueue, this.getApplicationContext(), batmanPeerList);
 			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 			
 			// initialise the batman service objects
-			batmanServiceClient = new BatmanServiceClient(this.getApplicationContext());
+			batmanServiceClient = new BatmanServiceClient(this.getApplicationContext(), batmanPeerList);
 			
 			if(V_LOG) {
 				Log.v(TAG, "service created");

@@ -17,6 +17,8 @@
  */
 package org.servalproject.mappingservices;
 
+import org.servalproject.mappingservices.net.BatmanPeerList;
+
 import android.app.Application;
 import android.text.TextUtils;
 
@@ -46,6 +48,8 @@ public class MappingServicesApplication extends Application {
 	 */
 	private String phoneNumber = FAKE_PHONE_NUMBER;
 	private String sid = FAKE_SID;
+	
+	private BatmanPeerList peerList = null;
 	
 	/**
 	 * set the phone number so that it can be shared with other application components
@@ -92,5 +96,28 @@ public class MappingServicesApplication extends Application {
 	 */
 	public String getSid() {
 		return sid;
+	}
+	
+	/**
+	 * a method to get the Batman peer list used when sending packets
+	 * 
+	 * @return a batman peer list object
+	 */
+	public BatmanPeerList getBatmanPeerList() {
+		return peerList;
+	}
+	
+	/**
+	 * a method to set the batman peer list used when sending packets
+	 * 
+	 * @param peerList the valid BatmanPeerList object
+	 * @throws IllegalArgumentException when the peerlist parameter is null
+	 */
+	public void setBatmanPeerList(BatmanPeerList peerList) {
+		if(peerList == null) {
+			throw new IllegalArgumentException("the peerList parameter cannot be null");
+		}
+		
+		this.peerList = peerList;
 	}
 }

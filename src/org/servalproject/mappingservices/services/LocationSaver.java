@@ -25,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.servalproject.mappingservices.MappingServicesApplication;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.LocationProvider;
+import org.servalproject.mappingservices.net.BatmanPeerList;
 import org.servalproject.mappingservices.net.NetworkException;
 import org.servalproject.mappingservices.net.PacketBuilder;
 
@@ -71,6 +72,8 @@ public class LocationSaver implements Runnable {
 	
 	private Context context;
 	
+	private BatmanPeerList peerList;
+	
 	/*
 	 * private class level constants
 	 */
@@ -82,9 +85,9 @@ public class LocationSaver implements Runnable {
 	 * 
 	 * @param queue a LinkedBlockingQueue used to receive location data for further processing from the LocationCollector class
 	 */
-	public LocationSaver(LinkedBlockingQueue<Location> queue, Context context) {
+	public LocationSaver(LinkedBlockingQueue<Location> queue, Context context, BatmanPeerList peerList) {
 		
-		if(queue == null || context == null) {
+		if(queue == null || context == null || peerList == null) {
 			throw new IllegalArgumentException("all parameters are required");
 		}
 		
@@ -93,7 +96,7 @@ public class LocationSaver implements Runnable {
 		this.contentResolver = context.getContentResolver();
 		locationContentUri = LocationProvider.CONTENT_URI;
 		
-		packetBuilder = new PacketBuilder(context);
+		packetBuilder = new PacketBuilder(context, peerList);
 		
 		this.context = context;
 		

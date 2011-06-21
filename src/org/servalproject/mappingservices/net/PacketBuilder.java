@@ -67,19 +67,21 @@ public class PacketBuilder {
 	 * private class level variables
 	 */
 	private Context context;
+	private BatmanPeerList peerList;
 	
 	/**
 	 * Constructor for this class
 	 * 
 	 * @param context a context used to get application resources such as content resolvers
 	 */
-	public PacketBuilder(Context context) {
+	public PacketBuilder(Context context, BatmanPeerList peerList) {
 		
 		if(context == null) {
 			throw new IllegalArgumentException("all parameters to this constructor are required");
 		}
 		
 		this.context = context;
+		this.peerList = peerList;
 	}
 	
 	/**
@@ -139,7 +141,11 @@ public class PacketBuilder {
 		mIncidentDetails = null;
 		
 		try {
-			PacketSender.sendBroadcast(CoreMappingService.INCIDENT_PORT, mPacketContent);
+			String[] mPeers = peerList.getPeerList();
+			
+			for(int i = 0; i < mPeers.length; i++) {
+				PacketSender.sendBroadcast(CoreMappingService.INCIDENT_PORT, mPacketContent, mPeers[i]);
+			}
 		} catch (UnknownHostException e) {
 			throw new NetworkException("unable to send incident packet", e);
 		} catch (SocketException e) {
@@ -249,7 +255,11 @@ public class PacketBuilder {
 		mLocationDetails = null;
 		
 		try {
-			PacketSender.sendBroadcast(CoreMappingService.LOCATION_PORT, mPacketContent);
+			String[] mPeers = peerList.getPeerList();
+		
+			for(int i = 0; i < mPeers.length; i++) {
+				PacketSender.sendBroadcast(CoreMappingService.LOCATION_PORT, mPacketContent, mPeers[i]);
+			}
 		} catch (UnknownHostException e) {
 			throw new NetworkException("unable to send incident packet", e);
 		} catch (SocketException e) {
