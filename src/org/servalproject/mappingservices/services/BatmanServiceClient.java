@@ -202,6 +202,7 @@ public class BatmanServiceClient implements Runnable {
 	 */
 	public void requestStop() {
 		keepGoing = false;
+		doUnbindService();
 	}
 
 }

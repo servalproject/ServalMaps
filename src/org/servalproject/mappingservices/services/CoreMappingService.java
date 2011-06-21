@@ -300,6 +300,13 @@ public class CoreMappingService extends Service {
 			incomingLocationQueue = null;
 		}
 		
+		if(batmanServiceThread != null) {
+			batmanServiceClient.requestStop();
+			batmanServiceThread.interrupt();
+			batmanServiceClient = null;
+			batmanServiceThread = null;
+		}
+		
 		if(packetQueue != null) {
 			packetQueue = null;
 		}
@@ -336,10 +343,14 @@ public class CoreMappingService extends Service {
 		serviceStatus.putString("packetSaverThread", getThreadStatus(packetSaverThread));
 		serviceStatus.putString("incidentRepeaterThread", getThreadStatus(incidentRepeaterThread));
 		serviceStatus.putString("deviceLocationThread", getThreadStatus(incomingLocationsThread));
+		serviceStatus.putString("batmanClientService", getThreadStatus(batmanServiceThread));
 		
 		// add the count of packets received
 		serviceStatus.putString("incidentPacketCount", Integer.toString(incidentCount.get()));
 		serviceStatus.putString("locationPacketCount", Integer.toString(locationCount.get()));
+		
+		// add the number of current peers
+		serviceStatus.putString("knownPeerCount", Integer.toString(batmanPeerList.getPeerCount()));
 		
 		// add the count of records
 		serviceStatus.putString("incidentRecordCount", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.INCIDENT_RECORD_TYPE, this.getBaseContext())));

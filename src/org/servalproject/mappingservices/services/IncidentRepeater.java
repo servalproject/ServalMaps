@@ -133,9 +133,9 @@ public class IncidentRepeater implements Runnable{
 			try {
 				Thread.sleep(SLEEP_TIME * 1000);
 			} catch (InterruptedException e) {
-				if(V_LOG) {
-					Log.v(TAG, "incident repeater was interrupted while sleeping", e);
-				}
+//				if(V_LOG) {
+//					Log.v(TAG, "incident repeater was interrupted while sleeping", e);
+//				}
 			}
 		}
 	}

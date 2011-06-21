@@ -137,9 +137,9 @@ public class LocationSaver implements Runnable {
 					
 				}
 			} catch (InterruptedException e) {
-				if(V_LOG) {
-					Log.v(TAG, "thread was interrupted", e);
-				}
+//				if(V_LOG) {
+//					Log.v(TAG, "thread was interrupted", e);
+//				}
 			}
 			
 		}

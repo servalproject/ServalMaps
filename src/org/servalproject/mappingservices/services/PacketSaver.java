@@ -131,9 +131,9 @@ public class PacketSaver implements Runnable {
 				}
 			} catch (InterruptedException e) {
 				// thread was interrupted while waiting for a packet to process
-				if(V_LOG) {
-					Log.v(TAG, "thread was interrupted", e);
-				}
+//				if(V_LOG) {
+//					Log.v(TAG, "thread was interrupted", e);
+//				}
 			}
 			
 		}

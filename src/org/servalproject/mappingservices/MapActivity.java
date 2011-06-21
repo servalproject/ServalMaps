@@ -176,7 +176,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 			startActivity(mIntent);
             status = true;
         case R.id.menu_shutdown:
-        	// shutdown the services
+        	// works the same if the back button is pressed
+        	this.onBackPressed();
         	status = true;
         case R.id.menu_about:
         	// show the about activity
