@@ -72,8 +72,6 @@ public class LocationSaver implements Runnable {
 	
 	private Context context;
 	
-	private BatmanPeerList peerList;
-	
 	/*
 	 * private class level constants
 	 */

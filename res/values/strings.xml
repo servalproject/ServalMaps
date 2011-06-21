@@ -36,7 +36,7 @@
     <string name="common_serval_project">Serval Project</string>
     <!--  menu resources -->
     <string name="map_menu_new_incident">Add Incident</string>
-    <string name="menu_shutdown">Shutdown Services</string>
+    <string name="menu_shutdown">Exit</string>
     <string name="menu_about">About</string>
     <!--  add incident resources -->
     <string name="btn_save_incident">Save Incident Report</string>
