@@ -56,4 +56,13 @@
     <string name="btn_disclaimer_continue">I Understand</string>
     <string name="disclaimer_no_map_file_error">Cannot use application at this time - No map data files available</string>
     <string name="disclaimer_missing_map_file_error">Cannot use application at this time - Unable to locate the \'%s\' file</string>
+    <!--  contact peer activity -->
+    <string name="lbl_contact_peer_title">Contact Peer</string>
+    <string name="lbl_contact_number">Peer:</string>  
+    <string name="btn_call_peer">Call Peer</string>
+    <string name="btn_txt_peer">Message Peer</string> 
+     <!--  contact peer error messages -->
+    <string name="contact_peer_error_invalid_id">Invalid peer record id detected, no info to display</string>
+    <string name="contact_peer_error_missing_id">Missing peer record id, no info to display</string>
+    <string name="contact_peer_error_no_data_found">No peer data found using supplied record id, no info to display</string>
 </resources>

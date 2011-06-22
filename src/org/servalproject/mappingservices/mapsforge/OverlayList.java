@@ -19,6 +19,7 @@ package org.servalproject.mappingservices.mapsforge;
 
 import org.mapsforge.android.maps.ArrayItemizedOverlay;
 
+import org.servalproject.mappingservices.ContactPeerActivity;
 import org.servalproject.mappingservices.R;
 import org.servalproject.mappingservices.ViewIncidentActivity;
 import org.servalproject.mappingservices.content.RecordTypes;
@@ -88,6 +89,18 @@ public class OverlayList extends ArrayItemizedOverlay {
 			Toast.makeText(parentContext, R.string.overlay_list_self_location, Toast.LENGTH_SHORT).show();
 		} else {
 			// this is a peer location marker
+			if(V_LOG) {
+				Log.v(TAG, "peer marker tapped with id:" + item.getRecordId());
+			}
+			
+			// this is an incident marker so start the ViewIncidentActivity 
+			// and provide it with the incident record number
+			Intent mIntent = new Intent(parentContext, ContactPeerActivity.class);
+			Bundle mBundle = new Bundle();
+			mBundle.putString("id", item.getRecordId());
+			mIntent.putExtras(mBundle);
+			parentContext.startActivity(mIntent);
+			
 		}
 		
 		return true;

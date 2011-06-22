@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    			android:layout_width="fill_parent"
+    			android:layout_height="fill_parent">
+       <!-- header -->		
+    			
+    <ImageView android:id="@+id/logot_image"
+   			   style="@style/slogo"/> 
+
+    <TextView android:id="@+id/header"
+              android:text="@string/header"
+              style="@style/sheader" /> 
+
+    <TextView android:id="@+id/url"
+    		  android:text="@string/url"	  
+              android:layout_below="@+id/header" 
+              style="@style/surl"/> 
+   
+     <!-- Content -->
+     
+     <TextView android:id="@+id/lbl_contact_peer_title"
+			   android:text="@string/lbl_contact_peer_title" 
+			   android:layout_below="@+id/url"
+			   style="@style/stitle" 
+			   android:layout_centerHorizontal="true" />
+
+	<TextView android:id="@+id/lbl_contact_number" 
+			  android:text="@string/lbl_contact_number"
+			  android:layout_below="@+id/lbl_contact_peer_title" 
+			  style="@style/sfieldtitle" />
+
+	<TextView android:id="@+id/lbl_contact_number_fld"
+			  android:text="" 
+			  android:layout_toRightOf="@+id/lbl_contact_number"
+			  android:layout_below="@+id/lbl_contact_peer_title"
+			  android:layout_marginLeft="5sp" 
+			  style="@style/stext" />
+			  
+	<Button android:id="@+id/btn_call_peer"
+			android:text="@string/btn_call_peer"
+			style="@style/sbutton"
+    		android:layout_below="@+id/lbl_contact_number_fld"
+    		android:layout_centerHorizontal="true"
+    		android:layout_height="40sp"
+    		android:layout_width="180sp"/>
+    		
+    <Button android:id="@+id/btn_txt_peer"
+			android:text="@string/btn_txt_peer"
+			style="@style/sbutton"
+    		android:layout_below="@+id/btn_call_peer"
+    		android:layout_centerHorizontal="true"
+    		android:layout_height="40sp"
+    		android:layout_width="180sp"/>
+    	  
+ <!-- Footer -->
+	   	
+		  <TextView android:id="@+id/warning"
+		          	  android:layout_below="@+id/btn_save_incident"
+        	  android:text="@string/warning" 
+        	  style="@style/swarning"/> 
+
+   
+</RelativeLayout>
