@@ -43,10 +43,6 @@ public class PacketSender {
 	private static final boolean V_LOG = true;
 	private static final String TAG = "ServalMaps-PS";
 	
-	// use the address that is valid for use in the emulator
-	private static final boolean IN_EMULATOR = false;
-	private static final String EMULATOR_ADDRESS = "10.0.2.2";
-	
 	/**
 	 * Sends a broadcast packet to the specified port
 	 * 
@@ -76,14 +72,10 @@ public class PacketSender {
 		// TODO add a method to calculate the broadcast address based on the device address
 		InetAddress mAddress = null;
 		
-		if(IN_EMULATOR) {
-			mAddress = InetAddress.getByName(EMULATOR_ADDRESS);
+		if(TextUtils.isEmpty(address)) {
+			throw new IllegalArgumentException("the address parameter must be a valid string");
 		} else {
-			if(TextUtils.isEmpty(address)) {
-				throw new IllegalArgumentException("the address parameter must be a valid string");
-			} else {
-				mAddress = InetAddress.getByName(address);
-			}
+			mAddress = InetAddress.getByName(address);
 		}
 		
 		// get a new datagram socket

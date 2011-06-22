@@ -33,6 +33,10 @@ public class BatmanPeerList {
 	 */
 	private volatile ArrayList<String> peerList = new ArrayList<String>();
 	
+	// use the address that is valid for use in the emulator
+	private static final boolean IN_EMULATOR = false;
+	private static final String[] EMULATOR_ADDRESS_LIST = {"10.0.2.2"};
+	
 	/**
 	 * update the peer list with new values
 	 * 
@@ -65,10 +69,14 @@ public class BatmanPeerList {
 	 * @return a string array containing the peer list
 	 */
 	public synchronized String[] getPeerList() {
-		if(peerList.size() == 0) {
-			return new String[0];
+		if(IN_EMULATOR) {
+			return EMULATOR_ADDRESS_LIST;
 		} else {
-			return peerList.toArray(new String[0]);
+			if(peerList.size() == 0) {
+				return new String[0];
+			} else {
+				return peerList.toArray(new String[0]);
+			}
 		}
 	}
 	

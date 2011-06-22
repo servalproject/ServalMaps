@@ -187,11 +187,11 @@ public class PacketBuilder {
 		builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.LATITUDE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
 		builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.LONGITUDE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
 		builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.TIMESTAMP_FIELD)) + DEFAULT_FIELD_SEPARATOR);
-		builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.TIMEZONE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.TIMEZONE_FIELD)));
 		
 		// add the signature field
 		if(withSignature == true) {
-			builder.append(cursor.getString(cursor.getColumnIndex(IncidentProvider.SIGNATURE_FIELD)));
+			builder.append(DEFAULT_FIELD_SEPARATOR + cursor.getString(cursor.getColumnIndex(IncidentProvider.SIGNATURE_FIELD)));
 		}
 		
 		// return without the signature field
@@ -299,11 +299,11 @@ public class PacketBuilder {
 		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.LATITUDE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
 		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.LONGITUDE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
 		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.TIMESTAMP_FIELD)) + DEFAULT_FIELD_SEPARATOR);
-		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.TIMEZONE_FIELD)) + DEFAULT_FIELD_SEPARATOR);
+		builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.TIMEZONE_FIELD)));
 		
 		// add the signature field
 		if(withSignature == true) {
-			builder.append(cursor.getString(cursor.getColumnIndex(LocationProvider.SIGNATURE_FIELD)));
+			builder.append(DEFAULT_FIELD_SEPARATOR + cursor.getString(cursor.getColumnIndex(LocationProvider.SIGNATURE_FIELD)));
 		}
 		
 		// return without the signature field

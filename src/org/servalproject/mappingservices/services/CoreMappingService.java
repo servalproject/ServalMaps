@@ -72,7 +72,7 @@ public class CoreMappingService extends Service {
 	/**
 	 * the requested minimum amount of time between GPS updates (in seconds)
 	 */
-	public static final int LOCATION_UPDATE_MIN_TIME = 30;
+	public static final int LOCATION_UPDATE_MIN_TIME = 0;
 	
 	/**
 	 * the requested minimum amount of distance between GPS updates (in metres)
