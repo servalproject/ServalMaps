@@ -51,6 +51,16 @@ import android.widget.Toast;
  */
 public class AddIncidentActivity extends Activity implements OnClickListener {
 	
+	/**
+	 * the maximum allowed length of the incident title (in chars)
+	 */
+	public static final int MAX_TITLE_LENGTH = 30;
+	
+	/**
+	 * the maximum allowed length of the incident description (in chars)
+	 */
+	public static final int MAX_DESCRIPTION_LENGTH = 480;
+	
 	/*
 	 * private class level constants
 	 */
@@ -114,6 +124,7 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 			CharSequence mTitle = mTitleText.getText();
 			CharSequence mDescription = mDescriptionText.getText();
 			
+			// check for empty input
 			if(TextUtils.isEmpty(mTitle) == true) {
 				// show an error and bail out
 				Toast.makeText(this.getApplicationContext(), R.string.incident_add_error_empty_title, Toast.LENGTH_LONG).show();
@@ -125,6 +136,20 @@ public class AddIncidentActivity extends Activity implements OnClickListener {
 				Toast.makeText(this.getApplicationContext(), R.string.incident_add_error_empty_description, Toast.LENGTH_LONG).show();
 				return;
 			}
+			
+			// check for input that is too long
+			if(mTitle.length() > MAX_TITLE_LENGTH) {
+				// show an error and bail out
+				Toast.makeText(this.getApplicationContext(), String.format(this.getString(R.string.incident_add_error_title_length), MAX_TITLE_LENGTH), Toast.LENGTH_LONG).show();
+				return;
+			}
+			
+			if(mDescription.length() > MAX_DESCRIPTION_LENGTH) {
+				// show an error and bail out
+				Toast.makeText(this.getApplicationContext(), String.format(this.getString(R.string.incident_add_error_description_length), MAX_TITLE_LENGTH), Toast.LENGTH_LONG).show();
+				return;
+			}
+			
 			
 			// get the location
 			LocationManager mlocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);

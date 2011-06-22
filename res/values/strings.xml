@@ -50,6 +50,8 @@
     <string name="incident_add_error_sql_ex">Cannot save report at this time - A database error occurred</string>
     <string name="incident_add_error_no_send">Cannot send report at this time - It was not saved to the database</string>
     <string name="incident_add_error_send_failed">Cannot send report at this time - A Network error occurred</string>
+    <string name="incident_add_error_title_length">The Incident Title must be less than %d characters long</string>
+    <string name="incident_add_error_description_length">The Incident Description must be less than %d characters long</string>
     <!--  disclaimer resources -->
     <string name="lbl_disclaimer_title">Serval Mapping Services</string>
     <string name="lbl_disclaimer_text">Serval Mapping Services will store geographic location information locally, and will also broadcast it over the network. By continuing, you accept that this information will be broadcast. Serval has no long term repository storage of location details. Communications made using this software are not secure or private and data may also be witnessed by someone other than the intended recipient.</string>
