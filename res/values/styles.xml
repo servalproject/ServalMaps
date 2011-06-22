@@ -84,7 +84,13 @@
 		<item name="android:minHeight">200sp</item>
 		<item name="android:background">@color/white</item>
 		<item name="android:textColor">@color/black</item>  
-  	</style>  	
+  	</style>  
+  	
+  	<style name="sshort_input_text" parent="stext"> 
+  		<item name="android:minWidth">150sp</item>	 
+		<item name="android:background">@color/white</item>
+		<item name="android:textColor">@color/black</item>  
+  	</style> 	
 
   	<style name="stextsmall" parent="stext"> 	 
    		<item name="android:textSize">11sp</item>

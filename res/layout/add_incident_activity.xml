@@ -29,21 +29,20 @@
         	  android:layout_below="@+id/lbl_add_incident"
         	  style="@style/sfieldtitle" />
         	  
-    <EditText android:text="title" 
-        	  android:id="@+id/txt_incident_title" 
+    <EditText android:id="@+id/txt_incident_title" 
         	  android:layout_toRightOf="@+id/lbl_incident_title"
         	  android:layout_below="@+id/lbl_add_incident"
         	  android:layout_marginLeft="5sp"
-        	  style="@style/stext"/>
+        	  style="@style/sshort_input_text"/>
         	  
     <TextView android:text="@string/lbl_incident_description" 
         	  android:id="@+id/lbl_incident_description" 
         	  android:layout_below="@+id/txt_incident_title"
         	  style="@style/sfieldtitle"/>
         	  
-    <EditText android:text="description" 
-        	  android:id="@+id/txt_incident_description" 
+    <EditText android:id="@+id/txt_incident_description" 
         	  android:layout_below="@+id/lbl_incident_description"
+        	  android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
         	  style="@style/sinput_text"
         	  android:minHeight="130sp"/>
         	  

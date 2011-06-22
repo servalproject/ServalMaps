@@ -42,7 +42,8 @@
         <!--  other activities -->
         <activity android:name="MapActivity"></activity>
         <activity android:name="ViewIncidentActivity"></activity>
-        <activity android:name="AddIncidentActivity"></activity>
+        <activity android:name="AddIncidentActivity"
+        	      android:windowSoftInputMode="stateVisible|adjustPan"></activity>
         <activity android:name="ContactPeerActivity"></activity>
 
     </application>
