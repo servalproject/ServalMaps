@@ -194,6 +194,10 @@ public class PacketBuilder {
 			builder.append(DEFAULT_FIELD_SEPARATOR + cursor.getString(cursor.getColumnIndex(IncidentProvider.SIGNATURE_FIELD)));
 		}
 		
+		if(V_LOG) {
+			Log.v(TAG, "incident packet: " + builder.toString());
+		}
+		
 		// return without the signature field
 		return builder.toString();
 	}
@@ -304,6 +308,10 @@ public class PacketBuilder {
 		// add the signature field
 		if(withSignature == true) {
 			builder.append(DEFAULT_FIELD_SEPARATOR + cursor.getString(cursor.getColumnIndex(LocationProvider.SIGNATURE_FIELD)));
+		}
+		
+		if(V_LOG) {
+			Log.v(TAG, "location packet: " + builder.toString());
 		}
 		
 		// return without the signature field
