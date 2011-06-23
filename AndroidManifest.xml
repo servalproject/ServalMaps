@@ -45,6 +45,7 @@
         <activity android:name="AddIncidentActivity"
         	      android:windowSoftInputMode="stateVisible|adjustPan"></activity>
         <activity android:name="ContactPeerActivity"></activity>
+        <activity android:name="AboutActivity"></activity>
 
     </application>
 </manifest>

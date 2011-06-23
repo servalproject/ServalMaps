@@ -64,7 +64,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	/**
 	 * delay between updates (in seconds)
 	 */
-	public static final int SLEEP_TIME = 30;
+	public static final int SLEEP_TIME = 10;
 	
 	/**
 	 * maximum age of an incident or location (in minutes)
@@ -166,30 +166,33 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	
-    	boolean status;
+    	boolean mStatus;
+    	Intent mIntent;
     	
     	// respond to the user selecting a menu item
     	switch (item.getItemId()) {
         case R.id.map_menu_new_incident:
             // start entering a new incident
-        	Intent mIntent = new Intent(MapActivity.this, AddIncidentActivity.class);
+        	mIntent = new Intent(MapActivity.this, AddIncidentActivity.class);
         	this.startActivityForResult(mIntent, 0);
-            status = true;
+        	mStatus = true;
             break;
         case R.id.menu_shutdown:
         	// works the same if the back button is pressed
         	this.onBackPressed();
-        	status = true;
+        	mStatus = true;
         	break;
         case R.id.menu_about:
         	// show the about activity
-        	status = true;
-        	break;
+        	mIntent = new Intent(MapActivity.this, AboutActivity.class);
+        	this.startActivityForResult(mIntent, 0);
+        	mStatus = true;
+            break;
         default:
-        	status = super.onOptionsItemSelected(item);
+        	mStatus = super.onOptionsItemSelected(item);
         }
     	
-    	return status;
+    	return mStatus;
     }
 
     /*

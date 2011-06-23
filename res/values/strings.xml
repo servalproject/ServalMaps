@@ -67,4 +67,14 @@
     <string name="contact_peer_error_invalid_id">Invalid peer record id detected, no info to display</string>
     <string name="contact_peer_error_missing_id">Missing peer record id, no info to display</string>
     <string name="contact_peer_error_no_data_found">No peer data found using supplied record id, no info to display</string>
+    <!--  about resources -->
+    <string name="lbl_about_title">About Serval Mapping Services</string>
+    <string name="lbl_about_text">
+    The <a href="http://developer.servalproject.org/twiki/bin/view/Main/PublicAlphaMappingService">Mapping Services</a> application is licensed using the <a href="http://www.gnu.org/licenses/gpl.html">GPLv3 license</a>.
+    \n\nPortions of this software are based on <a href="http://developer.android.com">Android</a> example code using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0 license</a>.
+    \n\nThis application is part of the <a href="http://www.servalproject.org">Serval Project</a> and relies on its resilient mesh network technology.
+    \n\nThe mapping capabilities of this application are powered by <a href="http://code.google.com/p/mapsforge/">mapsforge</a> using data sourced from <a href="http://www.openstreetmap.org/">OpenStreetMap</a> licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a> license. 
+    \n\nThe markers are based on the template provided by the <a href="http://mapicons.nicolasmollet.com/">Map Icons Collection</a> licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> license.
+    </string>
+    <string name="btn_about_continue">Back to Map</string>
 </resources>
