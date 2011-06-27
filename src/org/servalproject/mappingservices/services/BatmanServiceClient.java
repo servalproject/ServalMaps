@@ -80,7 +80,7 @@ public class BatmanServiceClient implements Runnable {
             	// this is the route table message
             	if(msg.arg1 > 0) {
             		Bundle mBundle = msg.getData();
-            		String[] mPeerRecords = mBundle.getStringArray("batmanRoutTable");
+            		String[] mPeerRecords = mBundle.getStringArray("batmanRouteTable");
             		
             		// update the peer list
             		peerList.updatePeerList(mPeerRecords);
