@@ -194,18 +194,23 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
             break;
         case R.id.map_menu_mock_locations:
         	// start using mock locations
-        	mockLocationCreator = new MockLocationCreator(this.getApplicationContext());
         	try {
-        		mockLocationCreator.openLocationList();
-        		
-        		mockLocationThread = new Thread(mockLocationCreator);
-        		mockLocationThread.start();
-        		
-        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_used, Toast.LENGTH_LONG).show();
-        	 
-        	} catch (IOException e) {
-        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_failed, Toast.LENGTH_LONG).show();
-        		mockLocationCreator = null;
+	        	mockLocationCreator = new MockLocationCreator(this.getApplicationContext());
+	        	try {
+	        		mockLocationCreator.openLocationList();
+	        		
+	        		mockLocationThread = new Thread(mockLocationCreator);
+	        		mockLocationThread.start();
+	        		
+	        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_used, Toast.LENGTH_LONG).show();
+	        	 
+	        	} catch (IOException e) {
+	        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_failed, Toast.LENGTH_LONG).show();
+	        		mockLocationCreator = null;
+	        	}
+        	} catch(SecurityException e) {
+        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_security, Toast.LENGTH_LONG).show();
+        		Log.e(TAG, "unable to use mock locations, insufficient privileges", e);
         	}
         	mStatus = true;
             break;

@@ -18,6 +18,7 @@
     <!-- resources for the MapActivity -->
     <string name="map_mock_locations_failed">Unable to use mock GPS locations, no data found</string>
     <string name="map_mock_locations_used">Using mock GPS location data</string>
+    <string name="map_mock_locations_security">Unable to use mock locations, insufficient privileges</string>
     <!--  resources for the ViewIncidentActivity -->
     <string name="incident_view_added_by">Added by:</string>
     <string name="incident_view_incident_age">Incident Age:</string>
