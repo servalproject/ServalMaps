@@ -27,7 +27,7 @@
     <TextView android:text="TextView" 
         	  android:id="@+id/lbl_incident_description" 
         	  android:layout_below="@+id/lbl_incident_title"
-        	  style="@style/sinput_text"/>
+        	  style="@style/sinput_text_alt"/>
     
     <TextView android:id="@+id/textView4" 
             	  android:layout_below="@+id/lbl_incident_description"    
