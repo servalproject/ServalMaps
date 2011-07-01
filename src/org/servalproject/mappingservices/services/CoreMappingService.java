@@ -27,6 +27,8 @@ import org.servalproject.mappingservices.MappingServicesApplication;
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentOpenHelper;
 import org.servalproject.mappingservices.content.RecordTypes;
+import org.servalproject.mappingservices.location.LocationCollector;
+import org.servalproject.mappingservices.location.LocationSaver;
 import org.servalproject.mappingservices.net.BatmanPeerList;
 import org.servalproject.mappingservices.net.PacketCollector;
 

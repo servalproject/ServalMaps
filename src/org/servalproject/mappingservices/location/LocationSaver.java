@@ -16,7 +16,7 @@
  *  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.servalproject.mappingservices.services;
+package org.servalproject.mappingservices.location;
 
 import java.util.Date;
 import java.util.TimeZone;
