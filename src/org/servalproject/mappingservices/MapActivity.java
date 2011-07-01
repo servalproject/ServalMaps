@@ -17,12 +17,14 @@
  */
 package org.servalproject.mappingservices;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import org.servalproject.mappingservices.content.DatabaseUtils;
 import org.servalproject.mappingservices.content.IncidentProvider;
 import org.servalproject.mappingservices.content.LocationProvider;
 import org.servalproject.mappingservices.content.RecordTypes;
+import org.servalproject.mappingservices.location.MockLocationCreator;
 import org.servalproject.mappingservices.mapsforge.OverlayItem;
 import org.servalproject.mappingservices.mapsforge.OverlayList;
 
@@ -42,6 +44,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * Activity that displays the map to the user
@@ -97,7 +100,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     Thread updateThread = null;
     MapActivity self;
     
-    //TODO work out how to stop thread gracefully
+    private MockLocationCreator mockLocationCreator;
+    private Thread mockLocationThread = null;
 	
 	
 	/*
@@ -186,6 +190,23 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         	// show the about activity
         	mIntent = new Intent(MapActivity.this, AboutActivity.class);
         	this.startActivityForResult(mIntent, 0);
+        	mStatus = true;
+            break;
+        case R.id.map_menu_mock_locations:
+        	// start using mock locations
+        	mockLocationCreator = new MockLocationCreator(this.getApplicationContext());
+        	try {
+        		mockLocationCreator.openLocationList();
+        		
+        		mockLocationThread = new Thread(mockLocationCreator);
+        		mockLocationThread.start();
+        		
+        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_used, Toast.LENGTH_LONG).show();
+        	 
+        	} catch (IOException e) {
+        		Toast.makeText(this.getApplicationContext(), R.string.map_mock_locations_failed, Toast.LENGTH_LONG).show();
+        		mockLocationCreator = null;
+        	}
         	mStatus = true;
             break;
         default:
@@ -429,6 +450,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         		updateThread = null;
         	}
         }
+        
+        if(mockLocationThread != null) {
+        	if(mockLocationThread.isAlive() == true) {
+        		mockLocationCreator.requestStop();
+        		mockLocationThread.interrupt();
+        		updateThread = null;
+        	}
+        }
     }
     
     /*
@@ -445,6 +474,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         	if(updateThread.isAlive() == true) {
         		self.requestStop();
         		updateThread.interrupt();
+        		updateThread = null;
+        	}
+        }
+        
+        if(mockLocationThread != null) {
+        	if(mockLocationThread.isAlive() == true) {
+        		mockLocationCreator.requestStop();
+        		mockLocationThread.interrupt();
         		updateThread = null;
         	}
         }
