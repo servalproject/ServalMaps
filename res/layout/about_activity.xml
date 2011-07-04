@@ -27,9 +27,15 @@
         	  android:layout_centerHorizontal="true"/>
         	  
      <TextView android:id="@+id/lbl_about_text" 
-        	  android:layout_below="@+id/lbl_about_title"
-        	  android:text="@string/lbl_about_text"
-        	  style="@style/stext"/>
+    	  android:text="@string/lbl_about_text"
+    	  android:maxLines="12"
+    	  android:scrollbars="vertical"
+    	  android:scrollbarAlwaysDrawVerticalTrack="true"
+    	  android:fadeScrollbars="false"
+    	  android:layout_below="@+id/lbl_about_title"
+    	  android:layout_marginRight="10sp"
+    	  style="@style/stext"/>	  
+     
         	  
     <Button android:id="@+id/btn_about_continue"
 			android:text="@string/btn_about_continue"
