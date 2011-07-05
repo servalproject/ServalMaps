@@ -19,6 +19,12 @@
     <string name="map_mock_locations_failed">Unable to use mock GPS locations, no data found</string>
     <string name="map_mock_locations_used">Using mock GPS location data</string>
     <string name="map_mock_locations_security">Unable to use mock locations, insufficient privileges</string>
+    <string name="map_alert_empty_db_msg">Are you sure you want to empty the databases?\nThis cannot be undone.</string>
+    <string name="map_alert_yes">Yes</string>
+    <string name="map_alert_no">No</string>
+    <string name="map_empty_db_ok">All database records have been deleted</string>
+    <string name="map_empty_db_partial">Some database records have been deleted, check the log for details</string>
+    <string name="map_empty_db_fail">Unable to delete database records, check the log for details</string>
     <!--  resources for the ViewIncidentActivity -->
     <string name="incident_view_added_by">Added by:</string>
     <string name="incident_view_incident_age">Incident Age:</string>
@@ -38,7 +44,9 @@
     <string name="common_serval_project">Serval Project</string>
     <!--  menu resources -->
     <string name="map_menu_new_incident">Add Incident</string>
+    <string name="map_menu_developer">Developer</string>
     <string name="map_menu_mock_locations">Use Mock Locations</string>
+    <string name="map_menu_empty_database">Empty Databases</string>
     <string name="menu_shutdown">Exit</string>
     <string name="menu_about">About</string>
     <!--  add incident resources -->

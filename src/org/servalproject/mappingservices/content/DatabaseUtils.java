@@ -22,8 +22,10 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * a class used to rerieve information about the databases used by the 
@@ -33,6 +35,13 @@ import android.text.TextUtils;
  *
  */
 public class DatabaseUtils {
+	
+	/*
+	 * private class level constants
+	 */
+	
+	private static final boolean V_LOG = true;
+	private static final String TAG = "ServalMaps-DU";
 	
 	/**
 	 * count the number of records that match the provided record type
@@ -133,7 +142,7 @@ public class DatabaseUtils {
 	
 	/**
 	 * 
-	 * get the current time in seconds as UTC
+	 * get the current time in seconds as UTC, useful to compare with the UTC time retrieved from the database
 	 * 
 	 * @return the current time, as determined by the device, in UTC
 	 * 
@@ -148,4 +157,63 @@ public class DatabaseUtils {
     	return mDeviceTimeAsLong;
 		
 	}
+	
+	/**
+	 * 
+	 * empty the database tables of the specified database
+	 * 
+	 * @param recordType the record type, as defined in the RecordTypes class
+	 * @param context the context with which to open the database
+	 * 
+	 * @return true if the database was empty, false if an error occurred
+	 * 
+	 * @throws IllegalArgumentException if the record type is not valid
+	 * @throws IllegalArgumentException if the context is null
+	 * 
+	 */
+	public static boolean emptyDatabase(int recordType, Context context) {
+		
+		// check the parameter
+		if(RecordTypes.isValidType(recordType) == false ) {
+			throw new IllegalArgumentException("the supplied record type was invalid");
+		}
+		
+		if(context == null) {
+			throw new IllegalArgumentException("the context parameter cannot be null");
+		}
+		
+		if(recordType == RecordTypes.INCIDENT_RECORD_TYPE) {
+			
+			IncidentOpenHelper mHelper = new IncidentOpenHelper(context);
+			SQLiteDatabase mDatabase = mHelper.getWritableDatabase();
+			
+			try {
+				mDatabase.delete(IncidentOpenHelper.TABLE_NAME, null, null);
+			} catch (SQLException e) {
+				Log.e(TAG, "deletion of incident data failed", e);
+				return false;
+			}
+
+			mDatabase.close();
+			mHelper.close();
+			
+		} else if(recordType == RecordTypes.LOCATION_RECORD_TYPE) {
+			
+			LocationOpenHelper mHelper = new LocationOpenHelper(context);
+			SQLiteDatabase mDatabase = mHelper.getWritableDatabase();
+			
+			try {
+				mDatabase.delete(LocationOpenHelper.TABLE_NAME, null, null);
+			} catch (SQLException e) {
+				Log.e(TAG, "deletion of location data failed", e);
+				return false;
+			}
+
+			mDatabase.close();
+			mHelper.close();
+		}
+		
+		return true;
+	}
+	
 }

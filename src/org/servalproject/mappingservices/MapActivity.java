@@ -34,7 +34,10 @@ import org.mapsforge.android.maps.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
 //import org.mapsforge.android.maps.OverlayItem;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -80,6 +83,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	
 	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-MA";
+	
+	private static final int DIALOG_EMPTY_DB = 0;
 	
 	
 	/*
@@ -214,11 +219,67 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         	}
         	mStatus = true;
             break;
+        case R.id.map_menu_empty_database:
+        	// show a dialog to confirm this action
+        	showDialog(DIALOG_EMPTY_DB);
         default:
         	mStatus = super.onOptionsItemSelected(item);
         }
     	
     	return mStatus;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreateDialog(int)
+     */
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	Dialog mDialog = null;
+    	
+    	// determine which dialog to create
+    	switch(id) {
+    	case DIALOG_EMPTY_DB:
+    		// show the empty database confirmation dialog
+    		AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+    		mBuilder.setMessage(this.getString(R.string.map_alert_empty_db_msg));
+    		mBuilder.setCancelable(false);
+    		mBuilder.setPositiveButton(this.getString(R.string.map_alert_yes), new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				MapActivity.this.emptyDb();
+    			}
+    		});
+    		mBuilder.setNegativeButton(this.getString(R.string.map_alert_no), new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				dialog.cancel();
+    			}
+    		});
+    		
+    		mDialog = mBuilder.create();
+    		break;
+    	default:
+    		mDialog = null;
+    	}
+    	
+    	return mDialog;
+    }
+    
+    /*
+     * private method to empty the databases
+     */
+    private void emptyDb() {
+    	
+    	// empty the databases
+    	boolean mIncidents = DatabaseUtils.emptyDatabase(RecordTypes.INCIDENT_RECORD_TYPE, this.getApplicationContext());
+    	boolean mLocations = DatabaseUtils.emptyDatabase(RecordTypes.LOCATION_RECORD_TYPE, this.getApplicationContext());
+    	
+    	if(mIncidents && mLocations) {
+    		Toast.makeText(this.getApplicationContext(), R.string.map_empty_db_ok, Toast.LENGTH_SHORT).show();
+    	} else if (mIncidents || mLocations) {
+    		Toast.makeText(this.getApplicationContext(), R.string.map_empty_db_partial, Toast.LENGTH_SHORT).show();
+    	} else {
+    		Toast.makeText(this.getApplicationContext(), R.string.map_empty_db_fail, Toast.LENGTH_SHORT).show();
+    	}
     }
 
     /*
