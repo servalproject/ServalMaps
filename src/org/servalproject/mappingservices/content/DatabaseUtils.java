@@ -40,7 +40,7 @@ public class DatabaseUtils {
 	 * private class level constants
 	 */
 	
-	private static final boolean V_LOG = true;
+	//private static final boolean V_LOG = true;
 	private static final String TAG = "ServalMaps-DU";
 	
 	/**
