@@ -222,6 +222,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         case R.id.map_menu_empty_database:
         	// show a dialog to confirm this action
         	showDialog(DIALOG_EMPTY_DB);
+        	mStatus = true;
+        	break;
+        case R.id.map_menu_service_status:
+        	// show the about activity
+        	mIntent = new Intent(MapActivity.this, StatusActivity.class);
+        	this.startActivityForResult(mIntent, 0);
+        	mStatus = true;
+            break;
         default:
         	mStatus = super.onOptionsItemSelected(item);
         }

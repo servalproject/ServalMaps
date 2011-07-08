@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    			android:layout_width="fill_parent"
+    			android:layout_height="fill_parent"
+    			android:background="@color/black">
+       <!-- header -->		
+    			
+    <ImageView android:id="@+id/logot_image"
+   			   style="@style/slogo"/> 
+
+    <TextView android:id="@+id/header"
+              android:text="@string/header"
+              style="@style/sheader" /> 
+
+    <TextView android:id="@+id/url"
+    		  android:text="@string/url"	  
+              android:layout_below="@+id/header" 
+              style="@style/surl"/> 
+   
+     <!-- Content -->
+     
+     <TextView android:id="@+id/lbl_status_title" 
+        	  android:text="@string/lbl_status_title"
+        	  android:layout_below="@+id/url"
+        	  style="@style/stitle" 
+        	  android:layout_centerHorizontal="true"/>
+        	  
+     <TextView android:id="@+id/lbl_status_text" 
+    	  android:text="@string/lbl_status_text"
+    	  android:maxLines="12"
+    	  android:scrollbars="vertical"
+    	  android:scrollbarAlwaysDrawVerticalTrack="true"
+    	  android:fadeScrollbars="false"
+    	  android:layout_below="@+id/lbl_status_title"
+    	  android:layout_marginRight="30sp"
+    	  android:minWidth="300sp"
+    	  android:gravity="left"
+    	  style="@style/stext"/>	  
+     
+        	  
+    <Button android:id="@+id/btn_status_continue"
+			android:text="@string/btn_status_continue"
+			style="@style/sbutton"
+    		android:layout_below="@+id/lbl_status_text"
+    		android:layout_centerHorizontal="true"
+    		android:layout_height="40sp"
+    		android:layout_width="180sp" 
+    		android:layout_marginTop="10sp"/>
+    	  
+ <!-- Footer -->
+	   	
+		  <TextView android:id="@+id/warning"
+		          	  android:layout_below="@+id/btn_save_incident"
+        	  android:text="@string/warning" 
+        	  style="@style/swarning"/> 
+
+   
+</RelativeLayout>

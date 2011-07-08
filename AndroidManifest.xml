@@ -47,6 +47,7 @@
         	      android:windowSoftInputMode="stateVisible|adjustPan"></activity>
         <activity android:name="ContactPeerActivity"></activity>
         <activity android:name="AboutActivity"></activity>
+        <activity android:name="StatusActivity"></activity>
 
     </application>
 </manifest>

@@ -11,6 +11,8 @@
 			<item android:id="@+id/map_menu_mock_locations" android:title="@string/map_menu_mock_locations" />
 			<!--  empty the databases -->
 			<item android:id="@+id/map_menu_empty_database" android:title="@string/map_menu_empty_database" />
+			<!--  service status -->
+			<item android:id="@+id/map_menu_service_status" android:title="@string/map_menu_service_status" />
 		</menu>
 
 	</item>

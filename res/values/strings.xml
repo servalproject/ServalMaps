@@ -47,6 +47,7 @@
     <string name="map_menu_developer">Developer</string>
     <string name="map_menu_mock_locations">Use Mock Locations</string>
     <string name="map_menu_empty_database">Empty Databases</string>
+    <string name="map_menu_service_status">Service Status</string>
     <string name="menu_shutdown">Exit</string>
     <string name="menu_about">About</string>
     <!--  add incident resources -->
@@ -81,11 +82,19 @@
     <!--  about resources -->
     <string name="lbl_about_title">About Serval Mapping Services</string>
     <string name="lbl_about_text">
+    This application is part of the <a href="http://www.servalproject.org">Serval Project</a> and relies on its resilient mesh network technology.
+    \n\n
     The <a href="http://developer.servalproject.org/twiki/bin/view/Main/PublicAlphaMappingService">Mapping Services</a> application is licensed using the <a href="http://www.gnu.org/licenses/gpl.html">GPLv3 license</a>.
-    \n\nPortions of this software are based on <a href="http://developer.android.com">Android</a> example code using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0 license</a>.
-    \n\nThis application is part of the <a href="http://www.servalproject.org">Serval Project</a> and relies on its resilient mesh network technology.
-    \n\nThe mapping capabilities of this application are powered by <a href="http://code.google.com/p/mapsforge/">mapsforge</a> using data sourced from <a href="http://www.openstreetmap.org/">OpenStreetMap</a> licensed under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a> license. 
-    \n\nThe markers are based on the template provided by the <a href="http://mapicons.nicolasmollet.com/">Map Icons Collection</a> licensed under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> license.
+    \n\n
+    Portions of the application are based on example <a href="http://developer.android.com">Android</a> code licensed using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0 license</a>.
+    \n\n
+    The mapping functionality uses the <a href="http://code.google.com/p/mapsforge/">mapsforge</a> library licensed using the <a href="http://www.gnu.org/licenses/lgpl.html">LGPLv3 license</a>. The map uses data sourced from <a href="http://www.openstreetmap.org/">OpenStreetMap</a> licensed using the <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</a> license. 
+    \n\n
+    The markers are based on the template provided by the <a href="http://mapicons.nicolasmollet.com/">Map Icons Collection</a> licensed using the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> license.
     </string>
     <string name="btn_about_continue">Back to Map</string>
+    <!--  status activity -->
+    <string name="lbl_status_title">Core Mapping Service Status</string>
+    <string name="lbl_status_text">Determining status, please wait...</string>
+    <string name="btn_status_continue">Back to Map</string>
 </resources>

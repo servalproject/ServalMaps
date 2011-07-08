@@ -354,23 +354,23 @@ public class CoreMappingService extends Service {
 		Bundle serviceStatus = new Bundle();
 		
 		// get the status of all of the threads
-		serviceStatus.putString("incidentThread", getThreadStatus(incidentThread));
-		serviceStatus.putString("locationThread", getThreadStatus(incidentThread));
-		serviceStatus.putString("packetSaverThread", getThreadStatus(packetSaverThread));
-		serviceStatus.putString("incidentRepeaterThread", getThreadStatus(incidentRepeaterThread));
-		serviceStatus.putString("deviceLocationThread", getThreadStatus(incomingLocationsThread));
-		serviceStatus.putString("batmanClientService", getThreadStatus(batmanServiceThread));
+		serviceStatus.putString("thread-incident_collection", getThreadStatus(incidentThread));
+		serviceStatus.putString("thread-location_collection", getThreadStatus(incidentThread));
+		serviceStatus.putString("thread-packet_saver", getThreadStatus(packetSaverThread));
+		serviceStatus.putString("thread-incident_repeater", getThreadStatus(incidentRepeaterThread));
+		serviceStatus.putString("thread-device_location_collection", getThreadStatus(incomingLocationsThread));
+		serviceStatus.putString("batman-batman_client", getThreadStatus(batmanServiceThread));
 		
 		// add the count of packets received
-		serviceStatus.putString("incidentPacketCount", Integer.toString(incidentCount.get()));
-		serviceStatus.putString("locationPacketCount", Integer.toString(locationCount.get()));
+		serviceStatus.putString("packets-incidents", Integer.toString(incidentCount.get()));
+		serviceStatus.putString("packets-locations", Integer.toString(locationCount.get()));
 		
 		// add the number of current peers
-		serviceStatus.putString("knownPeerCount", Integer.toString(batmanPeerList.getPeerCount()));
+		serviceStatus.putString("batman-known_peer_count", Integer.toString(batmanPeerList.getPeerCount()));
 		
 		// add the count of records
-		serviceStatus.putString("incidentRecordCount", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.INCIDENT_RECORD_TYPE, this.getBaseContext())));
-		serviceStatus.putString("locationRecordCount", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.LOCATION_RECORD_TYPE, this.getBaseContext())));
+		serviceStatus.putString("database-incident_record_count", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.INCIDENT_RECORD_TYPE, this.getBaseContext())));
+		serviceStatus.putString("database-location_record_count", Integer.toString(DatabaseUtils.getRecordCount(RecordTypes.LOCATION_RECORD_TYPE, this.getBaseContext())));
 		
 		return serviceStatus;
 	}

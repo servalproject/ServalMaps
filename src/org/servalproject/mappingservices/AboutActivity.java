@@ -58,6 +58,7 @@ public class AboutActivity extends Activity implements OnClickListener {
         // setup the text view so links in it are clickable
         TextView mAboutText = (TextView)findViewById(R.id.lbl_about_text);
         mAboutText.setMovementMethod(LinkMovementMethod.getInstance());
+        //mAboutText.setText(Html.fromHtml(this.getString(R.string.lbl_about_text)));
         
 		
 		if(V_LOG) {
