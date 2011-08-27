@@ -388,6 +388,8 @@ public class DatabaseUtils {
 				writer.print(PacketBuilder.DEFAULT_FIELD_SEPARATOR);
 			}
 		}
+		
+		writer.print("\n");
 	}
 	
 	private static String getCurrentDateAndTime() {
