@@ -9,6 +9,8 @@
 		<menu>
 			<!-- start using mock locations -->
 			<item android:id="@+id/map_menu_mock_locations" android:title="@string/map_menu_mock_locations" />
+			<!--  export from a database -->
+			<item android:id="@+id/map_menu_export_database" android:title="@string/map_menu_export_database" />
 			<!--  empty the databases -->
 			<item android:id="@+id/map_menu_empty_database" android:title="@string/map_menu_empty_database" />
 			<!--  service status -->

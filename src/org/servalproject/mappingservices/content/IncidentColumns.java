@@ -110,7 +110,14 @@ public interface IncidentColumns {
 	 */
 	public static final String TIMESTAMP_UTC_FIELD = "timestamp_utc";
 	
+	/**
+	 * Authority constant for use in the content provider
+	 */
 	public static final String AUTHORITY = "org.servalproject.mappingservices.content.incidentprovider";
+	
+	/**
+	 * Content URI constant for use in the content provider
+	 */
 	public static final Uri CONTENT_URI = Uri.parse("content://org.servalproject.mappingservices.content.incidentprovider" + "/" + TABLE_NAME);
-
+	
 }

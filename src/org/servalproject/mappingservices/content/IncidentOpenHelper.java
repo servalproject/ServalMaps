@@ -111,6 +111,33 @@ public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColu
 			Log.v(TAG, "database path:" + db.getPath());
 		}
 	}
+	
+	/**
+	 * List of all field names as as an array
+	 * 
+	 * @return an array containing a list of field names
+	 */
+	public String[] getFieldList() {
+		
+		String[] mFieldList = new String[13];
+		
+		mFieldList[0] = _ID;
+		mFieldList[1] = PHONE_NUMBER_FIELD;
+		mFieldList[2] = SID_FIELD;
+		mFieldList[3] = IP_ADDRESS_FIELD;
+		mFieldList[4] = TITLE_FIELD;
+		mFieldList[5] = DESCRIPTION_FIELD;
+		mFieldList[6] = CATEGORY_FIELD;
+		mFieldList[7] = LATITUDE_FIELD;
+		mFieldList[8] = LONGITUDE_FIELD;
+		mFieldList[9] = TIMESTAMP_FIELD;
+		mFieldList[10] = TIMEZONE_FIELD;
+		mFieldList[11] = SIGNATURE_FIELD;
+		mFieldList[12] = TIMESTAMP_UTC_FIELD;
+		
+		return mFieldList;
+		
+	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

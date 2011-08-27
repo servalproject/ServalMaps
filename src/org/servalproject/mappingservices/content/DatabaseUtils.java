@@ -17,8 +17,15 @@
  */
 package org.servalproject.mappingservices.content;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+import org.servalproject.mappingservices.net.PacketBuilder;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -159,13 +166,12 @@ public class DatabaseUtils {
 	}
 	
 	/**
-	 * 
 	 * empty the database tables of the specified database
 	 * 
 	 * @param recordType the record type, as defined in the RecordTypes class
 	 * @param context the context with which to open the database
 	 * 
-	 * @return true if the database was empty, false if an error occurred
+	 * @return true if the database was emptied, false if an error occurred
 	 * 
 	 * @throws IllegalArgumentException if the record type is not valid
 	 * @throws IllegalArgumentException if the context is null
@@ -216,4 +222,179 @@ public class DatabaseUtils {
 		return true;
 	}
 	
+	/**
+	 * export the specified database into the specified file
+	 * 
+	 * @param recordType the record type, as defined in the RecordTypes class
+	 * @param context the context with which to open the database
+	 * @param exportPath the path to the export file
+	 * 
+	 * @return true if the database was empty, false if an error occurred
+	 * 
+	 * @throws IllegalArgumentException if the record type is not valid
+	 * @throws IllegalArgumentException if the context is null
+	 * @throws IllegalArgumentException if the exportPath is null
+	 * @throws IOException              if something bad happens during an IO opperation
+	 * 
+	 */
+	public static void exportDatabase(int recordType, Context context, String exportPath) throws IOException {
+		
+		// check the parameter
+		if(RecordTypes.isValidType(recordType) == false ) {
+			throw new IllegalArgumentException("the supplied record type was invalid");
+		}
+		
+		if(context == null) {
+			throw new IllegalArgumentException("the context parameter cannot be null");
+		}
+		
+		if(TextUtils.isEmpty(exportPath)) {
+			throw new IllegalArgumentException("the exportPath parameter cannot be null");
+		}
+		
+		// check to see if the supplied export path is available
+		File mExportFile = new File(exportPath);
+		
+		if(mExportFile.exists() == false) {
+			// try to create the directory
+			if(mExportFile.mkdirs() == false) {
+				throw new IOException("unable to create the required export path");
+			}
+		} else if(mExportFile.isDirectory() == false) {
+			throw new IOException("the specified export path already exists and is not a directory");
+		} else if(mExportFile.canWrite() == false) {
+			throw new IOException("the specified export path is not writeable");
+		}
+		
+		SQLiteDatabase   mDatabase;
+		String[]         mFieldList;
+		PrintWriter      mPrintWriter = null;
+		
+		StringBuilder mRecord = null;
+		
+		try {
+			mPrintWriter = openExportFile(recordType, exportPath);
+		} catch (IOException ex) {
+			// TODO update this throw when we're on API level 9
+			//throw new IOException("unable to open the export file", ex);
+			throw new IOException("unable to open the export file");
+		}
+		
+		if(recordType == RecordTypes.INCIDENT_RECORD_TYPE) {
+			
+			IncidentOpenHelper mHelper = new IncidentOpenHelper(context);
+			mFieldList = mHelper.getFieldList();
+			mDatabase = mHelper.getReadableDatabase();
+			
+			// output the file header
+			writeFileHeader(mPrintWriter, recordType, mFieldList);
+			
+			Cursor mCursor = mDatabase.query(IncidentOpenHelper.TABLE_NAME, null, null, null, null, null, IncidentOpenHelper._ID);
+			
+			while(mCursor.moveToNext()) {
+				
+				mRecord = new StringBuilder();
+				
+				for(int i = 0; i < mFieldList.length; i++) {
+					
+					mRecord.append(mCursor.getString(mCursor.getColumnIndex(mFieldList[i])));
+					mRecord.append(PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				}
+				
+				mRecord.deleteCharAt(mRecord.length() -1);
+				
+				mPrintWriter.println(mRecord.toString());
+			}
+			
+			// play nice and tidy up
+			mRecord = null;
+			mCursor.close();
+			mDatabase.close();
+			mHelper.close();
+			mPrintWriter.close();
+			
+		} else if(recordType == RecordTypes.LOCATION_RECORD_TYPE) {
+			
+			LocationOpenHelper mHelper = new LocationOpenHelper(context);
+			mFieldList = mHelper.getFieldList();
+			mDatabase = mHelper.getReadableDatabase();
+			
+			// output the file header
+			writeFileHeader(mPrintWriter, recordType, mFieldList);
+
+			Cursor mCursor = mDatabase.query(LocationOpenHelper.TABLE_NAME, null, null, null, null, null, LocationOpenHelper._ID);
+			
+			while(mCursor.moveToNext()) {
+				
+				mRecord = new StringBuilder();
+				
+				for(int i = 0; i < mFieldList.length; i++) {
+					
+					mRecord.append(mCursor.getString(mCursor.getColumnIndex(mFieldList[i])));
+					mRecord.append(PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+				}
+				
+				mRecord.deleteCharAt(mRecord.length() -1);
+				
+				mPrintWriter.println(mRecord.toString());
+			}
+			
+			// play nice and tidy up
+			mRecord = null;
+			mCursor.close();
+			mDatabase.close();
+			mHelper.close();
+			mPrintWriter.close();
+		}
+		
+	}
+	
+	private static PrintWriter openExportFile(int recordType, String exportPath) throws IOException {
+		
+		PrintWriter mPrinter;
+		
+		String mFileName = null;
+		
+		if(recordType == RecordTypes.INCIDENT_RECORD_TYPE) {
+			mFileName = "incidents-";
+		} else if(recordType == RecordTypes.LOCATION_RECORD_TYPE) {
+			mFileName = "locations-";
+		}
+		
+		mFileName = mFileName + Long.toString(getCurrentTimeAsUtc()) + ".txt";
+		
+		mPrinter = new PrintWriter(new File(exportPath + mFileName));
+		
+		return mPrinter;
+	}
+	
+	private static void writeFileHeader(PrintWriter writer, int recordType, String[] fieldList) {
+		
+		writer.println("# export of data from the ServalMappingService commenced: " + getCurrentDateAndTime());
+		writer.print("# data contained in this file: ");
+		
+		if(recordType == RecordTypes.INCIDENT_RECORD_TYPE) {
+			writer.print("incidents\n");
+		} else if(recordType == RecordTypes.LOCATION_RECORD_TYPE) {
+			writer.print("locations\n");
+		}
+		
+		writer.print("# ");
+		
+		for(int i = 0; i < fieldList.length; i++) {
+			writer.print(fieldList[i]);
+			
+			if(i < fieldList.length -1) {
+				writer.print(PacketBuilder.DEFAULT_FIELD_SEPARATOR);
+			}
+		}
+	}
+	
+	private static String getCurrentDateAndTime() {
+
+		GregorianCalendar mCalendar = new GregorianCalendar();
+		DateFormat mFormatter = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+
+		return mFormatter.format(mCalendar.getTime());
+	}
 }

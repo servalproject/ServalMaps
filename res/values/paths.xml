@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- ensure that all paths are complete, no relative paths, and that they end in / -->
+	<!-- parent path for all files on the sd card -->
+    <string name="paths_parent_path">/sdcard/serval/mapping-services/</string>
+    <!-- map data path, where the mapsforge map data is stored -->
+    <string name="paths_map_data">/sdcard/serval/mapping-services/mapsforge/</string>
+    <!-- data export path -->
+    <string name="paths_export_data">/sdcard/serval/mapping-services/exports/</string>
+    <!-- where images are stored -->
+    <string name="paths_image_data">/sdcard/serval/mapping-services/images/</string>
+</resources>

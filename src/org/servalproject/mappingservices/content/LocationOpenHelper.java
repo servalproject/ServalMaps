@@ -108,6 +108,32 @@ public class LocationOpenHelper extends SQLiteOpenHelper implements LocationColu
 			Log.v(TAG, "database path:" + db.getPath());
 		}
 	}
+	
+	/**
+	 * List of all field names as as an array
+	 * 
+	 * @return an array containing a list of field names
+	 */
+	public String[] getFieldList() {
+		
+		String[] mFieldList = new String[12];
+		
+		mFieldList[0] = _ID;
+		mFieldList[1] = PHONE_NUMBER_FIELD;
+		mFieldList[2] = SID_FIELD;
+		mFieldList[3] = TYPE_FIELD;
+		mFieldList[4] = IP_ADDRESS_FIELD;
+		mFieldList[5] = LATITUDE_FIELD;
+		mFieldList[6] = LONGITUDE_FIELD;
+		mFieldList[7] = TIMESTAMP_FIELD;
+		mFieldList[8] = TIMEZONE_FIELD;
+		mFieldList[9] = SIGNATURE_FIELD;
+		mFieldList[10] = SELF_FIELD;
+		mFieldList[11] = TIMESTAMP_UTC_FIELD;
+
+		return mFieldList;
+		
+	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

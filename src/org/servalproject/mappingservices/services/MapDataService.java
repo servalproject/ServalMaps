@@ -3,7 +3,7 @@ package org.servalproject.mappingservices.services;
 import java.io.File;
 import java.io.FileFilter;
 
-import org.servalproject.mappingservices.MapActivity;
+import org.servalproject.mappingservices.R;
 
 import android.app.Service;
 import android.content.Intent;
@@ -94,6 +94,10 @@ public class MapDataService extends Service {
 	// method to get the number of map files available
 	private Bundle getMapFileCount() {
 		
+		if(V_LOG) {
+			Log.v(TAG, "getting the map file count");
+		}
+		
 		// define a default bundle
 		Bundle mBundle = new Bundle();
 		mBundle.putInt("fileCount", 0);
@@ -104,6 +108,10 @@ public class MapDataService extends Service {
 		if(mFileList != null) {
 			mBundle = new Bundle();
 			mBundle.putInt("fileCount", mFileList.length);
+		}
+		
+		if(V_LOG) {
+			Log.v(TAG, "returning the map file count");
 		}
 		
 		// return the bundle
@@ -136,7 +144,7 @@ public class MapDataService extends Service {
 		String[] mFileList = null;
 		
 		// get a handle to the directory where the files are stored
-		File mParentDir = new File(MapActivity.MAP_DATA_DIR);
+		File mParentDir = new File(this.getString(R.string.paths_map_data));
 		
 		// check to see if we can access the directory
 		if(mParentDir.canRead() == false || mParentDir.isDirectory() == false) {

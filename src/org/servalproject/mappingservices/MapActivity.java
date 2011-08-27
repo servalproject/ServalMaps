@@ -58,11 +58,6 @@ import android.widget.Toast;
 public class MapActivity extends org.mapsforge.android.maps.MapActivity implements Runnable{
 	
 	/**
-	 * directory where map data is stored
-	 */
-	public static final String MAP_DATA_DIR = "/sdcard/serval/mapping-services/";
-	
-	/**
 	 * name of the default map data file
 	 */
 	public static final String MAP_DATA_FILE = "map-data.map";
@@ -85,6 +80,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
 	private final String TAG = "ServalMaps-MA";
 	
 	private static final int DIALOG_EMPTY_DB = 0;
+	private static final int DIALOG_EXPORT_DB = 1;
+	private static final CharSequence[] DATABASE_LIST = {"Incidents", "Locations"};
 	
 	
 	/*
@@ -129,7 +126,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         MapView mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(true);
-        mapView.setMapFile(MAP_DATA_DIR + MAP_DATA_FILE);
+        mapView.setMapFile(this.getString(R.string.paths_map_data) + MAP_DATA_FILE);
         setContentView(mapView);
         
         // load map marker images
@@ -219,6 +216,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
         	}
         	mStatus = true;
             break;
+        case R.id.map_menu_export_database:
+        	// show a dialog to determine which database to export
+        	showDialog(DIALOG_EXPORT_DB);
+        	mStatus=true;
+        	break;
         case R.id.map_menu_empty_database:
         	// show a dialog to confirm this action
         	showDialog(DIALOG_EMPTY_DB);
@@ -244,12 +246,12 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     @Override
     protected Dialog onCreateDialog(int id) {
     	Dialog mDialog = null;
+		AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
     	
     	// determine which dialog to create
     	switch(id) {
     	case DIALOG_EMPTY_DB:
     		// show the empty database confirmation dialog
-    		AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
     		mBuilder.setMessage(this.getString(R.string.map_alert_empty_db_msg));
     		mBuilder.setCancelable(false);
     		mBuilder.setPositiveButton(this.getString(R.string.map_alert_yes), new DialogInterface.OnClickListener() {
@@ -261,6 +263,18 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     			public void onClick(DialogInterface dialog, int id) {
     				dialog.cancel();
     			}
+    		});
+    		
+    		mDialog = mBuilder.create();
+    		break;
+    	case DIALOG_EXPORT_DB:
+    		// show the export database confirmation dialog
+
+    		mBuilder.setTitle(this.getString(R.string.map_alert_export_db_msg));
+    		mBuilder.setItems(DATABASE_LIST, new DialogInterface.OnClickListener() {
+    		    public void onClick(DialogInterface dialog, int item) {
+    		    	MapActivity.this.exportDb(item);
+    		    }
     		});
     		
     		mDialog = mBuilder.create();
@@ -288,6 +302,29 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     	} else {
     		Toast.makeText(this.getApplicationContext(), R.string.map_empty_db_fail, Toast.LENGTH_SHORT).show();
     	}
+    }
+    
+    /*
+     * private method used to export a database
+     */
+    private void exportDb(int item) {
+    	try {
+    		switch(item) {
+	    		case 0:
+	    			// export incidents
+	    			DatabaseUtils.exportDatabase(RecordTypes.INCIDENT_RECORD_TYPE, this.getApplicationContext(), this.getString(R.string.paths_export_data));
+	    			break;
+	    		case 1:
+	    			// export locations
+	    			DatabaseUtils.exportDatabase(RecordTypes.LOCATION_RECORD_TYPE, this.getApplicationContext(), this.getString(R.string.paths_export_data));
+	    			break;
+    		}	
+    	} catch (IOException e) {
+    		Log.e(TAG, "export of a database fialed", e);
+    		Toast.makeText(this.getApplicationContext(), R.string.map_export_db_fail, Toast.LENGTH_SHORT).show();
+    	}
+    	
+    	Toast.makeText(this.getApplicationContext(), R.string.map_export_db_ok, Toast.LENGTH_SHORT).show();
     }
 
     /*

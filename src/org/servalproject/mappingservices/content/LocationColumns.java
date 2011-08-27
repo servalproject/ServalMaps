@@ -105,8 +105,12 @@ public interface LocationColumns {
 	public static final String TIMESTAMP_UTC_FIELD = "timestamp_utc";
 	
 	/**
-	 * the content URI that represents this data
+	 * Authority constant for use in the content provider
 	 */
 	public static final String AUTHORITY = "org.servalproject.mappingservices.content.locationprovider";
+	
+	/**
+	 * Content URI constant for use in the content provider
+	 */
 	public static final Uri CONTENT_URI = Uri.parse("content://org.servalproject.mappingservices.content.locationprovider" + "/" + TABLE_NAME);
 }

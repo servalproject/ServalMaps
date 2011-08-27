@@ -25,6 +25,9 @@
     <string name="map_empty_db_ok">All database records have been deleted</string>
     <string name="map_empty_db_partial">Some database records have been deleted, check the log for details</string>
     <string name="map_empty_db_fail">Unable to delete database records, check the log for details</string>
+    <string name="map_alert_export_db_msg">Pick a Database</string>
+    <string name="map_export_db_ok">The database has been successfully exported</string>
+    <string name="map_export_db_fail">The database export has failed. Check the error log for details</string>
     <!--  resources for the ViewIncidentActivity -->
     <string name="incident_view_added_by">Added by:</string>
     <string name="incident_view_incident_age">Incident Age:</string>
@@ -46,6 +49,7 @@
     <string name="map_menu_new_incident">Add Incident</string>
     <string name="map_menu_developer">Developer</string>
     <string name="map_menu_mock_locations">Use Mock Locations</string>
+    <string name="map_menu_export_database">Export a Database</string>
     <string name="map_menu_empty_database">Empty Databases</string>
     <string name="map_menu_service_status">Service Status</string>
     <string name="menu_shutdown">Exit</string>
@@ -69,7 +73,7 @@
     <string name="lbl_disclaimer_text">Serval Mapping Services will store geographic location information locally, and will also broadcast it over the network. By continuing, you accept that this information will be broadcast. Serval has no long term repository storage of location details. Communications made using this software are not secure or private and data may also be witnessed by someone other than the intended recipient.</string>
     <string name="btn_disclaimer_continue">I Understand</string>
     <string name="disclaimer_no_map_file_error">Cannot use application at this time - No map data files available</string>
-    <string name="disclaimer_missing_map_file_error">Cannot use application at this time - Unable to locate the \'%s\' file</string>
+    <string name="disclaimer_missing_map_file_error">Cannot use application at this time - Unable to locate the map data file file</string>
     <!--  contact peer activity -->
     <string name="lbl_contact_peer_title">Contact Peer</string>
     <string name="lbl_contact_number">Peer:</string>  
