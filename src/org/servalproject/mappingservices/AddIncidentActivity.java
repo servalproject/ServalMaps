@@ -46,8 +46,6 @@ import android.widget.Toast;
 /**
  * Activity that allows a user to add a new incident
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class AddIncidentActivity extends Activity implements OnClickListener {
 	

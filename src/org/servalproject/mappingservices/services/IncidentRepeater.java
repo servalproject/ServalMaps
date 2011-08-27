@@ -32,9 +32,7 @@ import android.util.Log;
 /**
  * Periodically randomly selects an incident report and sends it on the network
  * as a way of ensuring peers get as a complete set of incidents as possible
- *  
- * @author corey.wallis@servalproject.org
- *
+ * 
  */
 
 public class IncidentRepeater implements Runnable{

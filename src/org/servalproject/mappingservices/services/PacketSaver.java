@@ -37,8 +37,6 @@ import android.util.Log;
 /**
  * Save the data carried by the packets into the databases for further processing
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class PacketSaver implements Runnable {
 	

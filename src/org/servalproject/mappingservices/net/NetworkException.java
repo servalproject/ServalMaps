@@ -20,8 +20,6 @@ package org.servalproject.mappingservices.net;
 /**
  * An exception thrown by one of the classes in the org.servalproject.mappingservices.net package
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class NetworkException extends RuntimeException {
 

@@ -34,8 +34,6 @@ import android.widget.Toast;
 /**
  * Extend the ArrayItemizedOverlay class from the mapsforge package to include
  * functionality required by the app
- * 
- * @author corey.wallis@servalproject.org
  *
  */
 public class OverlayList extends ArrayItemizedOverlay {

@@ -34,8 +34,6 @@ import android.widget.Toast;
 /**
  * Activity that displays details of an incident to the user
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class ViewIncidentActivity extends Activity {
 	

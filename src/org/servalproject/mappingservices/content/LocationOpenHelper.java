@@ -25,7 +25,6 @@ import android.util.Log;
 
 /**
  * Manages the database used to store location information
- * @author corey.wallis@servalproject.org
  *
  */
 public class LocationOpenHelper extends SQLiteOpenHelper implements LocationColumns{

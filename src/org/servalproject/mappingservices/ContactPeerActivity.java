@@ -36,8 +36,6 @@ import android.widget.Toast;
 /**
  * Activity that allows a user to contact a new incident
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class ContactPeerActivity extends Activity implements OnClickListener {
 	

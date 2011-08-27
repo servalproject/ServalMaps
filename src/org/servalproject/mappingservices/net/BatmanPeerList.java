@@ -22,8 +22,6 @@ import java.util.ArrayList;
 /**
  * A class to represent a list of batman peers that can be shared
  * between threads
- * 
- * @author corey.wallis@servalproject.org
  *
  */
 public class BatmanPeerList {

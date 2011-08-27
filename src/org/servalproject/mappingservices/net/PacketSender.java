@@ -32,8 +32,6 @@ import android.util.Log;
 /**
  * A class used to send packets on the network to 
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class PacketSender {
 	

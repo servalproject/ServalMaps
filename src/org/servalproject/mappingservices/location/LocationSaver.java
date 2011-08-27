@@ -40,8 +40,6 @@ import android.util.Log;
 /**
  * save new location data to the database and sends new location packets
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class LocationSaver implements Runnable {
 	

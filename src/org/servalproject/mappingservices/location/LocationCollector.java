@@ -29,8 +29,6 @@ import android.util.Log;
 /**
  * Class used to receive notifications of new location data from the
  * android location subsystem
- * 
- * @author corey.wallis@servalproject.org
  *
  */
 public class LocationCollector implements LocationListener {

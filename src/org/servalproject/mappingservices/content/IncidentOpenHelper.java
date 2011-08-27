@@ -26,8 +26,7 @@ import android.util.Log;
 
 /**
  * Manages the database used to store location information
- * 
- * @author corey.wallis@servalproject.org
+ *
  */
 public class IncidentOpenHelper extends SQLiteOpenHelper implements IncidentColumns {
 	

@@ -28,11 +28,8 @@ import android.location.LocationManager;
 import android.util.Log;
 
 /**
- * 
  * use mock locations to populate the locations via the GPS_Provider
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 
 public class MockLocationCreator implements Runnable {

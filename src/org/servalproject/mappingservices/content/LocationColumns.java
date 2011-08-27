@@ -23,8 +23,6 @@ import android.provider.BaseColumns;
 
 /**
  * An interface defining the constants that are used for accessing location data
- * 
- * @author corey.wallis@servalproject.org
  *
  */
 public interface LocationColumns {

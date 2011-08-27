@@ -37,8 +37,6 @@ import android.util.Log;
 /**
  * A class used to build incident and location packets
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class PacketBuilder {
 	

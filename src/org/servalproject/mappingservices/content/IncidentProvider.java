@@ -29,8 +29,6 @@ import android.text.TextUtils;
 /**
  * Manages access to the saved incident data used by the mapping service
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class IncidentProvider extends ContentProvider implements IncidentColumns {
 

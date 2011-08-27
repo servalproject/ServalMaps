@@ -45,8 +45,6 @@ import android.widget.TextView;
 /**
  * Activity that shows the status of the core mapping services
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class StatusActivity extends Activity implements OnClickListener {
 	

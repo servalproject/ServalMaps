@@ -35,8 +35,6 @@ import android.util.Log;
  * A client class to the ServiceStatus service in the batphone software
  * Used to get a list of available peers
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class BatmanServiceClient implements Runnable {
 	

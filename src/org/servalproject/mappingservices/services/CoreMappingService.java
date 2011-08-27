@@ -50,8 +50,6 @@ import android.util.Log;
 /**
  * Service to manage the collection of incoming location and incident packets
  * and put them in the appropriate database
- * 
- * @author corey.wallis@servalproject.org
  *
  */
 public class CoreMappingService extends Service {

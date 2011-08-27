@@ -30,8 +30,6 @@ import android.util.Log;
 /**
  * Collect UDP packets and keep a count of the number received
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class PacketCollector implements Runnable{
 	

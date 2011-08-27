@@ -27,8 +27,6 @@ import android.text.TextUtils;
  * Extend the OverlayItem class from the mapsforge package to include
  * info required by the app
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class OverlayItem extends org.mapsforge.android.maps.OverlayItem {
 	

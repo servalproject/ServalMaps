@@ -25,8 +25,6 @@ import android.text.TextUtils;
 /**
  * extend the base Android Application class so that data can be shared between activities
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class MappingServicesApplication extends Application {
 	

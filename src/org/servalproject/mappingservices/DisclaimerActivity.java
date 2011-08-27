@@ -38,6 +38,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+/**
+ * An activity that displays a disclaimer when the application starts
+ *
+ */
 public class DisclaimerActivity extends Activity implements OnClickListener {
 	
 	/*

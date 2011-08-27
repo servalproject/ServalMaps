@@ -20,8 +20,6 @@ package org.servalproject.mappingservices.content;
 /**
  * Define constants to identify record types
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class RecordTypes {
 		

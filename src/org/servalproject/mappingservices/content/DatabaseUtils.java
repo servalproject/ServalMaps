@@ -35,11 +35,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * a class used to rerieve information about the databases used by the 
- * application
+ * Provide a variety of convenience methods for interacting with the databases
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class DatabaseUtils {
 	

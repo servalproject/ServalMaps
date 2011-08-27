@@ -20,8 +20,6 @@ package org.servalproject.mappingservices.services;
 /**
  * An exception thrown when the content of a packet doesn't pass validation
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class ValidationException extends RuntimeException {
 

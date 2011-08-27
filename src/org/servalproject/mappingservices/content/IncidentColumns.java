@@ -22,9 +22,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * An interface defining the constants that are used for accessing incident data
- * 
- * @author corey.wallis@servalproject.org
+ * Define the constants that are used for accessing incident data
  *
  */
 

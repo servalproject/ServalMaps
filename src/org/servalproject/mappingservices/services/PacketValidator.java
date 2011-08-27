@@ -23,8 +23,6 @@ import java.util.TimeZone;
 /**
  * A class that can validate packet content before saving to the database
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class PacketValidator {
 	

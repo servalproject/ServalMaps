@@ -52,8 +52,6 @@ import android.widget.Toast;
 /**
  * Activity that displays the map to the user
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class MapActivity extends org.mapsforge.android.maps.MapActivity implements Runnable{
 	

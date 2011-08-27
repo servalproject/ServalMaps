@@ -29,8 +29,6 @@ import android.widget.TextView;
 /**
  * Activity that shows the about message
  * 
- * @author corey.wallis@servalproject.org
- *
  */
 public class AboutActivity extends Activity implements OnClickListener {
 	
