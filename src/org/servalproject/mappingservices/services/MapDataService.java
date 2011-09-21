@@ -202,7 +202,7 @@ public class MapDataService extends Service {
 
 			String name = pathname.getName().toLowerCase();
 			
-			if(name.endsWith(".map")) {
+			if(name.endsWith(".map") && !name.startsWith(".")) {
 				return true;
 			} else {
 				return false;

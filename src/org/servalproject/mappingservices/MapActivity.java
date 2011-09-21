@@ -115,16 +115,23 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity implemen
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.map_activity);
         
+        // get the map data file name
+        Bundle mBundle = this.getIntent().getExtras();
+        String mMapFileName = mBundle.getString("mapFileName");
+        
         if(V_LOG) {
-        	Log.v(TAG, "activity created");
+        	Log.v(TAG, "map file name: " + mMapFileName);
         }
         
         // instantiate mapsforge classes
-        
         MapView mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(true);
-        mapView.setMapFile(this.getString(R.string.paths_map_data) + MAP_DATA_FILE);
+        
+        if(mMapFileName != null) {
+        	mapView.setMapFile(this.getString(R.string.paths_map_data) + mMapFileName);
+        }
+        
         setContentView(mapView);
         
         // load map marker images

@@ -72,8 +72,8 @@
     <string name="lbl_disclaimer_title">Serval Mapping Services</string>
     <string name="lbl_disclaimer_text">Serval Mapping Services will store geographic location information locally, and will also broadcast it over the network. By continuing, you accept that this information will be broadcast. Serval has no long term repository storage of location details. Communications made using this software are not secure or private and data may also be witnessed by someone other than the intended recipient.</string>
     <string name="btn_disclaimer_continue">I Understand</string>
-    <string name="disclaimer_no_map_file_error">Cannot use application at this time - No map data files available</string>
-    <string name="disclaimer_missing_map_file_error">Cannot use application at this time - Unable to locate the map data file file</string>
+    <string name="disclaimer_no_map_file_msg">No map data files available, are you sure you wish to continue?</string>
+    <string name="disclaimer_choose_map_file_msg">Choose a map file to start</string>
     <!--  contact peer activity -->
     <string name="lbl_contact_peer_title">Contact Peer</string>
     <string name="lbl_contact_number">Peer:</string>  

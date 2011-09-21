@@ -17,12 +17,17 @@
  */
 package org.servalproject.mappingservices;
 
+import java.util.Arrays;
+
 import org.servalproject.mappingservices.services.MapDataService;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -36,7 +41,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 /**
  * An activity that displays a disclaimer when the application starts
@@ -47,7 +51,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	/*
 	 * private class level constants
 	 */
-//	private final boolean V_LOG = true;
+	private final boolean V_LOG = true;
 	private final String TAG = "ServalMaps-DA";
 	
 	/*
@@ -55,6 +59,14 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 */
 	private Button continueButton;
 	private DisclaimerActivity self;
+	private String mapFileName = null;
+	private String[] mapFileNames = null;
+	
+	/*
+	 * private level constants
+	 */
+	private final int DIALOG_OK_CONTINUE = 0;
+	private final int DIALOG_MAP_FILE_CHOOSER = 1;
 	
 	/*
      * Called when the activity is first created
@@ -77,7 +89,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
         // bind to the service
         bindService(new Intent(this, MapDataService.class), connection, Context.BIND_AUTO_CREATE);
         
-        // get the phone number and sid from the Serval batphone sticky
+        // get the phone number and sid from the Serval sticky
         BatphoneBroadcast mBroadcast = new BatphoneBroadcast(this.getApplicationContext());
         IntentFilter mBroadcastFilter = new IntentFilter("org.servalproject.SET_PRIMARY");
         //mBroadcastFilter.addDataScheme("tel");
@@ -89,14 +101,88 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		// determine which button was touched
 		if(v.getId() == R.id.btn_disclaimer_continue) {
 			
-			// start the service and show the map
-			Intent mServiceIntent = new Intent(this, org.servalproject.mappingservices.services.CoreMappingService.class);
-			startService(mServiceIntent);
-			
-			// start the map activity and be informed when it finishes 
-			Intent mMapIntent = new Intent(this, org.servalproject.mappingservices.MapActivity.class);
-	        startActivityForResult(mMapIntent, 0);
+			// determine what action to take based on the number of files available
+			if(mapFileName == null && mapFileNames == null) {
+				// show a dialog asking for confirmation to continue when no map files are available
+				showDialog(DIALOG_OK_CONTINUE);
+			} else if(mapFileName != null) {
+				// show the map with the only file name available
+				showMapActivity(mapFileName);
+			} else {
+				// show a dialog to select which map data file to use
+				showDialog(DIALOG_MAP_FILE_CHOOSER);
+			}
 		}
+	}
+	
+	/*
+     * (non-Javadoc)
+     * @see android.app.Activity#onCreateDialog(int)
+     */
+    @Override
+    protected Dialog onCreateDialog(int id) {
+    	Dialog mDialog = null;
+		AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+    	
+    	// determine which dialog to create
+    	switch(id) {
+    	case DIALOG_OK_CONTINUE:
+    		// show the OK to continue without data dialog
+    		mBuilder.setMessage(this.getString(R.string.disclaimer_no_map_file_msg));
+    		mBuilder.setCancelable(false);
+    		
+    		mBuilder.setPositiveButton(this.getString(R.string.map_alert_yes), new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				DisclaimerActivity.this.showMapActivity(null);
+    			}
+    		});
+    		
+    		mBuilder.setNegativeButton(this.getString(R.string.map_alert_no), new DialogInterface.OnClickListener() {
+    			public void onClick(DialogInterface dialog, int id) {
+    				dialog.cancel();
+    			}
+    		});
+    		
+    		mDialog = mBuilder.create();
+    		break;
+    	case DIALOG_MAP_FILE_CHOOSER:
+    		// show the list of files to choose from
+    		mBuilder.setTitle(this.getString(R.string.disclaimer_choose_map_file_msg));
+    		mBuilder.setCancelable(false);
+    		
+    		mBuilder.setItems(mapFileNames, new DialogInterface.OnClickListener() {
+    		    public void onClick(DialogInterface dialog, int item) {
+    		    	DisclaimerActivity.this.showMapActivity(mapFileNames[item]);
+    		    }
+    		});
+    	
+    		mDialog = mBuilder.create();
+    		break;
+	    default:
+			mDialog = null;
+		}
+		
+		return mDialog;
+	}
+	
+	// private method to go to the map activity
+	private void showMapActivity(String mapFileName) {
+		
+		// start the services
+		Intent mServiceIntent = new Intent(this, org.servalproject.mappingservices.services.CoreMappingService.class);
+		startService(mServiceIntent);
+		
+		// show the map
+		Intent mMapIntent = new Intent(this, org.servalproject.mappingservices.MapActivity.class);
+		mMapIntent.putExtra("mapFileName", mapFileName); // pass the name of the map data file to the activity
+		startActivityForResult(mMapIntent, 0); // be informed when the activity finishes
+		
+		
+		// start the map activity and be informed when it finishes 
+//		Intent mMapIntent = new Intent(this, org.servalproject.mappingservices.MapActivity.class);
+//        startActivityForResult(mMapIntent, 0);
+		
+		
 	}
 	
 	/*
@@ -129,18 +215,38 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
             case MapDataService.MSG_FILE_LIST:
             	Bundle mBundle = msg.getData();
             	
+            	// see how many possible files are available
+            	if(mBundle.getInt("fileCount") == 1) {
+            		
+            		String[] mFileList = mBundle.getStringArray("fileList");
+            		mapFileName = mFileList[0];
+            		
+            	} else if(mBundle.getInt("fileCount") > 0) {
+            		
+            		mapFileNames = mBundle.getStringArray("fileList");
+            		
+            		if(V_LOG) {
+            			Log.v(TAG, Arrays.toString(mapFileNames));
+            		}
+            		
+            	}
+            	
+            	/*
+            	
             	if(mBundle.getInt("fileCount") > 0) {
             		// check to see if the list contains the file we expect
             		boolean mFound = false;
             		String[] mFileList = mBundle.getStringArray("fileList");
             		
-            		for(int i = 0; i < mFileList.length; i++) {
-            			if(mFileList[i].equals(MapActivity.MAP_DATA_FILE) == true) {
-            				mFound = true;
-            				continue;
-            			}
-            		}
             		
+//            		
+//            		for(int i = 0; i < mFileList.length; i++) {
+//            			if(mFileList[i].equals(MapActivity.MAP_DATA_FILE) == true) {
+//            				mFound = true;
+//            				continue;
+//            			}
+//            		}
+//            		
             		if(mFound == false) {
             			//TODO be gentler about the fact that map data cannot be found
                 		Toast.makeText(self.getApplicationContext(), String.format(self.getString(R.string.disclaimer_missing_map_file_error), MapActivity.MAP_DATA_FILE) , Toast.LENGTH_LONG).show();
@@ -152,6 +258,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
             		Toast.makeText(self.getApplicationContext(), R.string.disclaimer_no_map_file_error, Toast.LENGTH_LONG).show();
             		self.onActivityResult(0, 0, null);
             	}
+            	*/
                 default:
                     super.handleMessage(msg);
             }
