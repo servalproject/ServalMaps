@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/lbl_app_name"
+        android:id="@+id/disclaimer_ui_lbl_app_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
@@ -16,7 +16,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:id="@+id/lbl_about"
+        android:id="@+id/disclaimer_ui_lbl_about"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
@@ -25,7 +25,7 @@
         android:text="@string/disclaimer_ui_lbl_about" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/disclaimer_ui_btn_continue"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"

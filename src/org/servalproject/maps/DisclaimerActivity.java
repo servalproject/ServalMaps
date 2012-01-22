@@ -21,13 +21,41 @@
 package org.servalproject.maps;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
-public class DisclaimerActivity extends Activity {
-    /** Called when the activity is first created. */
+public class DisclaimerActivity extends Activity implements OnClickListener {
+    
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.disclaimer);
+        
+        // capture the touch on the buttons
+        Button mButton = (Button) findViewById(R.id.disclaimer_ui_btn_continue);
+        mButton.setOnClickListener(this);
     }
+    
+    /*
+     * (non-Javadoc)
+     * @see android.view.View.OnClickListener#onClick(android.view.View)
+     */
+	@Override
+	public void onClick(View v) {
+		
+		// check which button was touched
+		if(v.getId() == R.id.disclaimer_ui_btn_continue) {
+			// show the send a message activity
+			Intent mSendActivityIntent = new Intent("org.servalproject.maps.MAP_DATA");
+			startService(mSendActivityIntent);
+		}
+		
+	}
 }

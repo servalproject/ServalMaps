@@ -5,6 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="7" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -18,6 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".services.MapDataService">
+            <intent-filter>
+                <action android:name="org.servalproject.maps.MAP_DATA" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
