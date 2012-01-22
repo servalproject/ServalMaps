@@ -1,0 +1,8 @@
+.classpath
+.project
+.settings
+bin
+gen
+local.properties
+proguard.cfg
+.DS_Store
