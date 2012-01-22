@@ -6,6 +6,13 @@
 
     <uses-sdk android:minSdkVersion="7" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="org.servalproject.maps.MAP_DATA"/>
+    <permission 
+        android:description="@string/system_permission_map_data_description" 
+        android:protectionLevel="normal" 
+        android:name="org.servalproject.maps.MAP_DATA" 
+        android:label="@string/system_permission_map_data_label">
+    </permission>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -19,7 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".services.MapDataService">
+        <service 
+            android:name=".services.MapDataService"
+            android:permission="org.servalproject.maps.MAP_DATA" android:exported="true">
             <intent-filter>
                 <action android:name="org.servalproject.maps.MAP_DATA" />
             </intent-filter>

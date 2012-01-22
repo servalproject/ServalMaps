@@ -90,11 +90,13 @@ public class MapDataService extends IntentService {
 				mMapDataInfoList.add(mMapDataInfo);
 			}
 			
-			mBroadcastIntent.putExtra("files", mMapDataInfoList.toArray());
+			mBroadcastIntent.putParcelableArrayListExtra("files", mMapDataInfoList);
+			//mBroadcastIntent.putExtra("files", mMapDataInfoList.toArray());
 		}
 		
 		// send the broadcast intent
-		sendBroadcast(mBroadcastIntent);
+		//sendBroadcast(mBroadcastIntent);
+		this.sendBroadcast(mBroadcastIntent, "org.servalproject.maps.MAP_DATA");
 	}
 	
 	// private method to check on the status of the path that we expect
@@ -112,7 +114,7 @@ public class MapDataService extends IntentService {
 	// private method to get the list of map data files
 	private String[] getFileList(String path) {
 		
-		String[] mFileList = null;
+		String[] mFileList = new String[0];
 		
 		File mMapDataDir = new File(path);
 		

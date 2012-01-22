@@ -20,15 +20,34 @@
 
 package org.servalproject.maps;
 
+import java.util.ArrayList;
+
+import org.servalproject.maps.services.MapDataInfo;
+
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class DisclaimerActivity extends Activity implements OnClickListener {
-    
+	
+	/*
+	 * private class level constants
+	 */
+	private final boolean V_LOG = true;
+	private final String  TAG = "DisclaimerActivity";
+	
+	/*
+	 * private class level variables
+	 */
+    IntentFilter BroadcastFilter;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -41,6 +60,11 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
         // capture the touch on the buttons
         Button mButton = (Button) findViewById(R.id.disclaimer_ui_btn_continue);
         mButton.setOnClickListener(this);
+        
+        // register the broadcast receiver
+        BroadcastFilter = new IntentFilter();
+        BroadcastFilter.addAction("org.servalproject.maps.MAP_DATA_LIST");
+        registerReceiver(MapDataReceiver, BroadcastFilter);
     }
     
     /*
@@ -58,4 +82,54 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		}
 		
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@Override
+	public void onPause() {
+		// unregister the receiver when the activity is no longer active
+		unregisterReceiver(MapDataReceiver);
+		super.onPause();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onResume()
+	 */
+	@Override
+	public void onResume() {
+		// register the receiver again when the activity becomes active
+		registerReceiver(MapDataReceiver, BroadcastFilter);
+		super.onResume();
+	}
+	
+	/*
+	 * a broadcast receiver to get the information from the activity
+	 */
+	private BroadcastReceiver MapDataReceiver = new BroadcastReceiver() {
+		
+		// listen for the appropriate broadcast
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			int mMapFileCount = intent.getIntExtra("count", 0);
+			//MapDataInfo[] mMapDataInfoList = new MapDataInfo[0];
+			ArrayList<MapDataInfo> mMapDataInfoList = null;
+			
+			if(mMapFileCount > 0){
+				mMapDataInfoList = intent.getParcelableArrayListExtra("files");
+			}
+			
+			if(V_LOG) {
+				Log.v(TAG, "File Count: " + mMapFileCount);
+				if(mMapDataInfoList != null) {
+					Log.v(TAG, "Array Count: " + mMapDataInfoList.size());
+				}
+			}
+			
+		}
+		
+	};
 }
