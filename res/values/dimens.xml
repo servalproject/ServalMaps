@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ui_elem_margin_top">10sp</dimen>
+    <dimen name="ui_elem_margin_bottom">10sp</dimen>
+    <dimen name="ui_elem_margin_left">5sp</dimen>
+    <dimen name="ui_elem_margin_right">5sp</dimen>
+</resources>

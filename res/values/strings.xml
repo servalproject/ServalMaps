@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, DisclaimerActivity!</string>
-    <string name="app_name">ServalMaps</string>
+    <string name="app_name">Serval Maps</string>
+    <!-- Disclaimer Activity UI -->
+    <string name="disclaimer_ui_lbl_about">
+        Serval Maps will store geographic location information locally, and will also broadcast it over the network. \n\nBy continuing, you accept that this information will be broadcast. \n\nServal has no long term repository storage of location details. \n\nCommunications made using this software are not secure or private and data may also be witnessed by someone other than the intended recipient.
+    </string>
+    <string name="disclaimer_ui_btn_continue">I understand</string>
 
 </resources>
