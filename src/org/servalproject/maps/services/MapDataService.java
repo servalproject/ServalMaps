@@ -39,7 +39,7 @@ public class MapDataService extends IntentService {
 	/*
 	 * private constants
 	 */
-	private final boolean V_LOG = true;
+	//private final boolean V_LOG = true;
 	private final String TAG = "MapDataService";
 
 	/**
@@ -57,28 +57,22 @@ public class MapDataService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent arg0) {
 		
-		// log verbose info
-		if(V_LOG) {
-			Log.v(TAG, "Intent received");
-		}
-		
-		//debug code
+		// build a path to the location of the map data
 		String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
 		mMapDataPath += getString(R.string.system_path_map_data);
-		Log.v(TAG, mMapDataPath);
+		
+		String[] mMapDataFiles = new String[0];
+		Intent mBroadcastIntent = new Intent("org.servalproject.maps.MAP_DATA_LIST");
 		
 		// check to see if the path is available
 		if(testPath(mMapDataPath) == false) {
 			Log.e(TAG, "unable to access the map data directory");
-			return;
+		} else {
+			// get the list of map data files
+			mMapDataFiles = getFileList(mMapDataPath);
 		}
 		
-		// get the list of map data files
-		String[] mMapDataFiles = getFileList(mMapDataPath);
-		
-		// build the intent
-		// build the intent
-		Intent mBroadcastIntent = new Intent("org.servalproject.maps.MAP_DATA_LIST");
+		// populate the intent the intent
 		mBroadcastIntent.putExtra("count", mMapDataFiles.length);
 		
 		if(mMapDataFiles.length > 0) {
@@ -95,7 +89,6 @@ public class MapDataService extends IntentService {
 		}
 		
 		// send the broadcast intent
-		//sendBroadcast(mBroadcastIntent);
 		this.sendBroadcast(mBroadcastIntent, "org.servalproject.maps.MAP_DATA");
 	}
 	

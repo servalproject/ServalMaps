@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import org.servalproject.maps.services.MapDataInfo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -43,10 +46,16 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	private final boolean V_LOG = true;
 	private final String  TAG = "DisclaimerActivity";
 	
+	private final int NO_FILES_DIALOG = 0;
+	private final int MANY_FILES_DIALOG = 1;
+	
 	/*
 	 * private class level variables
 	 */
-    IntentFilter BroadcastFilter;
+    private IntentFilter BroadcastFilter;
+    private int mapFileCount = 0;
+	private ArrayList<MapDataInfo> mapDataInfoList = null;
+	private CharSequence[] mFileNames = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -80,7 +89,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			Intent mSendActivityIntent = new Intent("org.servalproject.maps.MAP_DATA");
 			startService(mSendActivityIntent);
 		}
-		
 	}
 	
 	/*
@@ -114,22 +122,89 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
-			int mMapFileCount = intent.getIntExtra("count", 0);
-			//MapDataInfo[] mMapDataInfoList = new MapDataInfo[0];
-			ArrayList<MapDataInfo> mMapDataInfoList = null;
-			
-			if(mMapFileCount > 0){
-				mMapDataInfoList = intent.getParcelableArrayListExtra("files");
+			// get the list of files
+			mapFileCount = intent.getIntExtra("count", 0);
+			if(mapFileCount > 0){
+				mapDataInfoList = intent.getParcelableArrayListExtra("files");
 			}
 			
-			if(V_LOG) {
-				Log.v(TAG, "File Count: " + mMapFileCount);
-				if(mMapDataInfoList != null) {
-					Log.v(TAG, "Array Count: " + mMapDataInfoList.size());
-				}
+			// show the appropriate dialog
+			if(mapFileCount == 0) {
+				showDialog(NO_FILES_DIALOG);
+			} else if(mapFileCount == 1) {
+				// show the map activity
+				MapDataInfo mInfo = mapDataInfoList.get(0);
+				showMapActivity(mInfo.getFileName());
+			} else {
+				// show the map file chooser
+				showDialog(MANY_FILES_DIALOG);
 			}
-			
 		}
-		
 	};
+	
+	/*
+	 * dialog related methods
+	 */
+
+	/*
+	 * callback method used to construct the required dialog
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateDialog(int)
+	 */
+	@Override
+	protected Dialog onCreateDialog(int id) {
+	
+		AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+		Dialog mDialog = null;
+			
+		switch(id) {
+		case NO_FILES_DIALOG:
+			// show an alert dialog
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_files)
+			.setCancelable(false)
+			.setPositiveButton(R.string.misc_dialog_yes_button, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					showMapActivity(null);
+				}
+			})
+			.setNegativeButton(R.string.misc_dialog_no_button, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case MANY_FILES_DIALOG:
+			
+			mFileNames = new CharSequence[mapDataInfoList.size()];
+			
+			for(int i = 0; i < mapDataInfoList.size(); i++) {
+				MapDataInfo mInfo = mapDataInfoList.get(i);
+				mFileNames[i] = mInfo.getFileName();
+			}
+			
+			mBuilder.setTitle(R.string.disclaimer_ui_dialog_many_files_title)
+			.setCancelable(false)
+			.setItems(mFileNames, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					showMapActivity(mFileNames[item].toString());
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		default:
+			mDialog = null;
+		}
+	
+		// return the created dialog
+		return mDialog;	
+	}
+	
+	/*
+	 * prepare and show the map activity
+	 */
+	private void showMapActivity(String mapDataFile) {
+		Log.v(TAG, mapDataFile);
+		
+	}
 }

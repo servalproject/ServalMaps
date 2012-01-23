@@ -6,11 +6,17 @@
         Serval Maps will store geographic location information locally, and will also broadcast it over the network. \n\nBy continuing, you accept that this information will be broadcast. \n\nServal has no long term repository storage of location details. \n\nCommunications made using this software are not secure or private and data may also be witnessed by someone other than the intended recipient.
     </string>
     <string name="disclaimer_ui_btn_continue">I understand</string>
+    <string name="disclaimer_ui_dialog_no_files">No map data files found. Do you wish to continue?</string>
+    <string name="disclaimer_ui_dialog_many_files_title">Choose Map Data File</string>
     <!-- System wide strings -->
-    <string name="system_path_map_data">/serval/maps/map-data/</string>
+    <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     
     <!-- permissions -->
     <string name="system_permission_map_data_label">request information on available map data files</string>
     <string name="system_permission_map_data_description">request and receive information about the available map data files</string>
+    
+    <!-- mis strings -->
+    <string name="misc_dialog_yes_button">Yes</string>
+    <string name="misc_dialog_no_button">No</string>
 
 </resources>
