@@ -33,6 +33,7 @@
                 <action android:name="org.servalproject.maps.MAP_DATA" />
             </intent-filter>
         </service>
+        <activity android:name="MapActivity"></activity>
     </application>
 
 </manifest>

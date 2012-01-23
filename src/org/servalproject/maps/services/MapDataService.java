@@ -22,6 +22,7 @@ package org.servalproject.maps.services;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.servalproject.maps.R;
@@ -117,7 +118,12 @@ public class MapDataService extends IntentService {
 			mFileList = new String[mFiles.length];
 
 			for(int i = 0; i < mFiles.length; i++) {
-				mFileList[i] = mFiles[i].getName();
+				try {
+					mFileList[i] = mFiles[i].getCanonicalPath();
+				} catch (IOException e) {
+					Log.e(TAG, "Unable to canonical path for the map files", e);
+					return new String[0];
+				}
 			}
 		}
 		

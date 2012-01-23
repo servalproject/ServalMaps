@@ -38,12 +38,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+/**
+ * activity to show the disclaimer, it is the start activity
+ */
 public class DisclaimerActivity extends Activity implements OnClickListener {
 	
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	//private final boolean V_LOG = true;
 	private final String  TAG = "DisclaimerActivity";
 	
 	private final int NO_FILES_DIALOG = 0;
@@ -204,7 +207,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 * prepare and show the map activity
 	 */
 	private void showMapActivity(String mapDataFile) {
-		Log.v(TAG, mapDataFile);
-		
+		// show the map activity
+		Intent mMapIntent = new Intent(this, org.servalproject.maps.MapActivity.class);
+		mMapIntent.putExtra("mapFileName", mapDataFile);
+		startActivityForResult(mMapIntent, 0);
 	}
 }
