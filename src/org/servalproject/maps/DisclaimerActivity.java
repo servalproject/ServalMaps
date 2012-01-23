@@ -33,7 +33,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -47,7 +46,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
-	private final String  TAG = "DisclaimerActivity";
+	//private final String  TAG = "DisclaimerActivity";
 	
 	private final int NO_FILES_DIALOG = 0;
 	private final int MANY_FILES_DIALOG = 1;

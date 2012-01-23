@@ -34,6 +34,7 @@
             </intent-filter>
         </service>
         <activity android:name="MapActivity"></activity>
+        <service android:name=".services.CoreService"></service>
     </application>
 
 </manifest>

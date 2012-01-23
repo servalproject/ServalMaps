@@ -37,7 +37,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
-	private final String  TAG = "MapActivity";
+	//private final String  TAG = "MapActivity";
+	
+	private Intent coreServiceIntent;
 	
 	/*
 	 * (non-Javadoc)
@@ -47,6 +49,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
+        
+        coreServiceIntent = new Intent(this, org.servalproject.maps.services.CoreService.class);
+        
+        // start the core service
+        startService(coreServiceIntent);
         
         // get the map data file name
         Bundle mBundle = this.getIntent().getExtras();
@@ -62,30 +69,19 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		}
 		
 		setContentView(mMapView);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.mapsforge.android.maps.MapActivity#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
 		
-		// add a notification icon
-		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		// stop the core service
+		stopService(coreServiceIntent);
 		
-		//TODO update this with a better icone
-		int mNotificationIcon = R.drawable.ic_launcher;
-		CharSequence mTickerText = getString(R.string.system_notification_ticker_text);
-		long mWhen = System.currentTimeMillis();
-		
-		Notification mNotification = new Notification(mNotificationIcon, mTickerText, mWhen);
-		mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-		
-		CharSequence mNotificationTitle = getString(R.string.system_notification_title);
-		CharSequence mNotificationContent = getString(R.string.system_notification_content);
-		
-		Intent mNotificationIntent = new Intent(this, org.servalproject.maps.MapActivity.class);
-		mNotificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // make sure we come back to this instance
-		
-		PendingIntent mPendingIntent = PendingIntent.getActivity(this, 0, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-		
-		mNotification.setLatestEventInfo(getApplicationContext(), mNotificationTitle, mNotificationContent, mPendingIntent);
-		
-		mNotificationManager.notify(0, mNotification);
-		
+		super.onDestroy();
 		
 	}
 }
