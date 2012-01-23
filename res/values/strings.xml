@@ -15,7 +15,12 @@
     <string name="system_permission_map_data_label">request information on available map data files</string>
     <string name="system_permission_map_data_description">request and receive information about the available map data files</string>
     
-    <!-- mis strings -->
+    <!-- notification string -->
+    <string name="system_notification_ticker_text">Serval Maps Running</string>
+    <string name="system_notification_title">Serval Maps</string>
+    <string name="system_notification_content">Serval Maps is running and collecting location information</string>
+    
+    <!-- misc strings -->
     <string name="misc_dialog_yes_button">Yes</string>
     <string name="misc_dialog_no_button">No</string>
 

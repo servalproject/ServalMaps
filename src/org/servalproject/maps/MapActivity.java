@@ -21,6 +21,11 @@ package org.servalproject.maps;
 
 import org.mapsforge.android.maps.MapView;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 /**
@@ -57,5 +62,30 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		}
 		
 		setContentView(mMapView);
+		
+		// add a notification icon
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		
+		//TODO update this with a better icone
+		int mNotificationIcon = R.drawable.ic_launcher;
+		CharSequence mTickerText = getString(R.string.system_notification_ticker_text);
+		long mWhen = System.currentTimeMillis();
+		
+		Notification mNotification = new Notification(mNotificationIcon, mTickerText, mWhen);
+		mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
+		
+		CharSequence mNotificationTitle = getString(R.string.system_notification_title);
+		CharSequence mNotificationContent = getString(R.string.system_notification_content);
+		
+		Intent mNotificationIntent = new Intent(this, org.servalproject.maps.MapActivity.class);
+		mNotificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // make sure we come back to this instance
+		
+		PendingIntent mPendingIntent = PendingIntent.getActivity(this, 0, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+		
+		mNotification.setLatestEventInfo(getApplicationContext(), mNotificationTitle, mNotificationContent, mPendingIntent);
+		
+		mNotificationManager.notify(0, mNotification);
+		
+		
 	}
 }
