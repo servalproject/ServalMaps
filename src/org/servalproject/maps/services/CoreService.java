@@ -19,6 +19,7 @@
  */
 package org.servalproject.maps.services;
 
+// why do I suddenly need to add this import?
 import org.servalproject.maps.R;
 
 import android.app.Notification;
@@ -27,6 +28,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -42,6 +44,10 @@ public class CoreService extends Service {
 	private final boolean V_LOG = true;
 	private final String  TAG = "CoreService";
 	
+	// class level variables
+	private LocationCollector locationCollector;
+	private LocationManager locationManager;
+	
 	/*
 	 * called when the service is created
 	 * 
@@ -50,6 +56,12 @@ public class CoreService extends Service {
 	 */
 	@Override
 	public void onCreate() {
+		
+		// create the necessary supporting variables
+		locationCollector = new LocationCollector();
+		
+		// Acquire a reference to the system Location Manager
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
 		if(V_LOG) {
 			Log.v(TAG, "Service Created");
@@ -73,6 +85,8 @@ public class CoreService extends Service {
 		// add the notification icon
 		addNotification();
 		
+		// Register the listener with the Location Manager to receive location updates
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationCollector);
 		
 		// If service gets killed, after returning from here, restart
 	    return START_STICKY;
@@ -121,17 +135,20 @@ public class CoreService extends Service {
 	@Override
 	public void onDestroy() {
 		
-		if(V_LOG) {
-			Log.v(TAG, "Service Destroyed");
-		}
-		
 		// tidy up any used resources etc.
 		
 		// clear the notification
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(STATUS_NOTIFICATION);
 		
+		// stop listening for location updates
+		locationManager.removeUpdates(locationCollector);
+		
 		super.onDestroy();
+		
+		if(V_LOG) {
+			Log.v(TAG, "Service Destroyed");
+		}
 	}
 
 	/*
