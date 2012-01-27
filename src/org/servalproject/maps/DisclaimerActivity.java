@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (C) 2012 The Serval Project
  *
- * This file is part of Serval Software (http://www.servalproject.org)
+ * This file is part of the Serval Maps Software
  *
- * Serval Software is free software; you can redistribute it and/or modify
+ * Serval Maps Software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -22,7 +22,7 @@ package org.servalproject.maps;
 
 import java.util.ArrayList;
 
-import org.servalproject.maps.services.MapDataInfo;
+import org.servalproject.maps.parcelables.MapDataInfo;
 
 import android.app.Activity;
 import android.app.AlertDialog;

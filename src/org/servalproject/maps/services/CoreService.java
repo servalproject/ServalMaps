@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (C) 2012 The Serval Project
  *
- * This file is part of Serval Software (http://www.servalproject.org)
+ * This file is part of the Serval Maps Software
  *
- * Serval Software is free software; you can redistribute it and/or modify
+ * Serval Maps Software is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
@@ -19,7 +19,6 @@
  */
 package org.servalproject.maps.services;
 
-// why do I suddenly need to add this import?
 import org.servalproject.maps.R;
 
 import android.app.Notification;
