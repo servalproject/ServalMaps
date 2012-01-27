@@ -57,7 +57,7 @@ public class CoreService extends Service {
 	public void onCreate() {
 		
 		// create the necessary supporting variables
-		locationCollector = new LocationCollector();
+		locationCollector = new LocationCollector(this.getApplicationContext());
 		
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);

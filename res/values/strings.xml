@@ -29,12 +29,22 @@
     <string name="disclaimer_ui_btn_continue">I understand</string>
     <string name="disclaimer_ui_dialog_no_files">No map data files found. Do you wish to continue?</string>
     <string name="disclaimer_ui_dialog_many_files_title">Choose Map Data File</string>
+    
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     
     <!-- permissions -->
-    <string name="system_permission_map_data_label">request information on available map data files</string>
-    <string name="system_permission_map_data_description">request and receive information about the available map data files</string>
+    <string name="system_permission_map_data_label">Request information on available map data files</string>
+    <string name="system_permission_map_data_description">Request and receive information about the available map data files</string>
+    <string name="system_permission_provider_read_map_items_label">Read information about items on a map</string>
+    <string name="system_permission_provider_read_map_items_description">Read information about the location markers and POI markers on a map</string>
+    <string name="system_permission_provider_write_map_items_label">Write information about items onto a map</string>
+    <string name="system_permission_provider_write_map_items_description">Write information about the location markers and POI markers onto a map</string>
+    
+    <!-- content providers -->
+    <string name="system_provider_map_items_label">Map item information</string>
+    <string name="system_provider_map_items_description">Provides access to location and POI marker items that are on a map</string>
+    
     
     <!-- notification string -->
     <string name="system_notification_ticker_text">Serval Maps Running</string>

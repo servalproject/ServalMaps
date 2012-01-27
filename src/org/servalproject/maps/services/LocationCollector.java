@@ -20,8 +20,17 @@
 
 package org.servalproject.maps.services;
 
+import java.util.TimeZone;
+
+import org.servalproject.maps.provider.MapItemsContract;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.SQLException;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -40,6 +49,24 @@ public class LocationCollector implements LocationListener {
 	 * class level variables
 	 */
 	private Location currentLocation = null;
+	private String timeZone = TimeZone.getDefault().getID();
+	
+	// TODO fill in with real phone and sid values
+	private String phoneNumber = "myphonenumber";
+	private String subscriberId = "mysubscriberid";
+	
+	private ContentResolver contentResolver;
+	
+	public LocationCollector(Context context) {
+
+		super();
+		
+		if(context == null) {
+			throw new IllegalArgumentException("the context parameter is required");
+		}
+		
+		contentResolver = context.getContentResolver();
+	}
 
 	/*
 	 * Called when the location has changed.
@@ -62,11 +89,27 @@ public class LocationCollector implements LocationListener {
 				Log.v(TAG, "Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
 			}
 			
+			//TODO do this database stuff in a AsyncTask to free up the main thread
+			
 			// save the location for later
 			currentLocation = location;
 			
-			// process the new location
-			
+			ContentValues mNewValues = new ContentValues();
+			mNewValues.put(MapItemsContract.Locations.Table.PHONE_NUMBER, phoneNumber);
+			mNewValues.put(MapItemsContract.Locations.Table.SUBSCRIBER_ID, subscriberId);
+			mNewValues.put(MapItemsContract.Locations.Table.LATITUDE, location.getLatitude());
+			mNewValues.put(MapItemsContract.Locations.Table.LONGITUDE, location.getLongitude());
+			mNewValues.put(MapItemsContract.Locations.Table.TIMEZONE, timeZone);
+			mNewValues.put(MapItemsContract.Locations.Table.TIMESTAMP, System.currentTimeMillis());
+
+			try {
+				Uri newRecord = contentResolver.insert(MapItemsContract.Locations.CONTENT_URI, mNewValues);
+				if(V_LOG) {
+					Log.v(TAG, "new location record created with id: " + newRecord.getLastPathSegment());
+				}
+			}catch (SQLException e) {
+				Log.e(TAG, "unable to add new location record", e);
+			}
 		} else {
 			if(V_LOG) {
 				Log.v(TAG, "new location is not better than current location");

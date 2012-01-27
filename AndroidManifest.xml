@@ -37,6 +37,10 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
     <uses-feature android:required="true" android:name="android.hardware.wifi"/>
+    <permission android:label="@string/system_permission_provider_read_map_items_label" android:protectionLevel="dangerous" android:description="@string/system_permission_provider_read_map_items_description" android:name="org.servalproject.maps.provider.READ_ITEMS"></permission>
+    <permission android:label="@string/system_permission_provider_write_map_items_label" android:protectionLevel="dangerous" android:description="@string/system_permission_provider_write_map_items_description" android:name="org.servalproject.maps.provider.WRITE_ITEMS"></permission>
+    <uses-permission android:name="org.servalproject.maps.provider.READ_ITEMS"/>
+    <uses-permission android:name="org.servalproject.maps.provider.WRITE_ITEMS"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -51,7 +55,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="MapActivity"></activity>
+        <activity android:name=".MapActivity"></activity>
         <!-- services -->
         <service 
             android:name=".services.MapDataService"
@@ -61,6 +65,7 @@
             </intent-filter>
         </service>
         <service android:name=".services.CoreService"></service>
+        <provider android:authorities="org.servalproject.maps.provider.items" android:enabled="true" android:name=".provider.MapItems" android:writePermission="org.servalproject.maps.provider.WRITE_ITEMS" android:exported="true" android:description="@string/system_provider_map_items_description" android:label="@string/system_provider_map_items_label" android:readPermission="org.servalproject.maps.provider.READ_ITEMS"></provider>
     </application>
 
 </manifest>
