@@ -23,6 +23,8 @@ import org.mapsforge.android.maps.MapView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 
 /**
  * An activity to show a map
@@ -32,10 +34,15 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	/*
 	 * private class level constants
 	 */
-	//private final boolean V_LOG = true;
-	//private final String  TAG = "MapActivity";
+	private final boolean V_LOG = true;
+	private final String  TAG = "MapActivity";
 	
 	private Intent coreServiceIntent;
+	
+	private Handler updateHandler = new Handler();
+	
+	// number of seconds to delay between map updates
+	private int updateDelay = 10 * 1000;
 	
 	/*
 	 * (non-Javadoc)
@@ -46,9 +53,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		super.onCreate(savedInstanceState);
         //setContentView(R.layout.map);
         
-        coreServiceIntent = new Intent(this, org.servalproject.maps.services.CoreService.class);
-        
         // start the core service
+		coreServiceIntent = new Intent(this, org.servalproject.maps.services.CoreService.class);
         startService(coreServiceIntent);
         
         // get the map data file name
@@ -65,6 +71,13 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		}
 		
 		setContentView(mMapView);
+		
+		// update the map without delay
+		updateHandler.post(updateMapTask);
+		
+		if(V_LOG) {
+			Log.v(TAG, "activity created");
+		}
 	}
 	
 	/*
@@ -77,7 +90,32 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		// stop the core service
 		stopService(coreServiceIntent);
 		
+		// top the handle / runnable looping action
+		updateHandler.removeCallbacks(updateMapTask);
+		
 		super.onDestroy();
 		
+		if(V_LOG) {
+			Log.v(TAG, "activity destroyed");
+		}
+		
 	}
+	
+	/*
+	 *  methods and variables used to update the class
+	 */
+	
+	// task used to update the map ui with new markers
+	private Runnable updateMapTask = new Runnable() {
+		
+		public void run() {
+			if(V_LOG){
+				Log.v(TAG, "update map task running");
+			}
+			
+			// add the task back onto the queue
+			updateHandler.postDelayed(updateMapTask, updateDelay);
+		}
+	};
+	
 }

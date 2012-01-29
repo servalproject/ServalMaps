@@ -41,7 +41,7 @@ public class MapItems extends ContentProvider {
 	private final int LOCATION_ITEM_URI = 1;
 	
 	private final String TAG = "MapItems";
-	private final boolean V_LOG = true;
+	//private final boolean V_LOG = true;
 	
 	// private class level variables
 	private MainDatabaseHelper databaseHelper;

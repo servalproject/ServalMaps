@@ -19,7 +19,11 @@
  */
 package org.servalproject.maps.services;
 
+import java.io.IOException;
+
 import org.servalproject.maps.R;
+import org.servalproject.maps.location.LocationCollector;
+import org.servalproject.maps.location.MockLocations;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -43,9 +47,12 @@ public class CoreService extends Service {
 	private final boolean V_LOG = true;
 	private final String  TAG = "CoreService";
 	
+	private final boolean USE_MOCK_LOCATIONS = true;
+	
 	// class level variables
 	private LocationCollector locationCollector;
 	private LocationManager locationManager;
+	private MockLocations mockLocations = null;
 	
 	/*
 	 * called when the service is created
@@ -61,6 +68,14 @@ public class CoreService extends Service {
 		
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		
+		if(USE_MOCK_LOCATIONS) {
+			try{
+				mockLocations = new MockLocations(this.getApplicationContext()); 
+			} catch (IOException e) {
+				Log.e(TAG, "unable to create MockLocations instance", e);
+			}
+		}
 		
 		if(V_LOG) {
 			Log.v(TAG, "Service Created");
@@ -83,6 +98,11 @@ public class CoreService extends Service {
 		
 		// add the notification icon
 		addNotification();
+		
+		if(USE_MOCK_LOCATIONS && mockLocations != null) {
+			Thread mockLocationThread = new Thread(mockLocations, "MockLocations");
+			mockLocationThread.start();
+		}
 		
 		// Register the listener with the Location Manager to receive location updates
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationCollector);
@@ -142,6 +162,10 @@ public class CoreService extends Service {
 		
 		// stop listening for location updates
 		locationManager.removeUpdates(locationCollector);
+		
+		if(USE_MOCK_LOCATIONS && mockLocations != null) {
+			mockLocations.requestStop();
+		}
 		
 		super.onDestroy();
 		
