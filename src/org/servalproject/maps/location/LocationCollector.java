@@ -52,8 +52,8 @@ public class LocationCollector implements LocationListener {
 	private String timeZone = TimeZone.getDefault().getID();
 	
 	// TODO fill in with real phone and sid values
-	private String phoneNumber = "myphonenumber";
-	private String subscriberId = "mysubscriberid";
+	private String phoneNumber = "myphonenumber2";
+	private String subscriberId = "mysubscriberid2";
 	
 	private ContentResolver contentResolver;
 	

@@ -37,8 +37,9 @@ public class MapItems extends ContentProvider {
 	// private class level constants
 	private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	
-	private final int LOCATION_DIR_URI = 0;
+	private final int LOCATION_LIST_URI = 0;
 	private final int LOCATION_ITEM_URI = 1;
+	private final int LOCATION_LATEST_LIST_URI = 3;
 	
 	private final String TAG = "MapItems";
 	//private final boolean V_LOG = true;
@@ -58,8 +59,9 @@ public class MapItems extends ContentProvider {
 		
 		// define URis that we'll match against
 		//uriMatcher.addURI(MapItemsContract.Locations.CONTENT_URI, LOCATION_DIR_URI);
-		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH, LOCATION_DIR_URI);
+		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH, LOCATION_LIST_URI);
 		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH + "/#", LOCATION_ITEM_URI);
+		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH + "/latest", LOCATION_LATEST_LIST_URI);
 		
 		// create the database connection
 		databaseHelper = new MainDatabaseHelper(getContext());
@@ -73,15 +75,19 @@ public class MapItems extends ContentProvider {
 	 * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection, String[] selctionArgs, String sortOrder) {
+	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+		
+		int mMatchedUri = -1;
+		Cursor mResults = null;
 		
 		// choose the table name and sort order based on the URI
 		switch(uriMatcher.match(uri)) {
-		case LOCATION_DIR_URI:
+		case LOCATION_LIST_URI:
 			// uri matches all of the table
 			if(TextUtils.isEmpty(sortOrder) == true) {
 				sortOrder = MapItemsContract.Locations.Table._ID + " ASC";
 			}
+			mMatchedUri = LOCATION_LIST_URI;
 			break;
 		case LOCATION_ITEM_URI:
 			// uri matches one record
@@ -90,6 +96,11 @@ public class MapItems extends ContentProvider {
 			} else {
 				selection += "AND " + MapItemsContract.Locations.Table._ID + " = " + uri.getLastPathSegment();
 			}
+			mMatchedUri = LOCATION_ITEM_URI;
+			break;
+		case LOCATION_LATEST_LIST_URI:
+			// uri matches the group by for latest records
+			mMatchedUri = LOCATION_LATEST_LIST_URI;
 			break;
 		default:
 			// unknown uri found
@@ -97,8 +108,36 @@ public class MapItems extends ContentProvider {
 			throw new IllegalArgumentException("unknwon URI detected");
 		}
 		
-		Cursor mResults = null;
+		// get a connection to the database
+		database = databaseHelper.getReadableDatabase();
 		
+		if(mMatchedUri == LOCATION_LATEST_LIST_URI) {
+			// get the latest location records
+			
+			String[] mColumns = new String[MapItemsContract.Locations.Table.COLUMNS.length + 1];
+			
+			for(int i = 0; i < MapItemsContract.Locations.Table.COLUMNS.length; i++) {
+				mColumns[i] = MapItemsContract.Locations.Table.COLUMNS[i];
+			}
+			
+			mColumns[mColumns.length -1] = "MAX(" + MapItemsContract.Locations.Table.TIMESTAMP + ")"; 
+			
+			
+			mResults = database.query(MapItemsContract.Locations.Table.TABLE_NAME, mColumns, null, null, MapItemsContract.Locations.Table.PHONE_NUMBER, null, null);
+			
+//			String mSql = "SELECT *, MAX(timestamp) "
+//					+ "FROM locations "
+//					+ "GROUP BY phone_number";
+//			
+//			mResults = database.rawQuery(mSql, null);
+		} else if (mMatchedUri == LOCATION_LIST_URI || mMatchedUri == LOCATION_ITEM_URI){
+			// execute the query as provided
+			mResults = database.query(MapItemsContract.Locations.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
+		}
+		
+		// play nice and tidy up
+		//database.close();
+				
 		// return the results
 		return mResults;
 	}
@@ -118,13 +157,13 @@ public class MapItems extends ContentProvider {
 		
 		// chose the table name
 		switch(uriMatcher.match(uri)) {
-		case LOCATION_DIR_URI:
+		case LOCATION_LIST_URI:
 			mTable = MapItemsContract.Locations.CONTENT_URI_PATH;
 			mContentUri = MapItemsContract.Locations.CONTENT_URI;
 			break;
 		default:
 			// unknown uri found
-			Log.e(TAG, "unknown URI detected on insert: " + uri.toString());
+			Log.e(TAG, "invalid URI detected for insert: " + uri.toString());
 			throw new IllegalArgumentException("unknwon URI detected");
 		}
 		
@@ -151,10 +190,12 @@ public class MapItems extends ContentProvider {
 		
 		// choose the mime type
 		switch(uriMatcher.match(uri)) {
-		case LOCATION_DIR_URI:
+		case LOCATION_LIST_URI:
 			return MapItemsContract.Locations.CONTENT_TYPE_LIST;
 		case LOCATION_ITEM_URI:
 			return MapItemsContract.Locations.CONTENT_TYPE_ITEM;
+		case LOCATION_LATEST_LIST_URI:
+			return MapItemsContract.Locations.CONTENT_TYPE_LIST;
 		default:
 			// unknown uri found
 			Log.e(TAG, "unknown URI detected on getType: " + uri.toString());

@@ -20,8 +20,11 @@
 package org.servalproject.maps;
 
 import org.mapsforge.android.maps.MapView;
+import org.servalproject.maps.provider.MapItemsContract;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -112,6 +115,18 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(V_LOG){
 				Log.v(TAG, "update map task running");
 			}
+			
+			// resolve the content uri
+			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
+			
+			// get the content
+			Cursor mCursor = mContentResolver.query(MapItemsContract.Locations.LATEST_CONTENT_URI, null, null, null, null);
+			
+			if(V_LOG) {
+				Log.v(TAG, "rows in cursor: " + mCursor.getCount());
+			}
+			
+			mCursor.close();
 			
 			// add the task back onto the queue
 			updateHandler.postDelayed(updateMapTask, updateDelay);

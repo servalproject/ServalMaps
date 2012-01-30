@@ -55,14 +55,19 @@ public final class MapItemsContract {
 		 */
 		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
 		
+		/**
+		 * content URI for the most recent locations data, grouped by phone number
+		 */
+		public static final Uri LATEST_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH + "/latest");
+		
 		
 		/**
-		 * mime type for the table
+		 * content type for a list of items
 		 */
 		public static final String CONTENT_TYPE_LIST = "vnd.android.cursor.dir/vnd.org.servalproject.maps.provider.items." + CONTENT_URI_PATH;
 		
 		/**
-		 * mime type for an item
+		 * content type for an individual item
 		 */
 		public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd.org.servalproject.maps.provider.items." + CONTENT_URI_PATH;
 		
@@ -70,6 +75,11 @@ public final class MapItemsContract {
 		 * table definition
 		 */
 		public static final class Table implements BaseColumns {
+			
+			/**
+			 * table name
+			 */
+			public static final String TABLE_NAME = Locations.CONTENT_URI_PATH;
 			
 			/**
 			 * unique id column
@@ -106,6 +116,10 @@ public final class MapItemsContract {
 			 */
 			public static final String TIMEZONE = "timezone";
 			
+			/**
+			 * a list of all of the columns
+			 */
+			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE};
 		}
 
 	}
