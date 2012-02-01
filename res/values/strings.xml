@@ -30,6 +30,18 @@
     <string name="disclaimer_ui_dialog_no_files">No map data files found. Do you wish to continue?</string>
     <string name="disclaimer_ui_dialog_many_files_title">Choose Map Data File</string>
     
+    <!-- Maps Activity UI -->
+    <string name="map_ui_toast_self_location">Your current location:\nLatitude: %1$f\nLongitude %2$f</string>
+    
+    <!-- Peer Info Activity UI -->
+    <string name="peer_info_ui_lbl_heading">Peer Information</string>
+    <string name="peer_info_ui_lbl_phone_number">Phone Number:</string>
+    <string name="peer_info_ui_lbl_latitude">Latitude:</string>
+    <string name="peer_info_ui_lbl_longitude">Longitude:</string>
+    <string name="peer_info_ui_lbl_age">Information Age:</string>
+    <string name="peer_info_ui_btn_call">Call Peer</string>
+    <string name="peer_info_ui_btn_back">Back to Map</string>
+    
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     

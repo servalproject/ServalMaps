@@ -20,9 +20,7 @@
 package org.servalproject.maps;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import org.mapsforge.android.maps.ArrayItemizedOverlay;
 import org.mapsforge.android.maps.GeoPoint;
 import org.mapsforge.android.maps.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
@@ -99,26 +97,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         selfLocationMarker  = ItemizedOverlay.boundCenterBottom(getResources().getDrawable(R.drawable.peer_location_self));
         poiLocationMarker   = ItemizedOverlay.boundCenterBottom(getResources().getDrawable(R.drawable.incident_marker));
         
-        overlayList = new OverlayList(poiLocationMarker, getApplicationContext());
+        overlayList = new OverlayList(poiLocationMarker, this);
         mMapView.getOverlays().add(overlayList);
 		
 		// update the map without delay
 		updateHandler.post(updateMapTask);
-        
-//        //debug code
-////        GeoPoint point = new GeoPoint(-35.027191, 138.573705);
-////        OverlayItem item = new OverlayItem(point, null, null, peerLocationMarker);
-////        overlayList.addItem(item);
-////        overlayList.requestRedraw();
-//        
-//        
-//        ArrayItemizedOverlay overlay = new ArrayItemizedOverlay(poiLocationMarker, getApplicationContext());
-//        mMapView.getOverlays().add(overlay);
-//        GeoPoint point = new GeoPoint(-35.027191, 138.573705);
-//        OverlayItem item = new OverlayItem(point, null, null, peerLocationMarker);
-//        overlay.addItem(item);
-//        overlay.requestRedraw();
-//        //updateMap();
 		
 		if(V_LOG) {
 			Log.v(TAG, "activity created");
@@ -161,6 +144,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// resolve the content uri
 			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 			
+			//TODO improve the way information is retrieved and only get what is required
 			// get the content
 			Cursor mCursor = mContentResolver.query(MapItemsContract.Locations.LATEST_CONTENT_URI, null, null, null, null);
 			
@@ -176,42 +160,33 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(mCursor.getCount() > 0) {
 				// process the location records
 				ArrayList<OverlayItem> mLocations = new ArrayList<OverlayItem>();
-				HashMap<String, String> mExtraInfo;
 				GeoPoint mGeoPoint;
 				String mPhoneNumber;
-				Drawable mMarkerIcon;
 				OverlayItem mOverlayItem;
-				int mItemType = -1;
 				
 				while(mCursor.moveToNext()) {
 					
-					// get the extra info
-					mExtraInfo = new HashMap<String, String>();
-					mExtraInfo.put(MapItemsContract.Locations.Table._ID, Integer.toString((mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)))));
 					
+					
+					// get the basic information
 					mPhoneNumber = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
-					
-					mExtraInfo.put(MapItemsContract.Locations.Table.PHONE_NUMBER, mPhoneNumber);
-					mExtraInfo.put(MapItemsContract.Locations.Table.TIMESTAMP, mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)));
-					mExtraInfo.put(MapItemsContract.Locations.Table.TIMEZONE, mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMEZONE)));
 					
 					// get the geographic coordinates
 					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
 					
-					// determine the drawable to use
-					//TODO use the right value for the self phone number
+					// determine what type of marker to create
+					// TODO use actual value for phone number
 					if(mPhoneNumber.equals("myphonenumber2") == true) {
-						mMarkerIcon = selfLocationMarker;
-						mItemType = OverlayItems.SELF_LOCATION_ITEM;
+						// this is a self marker
+						mOverlayItem = new OverlayItem(mGeoPoint, null, null, selfLocationMarker);
+						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
+						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
 					} else {
-						mMarkerIcon = peerLocationMarker;
-						mItemType = OverlayItems.PEER_LOCATION_ITEM;
+						// this is a peer marker
+						mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
+						mOverlayItem.setType(OverlayItems.PEER_LOCATION_ITEM);
+						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
 					}
-					
-					// create the overlay item
-					mOverlayItem = new OverlayItem(mGeoPoint, null, null, mMarkerIcon);
-					mOverlayItem.setExtraDetails(mExtraInfo);
-					mOverlayItem.setType(mItemType);
 					
 					mLocations.add(mOverlayItem);
 				}

@@ -19,10 +19,7 @@
  */
 package org.servalproject.maps.mapsforge;
 
-import java.util.HashMap;
-
 import org.mapsforge.android.maps.GeoPoint;
-
 import android.graphics.drawable.Drawable;
 
 /**
@@ -34,7 +31,8 @@ public class OverlayItem extends org.mapsforge.android.maps.OverlayItem implemen
 	 * public class level variables
 	 */
 	private int itemType = -1;
-	private HashMap<String, String> extraInfo = new HashMap<String, String>();
+	private int recordId = -1;
+	private GeoPoint geoPoint = null;
 
 	/**
 	 * default constructor for this class
@@ -52,6 +50,7 @@ public class OverlayItem extends org.mapsforge.android.maps.OverlayItem implemen
 	 */
 	public OverlayItem(GeoPoint point, String title, String snippet) {
 		super(point, title, snippet);
+		geoPoint = point;
 	}
 
 	/**
@@ -64,6 +63,7 @@ public class OverlayItem extends org.mapsforge.android.maps.OverlayItem implemen
 	 */
 	public OverlayItem(GeoPoint point, String title, String snippet, Drawable marker) {
 		super(point, title, snippet, marker);
+		geoPoint = point;
 	}
 	
 	/**
@@ -93,29 +93,39 @@ public class OverlayItem extends org.mapsforge.android.maps.OverlayItem implemen
 	public int getType() {
 		return itemType;
 	}
-
+	
 	/**
-	 * add additional extra information to this item
-	 * @param extras the extra information as a string indexed hashmap
-	 * 
-	 * @throws IllegalArgumentException of the extras parameter is empty or null
+	 * set the record id for this item
+	 * @param id
 	 */
-	public void setExtraDetails(HashMap<String, String> extras) {
-		if(extras == null) {
-			throw new IllegalArgumentException("the extras parameter cannot be null");
-		}
-		
-		if(extras.size() == 0) {
-			throw new IllegalArgumentException("the extras parameter cannot be empty");
-		}
-		extraInfo = extras;
+	public void setRecordId(int id) {
+		this.recordId = id;
 	}
-
+	
 	/**
-	 * get the additional extra information about this item
-	 * @param extras the extra information as a string indexed hashmap
+	 * return the record id associated with this item
+	 * 
+	 * @return the record id
 	 */
-	public HashMap<String, String> getExtraInfo() {
-		return extraInfo;
+	public int getRecordId(){
+		return this.recordId;
+	}
+	
+	/**
+	 * get the latitude associated with this item
+	 * 
+	 * @returns the latitude geo-coordinate for this item
+	 */
+	public double getLatitude() {
+		return geoPoint.getLatitude();
+	}
+	
+	/**
+	 * get the longitude associated with this item
+	 * 
+	 * @returns the latitude geo-coordinate for this item
+	 */
+	public double getLongitude() {
+		return geoPoint.getLongitude();
 	}
 }

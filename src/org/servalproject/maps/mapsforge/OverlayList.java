@@ -20,10 +20,13 @@
 package org.servalproject.maps.mapsforge;
 
 import org.mapsforge.android.maps.ArrayItemizedOverlay;
+import org.servalproject.maps.R;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * implement a Serval Maps specific overlay list
@@ -54,6 +57,7 @@ public class OverlayList extends ArrayItemizedOverlay {
 	public boolean onTap(int index) {
 		
 		OverlayItem mItem = (OverlayItem)this.createItem(index);
+		//HashMap<String, String> mExtraInfo;
 		
 		//determine what item was chosen
 		switch(mItem.getType()) {
@@ -61,11 +65,23 @@ public class OverlayList extends ArrayItemizedOverlay {
 			if(V_LOG){
 				Log.v(TAG, "user touched their own marker");
 			}
+			
+			// show a toast showing their location
+			String mToastText = String.format(context.getString(R.string.map_ui_toast_self_location), mItem.getLatitude(), mItem.getLongitude());
+			
+			Toast mToast = Toast.makeText(context, mToastText, Toast.LENGTH_LONG);
+			mToast.show();
 			break;
 		case OverlayItems.PEER_LOCATION_ITEM:
 			if(V_LOG){
 				Log.v(TAG, "user touched a peer location marker");
 			}
+			
+			// show the peer information activity
+			Intent mIntent = new Intent(context, org.servalproject.maps.PeerInfoActivity.class);
+			mIntent.putExtra("recordId", mItem.getRecordId());
+			context.startActivity(mIntent);
+			
 			break;
 		case OverlayItems.POI_ITEM:
 			if(V_LOG){
@@ -76,8 +92,6 @@ public class OverlayList extends ArrayItemizedOverlay {
 			Log.e(TAG, "unknown marker type");
 			return false;
 		}
-		
-		
 		
 		return true;
 	}
