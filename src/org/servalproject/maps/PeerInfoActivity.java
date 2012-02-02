@@ -20,6 +20,7 @@
 package org.servalproject.maps;
 
 import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.utils.TimeUtils;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -30,7 +31,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * activity to show information about a peer
@@ -40,7 +43,7 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+//	private final boolean V_LOG = true;
 	private final String  TAG = "PeerInfoActivity";
 	
 	/*
@@ -77,21 +80,50 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_age);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)));
+			mView.setText(
+					TimeUtils.calculateAge(
+						mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)),
+						mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMEZONE)),
+						getApplicationContext()));
 			
 		} else {
 			// TODO show error
+			Toast.makeText(getApplicationContext(), R.string.peer_info_toast_no_record_error, Toast.LENGTH_LONG).show();
+			Log.e(TAG, "Unable to load records, supplied id: " + mIntent.getIntExtra("recordId", -1));
+			mCursor.close();
+			finish();
 		}
 		
-		//debug code
-		Log.v(TAG, "Record Count: " + mCursor.getCount());
+		// play nice and tidy up
 		mCursor.close();
+		
+		// capture the touch on the buttons
+		Button mButton = (Button) findViewById(R.id.peer_info_ui_btn_call);
+		mButton.setOnClickListener(this);
+		
+		mButton = (Button) findViewById(R.id.peer_info_ui_btn_back);
+		mButton.setOnClickListener(this);
     }
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		
+		// determine which button was clicked
+		switch(v.getId()) {
+		case R.id.peer_info_ui_btn_back:
+			// back button was pressed
+			finish();
+			break;
+		case R.id.peer_info_ui_btn_call:
+			// call button was pressed
+			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
+			Intent mIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mView.getText()));
+			startActivityForResult(mIntent, 0);
+			break;
+		default:
+			// unknown view id
+			Log.w(TAG, "unkown view id in onClick: " + v.getId());
+		}
 	}
 
 }

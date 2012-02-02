@@ -41,6 +41,7 @@
     <string name="peer_info_ui_lbl_age">Information Age:</string>
     <string name="peer_info_ui_btn_call">Call Peer</string>
     <string name="peer_info_ui_btn_back">Back to Map</string>
+    <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
     
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
@@ -66,5 +67,10 @@
     <!-- misc strings -->
     <string name="misc_dialog_yes_button">Yes</string>
     <string name="misc_dialog_no_button">No</string>
+    
+    <string name="misc_age_calculation_seconds">%d seconds</string>
+    <string name="misc_age_calculation_minutes">%d minutes</string>
+    <string name="misc_age_calculation_hours">%d hours</string>
+    <string name="misc_age_calculation_more_than_a_day">more than a day</string>
 
 </resources>
