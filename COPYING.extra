@@ -6,6 +6,11 @@ Where noted portions of this code base are licensed using:
 The Apache 2.0 License:
 http://www.apache.org/licenses/LICENSE-2.0 
 
+Some icons, notably those used in the menu, have been sourced from the
+Android platform SDK which is licensed using:
+The Apache 2.0 License:
+http://www.apache.org/licenses/LICENSE-2.0
+
 The Serval Maps application uses the mapsforge library which is licensed using:
 The GNU Lesser GPL:
 http://www.gnu.org/licenses/lgpl.html
