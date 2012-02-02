@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_map_activity_preferences" 
+          android:enabled="true" 
+          android:title="@string/menu_map_activity_preferences" 
+          android:visible="true" 
+          android:icon="@drawable/ic_menu_preferences">
+    </item>
+    <item android:id="@+id/menu_map_activity_add_poi" 
+          android:enabled="true" 
+          android:title="@string/menu_map_activity_add_poi" 
+          android:visible="true" 
+          android:icon="@drawable/ic_menu_add">
+    </item>
+    <item android:id="@+id/menu_map_activity_close" 
+          android:enabled="true" 
+          android:title="@string/menu_map_activity_close" 
+          android:visible="true" 
+          android:icon="@drawable/ic_menu_close_clear_cancel">
+    </item>
+</menu>

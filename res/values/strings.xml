@@ -43,6 +43,11 @@
     <string name="peer_info_ui_btn_back">Back to Map</string>
     <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
     
+    <!-- Menu UI -->
+    <string name="menu_map_activity_preferences">Preferences</string>
+    <string name="menu_map_activity_add_poi">Add POI</string>
+    <string name="menu_map_activity_close">Close</string>
+    
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     
@@ -57,7 +62,6 @@
     <!-- content providers -->
     <string name="system_provider_map_items_label">Map item information</string>
     <string name="system_provider_map_items_description">Provides access to location and POI marker items that are on a map</string>
-    
     
     <!-- notification string -->
     <string name="system_notification_ticker_text">Serval Maps Running</string>

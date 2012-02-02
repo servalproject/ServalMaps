@@ -36,6 +36,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 /**
  * An activity to show a map
@@ -105,6 +108,47 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		
 		if(V_LOG) {
 			Log.v(TAG, "activity created");
+		}
+	}
+	
+	/*
+	 * create the menu
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// inflate the menu based on the XML
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.map_activity, menu);
+	    return true;
+	}
+	
+	/*
+	 * handle click events from the menu
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch(item.getItemId()){
+		case R.id.menu_map_activity_preferences:
+			// show the preferences activity
+			Log.v(TAG, "show the preferences activity");
+			return true;
+		case R.id.menu_map_activity_add_poi:
+			// show the add POI activity
+			Log.v(TAG, "show the add poi activity");
+			return true;
+		case R.id.menu_map_activity_close:
+			// close this activity
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 	
