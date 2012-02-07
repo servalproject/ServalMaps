@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/*
+ * Copyright (C) 2012 The Serval Project
+ *
+ * This file is part of the Serval Maps Software
+ *
+ * Serval Maps Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory 
+        android:title="@string/preferences_category_map_title"
+        android:key="preferences_category_map">
+        <CheckBoxPreference
+            android:key="preferences_map_follow"
+            android:title="@string/preferences_map_follow_title"
+            android:summary="@string/preferences_map_follow_summary"
+            android:defaultValue="false"/>
+        <ListPreference 
+            android:key="preferences_map_update_interval"
+            android:title="@string/preferences_map_update_interval_title"
+            android:summary="@string/preferences_map_update_interval_summary"
+            android:defaultValue="10000"
+            android:entries="@array/preferences_map_update_intervals"
+            android:entryValues="@array/preferences_map_update_intervals_values"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/preferences_category_developer_title"
+        android:key="preferences_category_developer">
+        <CheckBoxPreference
+            android:key="preferences_developer_mock_locations"
+            android:title="@string/preferences_developer_mock_locations_title"
+            android:summary="@string/preferences_developer_mock_locations_summary"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+</PreferenceScreen>

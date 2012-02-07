@@ -138,6 +138,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		case R.id.menu_map_activity_preferences:
 			// show the preferences activity
 			Log.v(TAG, "show the preferences activity");
+			Intent mIntent = new Intent(this, org.servalproject.maps.SettingsActivity.class);
+			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_add_poi:
 			// show the add POI activity
@@ -209,9 +211,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				OverlayItem mOverlayItem;
 				
 				while(mCursor.moveToNext()) {
-					
-					
-					
+
 					// get the basic information
 					mPhoneNumber = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
 					

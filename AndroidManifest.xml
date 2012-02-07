@@ -68,6 +68,7 @@
         <service android:name=".services.CoreService"></service>
         <provider android:authorities="org.servalproject.maps.provider.items" android:enabled="true" android:name=".provider.MapItems" android:writePermission="org.servalproject.maps.provider.WRITE_ITEMS" android:exported="true" android:description="@string/system_provider_map_items_description" android:label="@string/system_provider_map_items_label" android:readPermission="org.servalproject.maps.provider.READ_ITEMS"></provider>
         <activity android:name=".PeerInfoActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>

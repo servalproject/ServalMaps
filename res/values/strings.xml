@@ -44,12 +44,23 @@
     <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
     
     <!-- Menu UI -->
-    <string name="menu_map_activity_preferences">Preferences</string>
+    <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
     <string name="menu_map_activity_close">Close</string>
     
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
+    
+    <!-- Preferences -->
+    <string name="preferences_category_developer_title">Developer Settings</string>
+    <string name="preferences_developer_mock_locations_title">Use Mock Locations</string>
+    <string name="preferences_developer_mock_locations_summary">Use mock locations instead of real GPS data</string>
+    
+    <string name="preferences_category_map_title">Map Settings</string>
+    <string name="preferences_map_follow_title">Auto Centre Map</string>
+    <string name="preferences_map_follow_summary">Keep the map centred on your location</string>
+    <string name="preferences_map_update_interval_title">Map Update Interval</string>
+    <string name="preferences_map_update_interval_summary">Define how often the map will update</string>
     
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>
