@@ -42,7 +42,7 @@ public class LocationCollector implements LocationListener {
 	/*
 	 * class level constants
 	 */
-	private boolean V_LOG = true;
+	private boolean V_LOG = false;
 	private String  TAG   = "LocationCollector";
 	
 	/*
