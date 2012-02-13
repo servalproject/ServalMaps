@@ -38,7 +38,7 @@ public class MockLocations implements Runnable {
 	 * private class level constants
 	 */
 	private final String TAG = "MockLocations";
-	private final boolean V_LOG = false;
+	private final boolean V_LOG = true;
 	
 	private final String LOCATION_FILE = "mock-locations.txt";
 	private final String LOCATION_ZIP_FILE = "mock-locations.zip";
@@ -137,6 +137,10 @@ public class MockLocations implements Runnable {
 	@Override
 	public void run() {
 		
+		if(V_LOG) {
+			Log.v(TAG, "thread started");
+		}
+		
 		String[] mParts;
 		
 		int mLineCount = -1; 
@@ -205,6 +209,10 @@ public class MockLocations implements Runnable {
 			// send the new location
 			locationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
 			locationManager.setTestProviderLocation(LocationManager.GPS_PROVIDER, mLocation);
+			
+			if(V_LOG) {
+				Log.v(TAG, "new location sent");
+			}
 
 			// sleep the thread
 			try {

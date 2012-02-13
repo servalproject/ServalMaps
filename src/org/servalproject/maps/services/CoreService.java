@@ -31,8 +31,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -47,12 +49,12 @@ public class CoreService extends Service {
 	private final boolean V_LOG = true;
 	private final String  TAG = "CoreService";
 	
-	private final boolean USE_MOCK_LOCATIONS = true;
-	
 	// class level variables
 	private LocationCollector locationCollector;
 	private LocationManager locationManager;
 	private MockLocations mockLocations = null;
+	
+	private SharedPreferences preferences = null;
 	
 	/*
 	 * called when the service is created
@@ -69,7 +71,11 @@ public class CoreService extends Service {
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		
-		if(USE_MOCK_LOCATIONS) {
+		// get the preferences
+		preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		// determine if mock locations should be used
+		if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
 			try{
 				mockLocations = new MockLocations(this.getApplicationContext()); 
 			} catch (IOException e) {
@@ -77,11 +83,63 @@ public class CoreService extends Service {
 			}
 		}
 		
+		// associate the preferences
+		preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+		
 		if(V_LOG) {
+			if(mockLocations == null) {
+				Log.v(TAG, "mock locations are not used");
+			} else {
+				Log.v(TAG, "mock locations are being used");
+			}
 			Log.v(TAG, "Service Created");
 		}
 		
 	}
+	
+	// listen for changes to the shared preferences
+	private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+		/* 
+		 * (non-Javadoc)
+		 * @see android.content.SharedPreferences.OnSharedPreferenceChangeListener#onSharedPreferenceChanged(android.content.SharedPreferences, java.lang.String)
+		 */
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+			
+			if(V_LOG) {
+				Log.v(TAG, "a change in shared preferences has been deteceted");
+			}
+			
+			// check to see if this is the preference that is of interest
+			if(key.equals("preferences_developer_mock_locations") == true) {
+				if(V_LOG) {
+					Log.v(TAG, "preference changed: 'preferences_developer_mock_locations'");
+				}
+				
+				// see if the preference is true
+				if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
+					// preference is true so start using mock locations if required
+					if(mockLocations == null) {
+						try{
+							mockLocations = new MockLocations(getApplicationContext());
+							Thread mockLocationThread = new Thread(mockLocations, "MockLocations");
+							mockLocationThread.start();
+						} catch (IOException e) {
+							Log.e(TAG, "unable to create MockLocations instance", e);
+						}
+					}
+				} else {
+					// preference is false if of we're doing it stop
+					if(mockLocations != null) {
+						mockLocations.requestStop();
+						mockLocations = null;
+					}
+				}
+			}
+			
+		}
+	};
 	
 	/*
 	 * called when the service is started
@@ -99,7 +157,7 @@ public class CoreService extends Service {
 		// add the notification icon
 		addNotification();
 		
-		if(USE_MOCK_LOCATIONS && mockLocations != null) {
+		if(mockLocations != null) {
 			Thread mockLocationThread = new Thread(mockLocations, "MockLocations");
 			mockLocationThread.start();
 		}
@@ -163,7 +221,7 @@ public class CoreService extends Service {
 		// stop listening for location updates
 		locationManager.removeUpdates(locationCollector);
 		
-		if(USE_MOCK_LOCATIONS && mockLocations != null) {
+		if(mockLocations != null) {
 			mockLocations.requestStop();
 		}
 		
@@ -185,5 +243,4 @@ public class CoreService extends Service {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
