@@ -60,6 +60,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	// number of seconds to delay between map updates
 	private int defaultUpdateDelay = 10 * 1000;
 	private volatile int updateDelay = defaultUpdateDelay;
+	private volatile boolean keepCentered = false;
 	
 	private SharedPreferences preferences = null;
 	
@@ -70,6 +71,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	
 	// list of markers
 	private OverlayList overlayList;
+	private MapView mapView;
 	
 	
 	/*
@@ -90,15 +92,15 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         String mMapFileName = mBundle.getString("mapFileName");
         
 		// instantiate mapsforge classes
-		MapView mMapView = new MapView(this);
-		mMapView.setClickable(true);
-		mMapView.setBuiltInZoomControls(true);
+		mapView = new MapView(this);
+		mapView.setClickable(true);
+		mapView.setBuiltInZoomControls(true);
 		
 		if(mMapFileName != null) {
-			mMapView.setMapFile(mMapFileName);
+			mapView.setMapFile(mMapFileName);
 		}
 		
-		setContentView(mMapView);
+		setContentView(mapView);
 		
 		// get the drawables for the markers
 		peerLocationMarker  = ItemizedOverlay.boundCenterBottom(getResources().getDrawable(R.drawable.peer_location));
@@ -106,7 +108,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         poiLocationMarker   = ItemizedOverlay.boundCenterBottom(getResources().getDrawable(R.drawable.incident_marker));
         
         overlayList = new OverlayList(poiLocationMarker, this);
-        mMapView.getOverlays().add(overlayList);
+        mapView.getOverlays().add(overlayList);
         
         // get the preferences
      	preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -119,6 +121,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
  		} else {
  			updateDelay = Integer.parseInt(mPreference);
  		}
+ 		
+ 		// set flag to keep the map centered
+ 		keepCentered = preferences.getBoolean("preferences_map_follow", false);
      	
      	// listen for changes in the preferences
      	preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
@@ -154,8 +159,20 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				if(mPreference != null) {
 					updateDelay = Integer.parseInt(mPreference);
 				}
-				Log.v(TAG, "new map update delay is '" + updateDelay + "'");
+				if(V_LOG) {
+					Log.v(TAG, "new map update delay is '" + updateDelay + "'");
+				}
 				
+			} else if(key.equals("preferences_map_follow") == true) {
+				keepCentered = preferences.getBoolean("preferences_category_map", false);
+				
+				if(V_LOG) {
+					if(keepCentered) {
+						Log.v(TAG, "map will keep centered on the users location");
+					} else {
+						Log.v(TAG, "map will not keep centered on the users location");
+					}
+				}
 			}
 		}
 	};
@@ -274,6 +291,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, selfLocationMarker);
 						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
 						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
+						
+						// recenter the map if required
+						if(keepCentered) {
+							mapView.getController().setCenter(mGeoPoint);
+							if(V_LOG) {
+								Log.v(TAG, "map was recentered");
+							}
+						}
 					} else {
 						// this is a peer marker
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
