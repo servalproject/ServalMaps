@@ -31,10 +31,12 @@ import org.servalproject.maps.provider.MapItemsContract;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,15 +58,18 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	private Handler updateHandler = new Handler();
 	
 	// number of seconds to delay between map updates
-	private int updateDelay = 10 * 1000;
+	private int defaultUpdateDelay = 10 * 1000;
+	private volatile int updateDelay = defaultUpdateDelay;
+	
+	private SharedPreferences preferences = null;
 	
 	// drawables for marker icons
-	Drawable peerLocationMarker;
-	Drawable selfLocationMarker;
-	Drawable poiLocationMarker;
+	private Drawable peerLocationMarker;
+	private Drawable selfLocationMarker;
+	private Drawable poiLocationMarker;
 	
 	// list of markers
-	OverlayList overlayList;
+	private OverlayList overlayList;
 	
 	
 	/*
@@ -102,6 +107,21 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         
         overlayList = new OverlayList(poiLocationMarker, this);
         mMapView.getOverlays().add(overlayList);
+        
+        // get the preferences
+     	preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+     	
+     	// set the update delay
+ 		String mPreference = preferences.getString("preferences_map_update_interval", null);
+ 		
+ 		if(mPreference == null) {
+ 			updateDelay = defaultUpdateDelay;
+ 		} else {
+ 			updateDelay = Integer.parseInt(mPreference);
+ 		}
+     	
+     	// listen for changes in the preferences
+     	preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
 		
 		// update the map without delay
 		updateHandler.post(updateMapTask);
@@ -110,6 +130,35 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			Log.v(TAG, "activity created");
 		}
 	}
+	
+	/*
+	 * object to listen for changes in the preferences
+	 */
+	private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+
+		/* 
+		 * (non-Javadoc)
+		 * @see android.content.SharedPreferences.OnSharedPreferenceChangeListener#onSharedPreferenceChanged(android.content.SharedPreferences, java.lang.String)
+		 */
+		@Override
+		public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+			
+			if(V_LOG) {
+				Log.v(TAG, "a change in shared preferences has been deteceted");
+				Log.v(TAG, "preference change: '" + key + "'");
+			}
+			
+			if(key.equals("preferences_map_update_interval") == true) {
+				
+				String mPreference = preferences.getString("preferences_map_update_interval", null);
+				if(mPreference != null) {
+					updateDelay = Integer.parseInt(mPreference);
+				}
+				Log.v(TAG, "new map update delay is '" + updateDelay + "'");
+				
+			}
+		}
+	};
 	
 	/*
 	 * create the menu

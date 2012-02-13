@@ -83,7 +83,7 @@ public class CoreService extends Service {
 			}
 		}
 		
-		// associate the preferences
+		// listen for changes in the preferences
 		preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
 		
 		if(V_LOG) {

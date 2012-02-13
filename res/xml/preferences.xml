@@ -21,10 +21,10 @@
  */
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 
+    <!-- map preferences -->
     <PreferenceCategory 
-        android:title="@string/preferences_category_map_title"
-        android:key="preferences_category_map">
+        android:key="preferences_category_map"
+        android:title="@string/preferences_category_map_title">
         <CheckBoxPreference
             android:key="preferences_map_follow"
             android:title="@string/preferences_map_follow_title"
@@ -39,7 +39,6 @@
             android:entryValues="@array/preferences_map_update_intervals_values"
             />
     </PreferenceCategory>
-    -->
     <!-- developer preferences -->
     <PreferenceCategory
         android:title="@string/preferences_category_developer_title"
