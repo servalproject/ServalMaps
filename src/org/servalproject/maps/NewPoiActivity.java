@@ -59,6 +59,9 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	
 	TextView txtCharacters;
 	
+	double latitude = -1;
+	double longitude;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -67,6 +70,16 @@ public class NewPoiActivity extends Activity implements OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
         setContentView(R.layout.new_poi);
+        
+        // see if a latitude and longitude has been passed across
+        Bundle mBundle = this.getIntent().getExtras();
+        
+        // if a bundle has been passed 
+        // extract the latitude and longitude for use later
+        if(mBundle != null) {
+        	latitude = mBundle.getDouble("latitude");
+        	longitude = mBundle.getDouble("longitude");
+        }
         
         // inform user of the character limit
         txtCharacters = (TextView) findViewById(R.id.new_poi_ui_txt_characters);
@@ -183,8 +196,15 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		//TODO update to use actual values from Serval Mesh
 		mValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, "myphonenumber");
 		mValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, "mysid");
-		mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, mLocation.getLatitude()); //TODO use real latitude
-		mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, mLocation.getLongitude()); // TODO use real longitude
+		
+		// determine which lat and long to use
+		if(latitude == -1) {
+			mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, mLocation.getLatitude());
+			mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, mLocation.getLongitude());
+		} else {
+			mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, latitude);
+			mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, longitude);
+		}
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, System.currentTimeMillis());
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMEZONE, TimeZone.getDefault().getID());
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TITLE, title);

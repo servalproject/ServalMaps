@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import org.mapsforge.android.maps.GeoPoint;
 import org.mapsforge.android.maps.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
+import org.servalproject.maps.mapsforge.NewPoiOverlay;
 import org.servalproject.maps.mapsforge.OverlayItem;
 import org.servalproject.maps.mapsforge.OverlayItems;
 import org.servalproject.maps.mapsforge.OverlayList;
@@ -109,6 +110,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         
         overlayList = new OverlayList(poiLocationMarker, this);
         mapView.getOverlays().add(overlayList);
+        
+        // add the long press detecting overlay for adding new POIs
+        mapView.getOverlays().add(new NewPoiOverlay(this));
         
         // get the preferences
      	preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
