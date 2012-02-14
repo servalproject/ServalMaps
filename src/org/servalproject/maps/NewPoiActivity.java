@@ -21,11 +21,13 @@ package org.servalproject.maps;
 
 import java.util.TimeZone;
 
+import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.provider.MapItemsContract;
 
 import android.app.Activity;
 import android.content.ContentValues;
 import android.database.SQLException;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -170,11 +172,19 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		// add the new POI to the database
 		ContentValues mValues = new ContentValues();
 		
+		// get the current location
+		Location mLocation = LocationCollector.getLocation();
+		
+		if(mLocation == null) {
+			// show an error message
+			Toast.makeText(this, R.string.new_poi_toast_location_error, Toast.LENGTH_SHORT).show();
+		}
+		
 		//TODO update to use actual values from Serval Mesh
 		mValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, "myphonenumber");
 		mValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, "mysid");
-		mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, 0); //TODO use real latitude
-		mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, 0); // TODO use real longitude
+		mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, mLocation.getLatitude()); //TODO use real latitude
+		mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, mLocation.getLongitude()); // TODO use real longitude
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, System.currentTimeMillis());
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMEZONE, TimeZone.getDefault().getID());
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TITLE, title);

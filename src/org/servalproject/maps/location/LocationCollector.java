@@ -48,7 +48,10 @@ public class LocationCollector implements LocationListener {
 	/*
 	 * class level variables
 	 */
-	private Location currentLocation = null;
+	/**
+	 * the most recent and most accurate location information
+	 */
+	private static Location currentLocation = null;
 	private String timeZone = TimeZone.getDefault().getID();
 	
 	// TODO fill in with real phone and sid values
@@ -66,6 +69,13 @@ public class LocationCollector implements LocationListener {
 		}
 		
 		contentResolver = context.getContentResolver();
+	}
+	
+	/**
+	 * get the most recent and most accurate location information
+	 */
+	public static Location getLocation() {
+		return currentLocation;
 	}
 
 	/*

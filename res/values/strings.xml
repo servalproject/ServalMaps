@@ -54,6 +54,7 @@
     <string name="new_poi_toast_description_missing">A description must be provided</string>
     <string name="new_poi_toast_description_too_long">The description must be no longer than %d characters</string>
     <string name="new_poi_toast_save_error">The new POI could not be saved</string>
+    <string name="new_poi_toast_location_error">Unable to determine POI location, new record was not saved</string>
     
     <!-- Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
