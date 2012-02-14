@@ -41,7 +41,7 @@ public final class MapItemsContract {
 	public static final String AUTHORITY = "org.servalproject.maps.provider.items";
 	
 	/**
-	 * meta data about the location table
+	 * meta data about the locations table
 	 */
 	public static final class Locations {
 		
@@ -121,7 +121,103 @@ public final class MapItemsContract {
 			 */
 			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE};
 		}
-
 	}
-
+	
+	/**
+	 * metadata about the poi table
+	 */
+	public static final class PointsOfInterest {
+		
+		/**
+		 * path component of the URI
+		 */
+		public static final String CONTENT_URI_PATH = "poi";
+		
+		/**
+		 * content URI for the locations data
+		 */
+		public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + CONTENT_URI_PATH);
+		
+		/**
+		 * content type for a list of items
+		 */
+		public static final String CONTENT_TYPE_LIST = "vnd.android.cursor.dir/vnd.org.servalproject.maps.provider.items." + CONTENT_URI_PATH;
+		
+		/**
+		 * content type for an individual item
+		 */
+		public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd.org.servalproject.maps.provider.items." + CONTENT_URI_PATH;
+		
+		/**
+		 * default category indicator
+		 */
+		public static final int DEFAULT_CATEGORY = 0;
+		
+		/**
+		 * table definition
+		 */
+		public static final class Table implements BaseColumns {
+			
+			/**
+			 * table name
+			 */
+			public static final String TABLE_NAME = PointsOfInterest.CONTENT_URI_PATH;
+			
+			/**
+			 * unique id column
+			 */
+			public static final String _ID = BaseColumns._ID;
+			
+			/**
+			 * phone number of the device
+			 */
+			public static final String PHONE_NUMBER = "phone_number";
+			
+			/**
+			 * subscriber id of the device
+			 */
+			public static final String SUBSCRIBER_ID = "subscriber_id";
+			
+			/**
+			 * latitude geo-coordinate
+			 */
+			public static final String LATITUDE = "latitude";
+			
+			/**
+			 * longitude geo-coordinate
+			 */
+			public static final String LONGITUDE = "longitude";
+			
+			/**
+			 * timestamp of when the information was saved
+			 */
+			public static final String TIMESTAMP = "timestamp";
+			
+			/**
+			 * local timezone when the information was saved
+			 */
+			public static final String TIMEZONE = "timezone";
+			
+			/**
+			 * title of the POI
+			 */
+			public static final String TITLE = "title";
+			
+			/**
+			 * description of the POI
+			 */
+			public static final String DESCRIPTION = "description";
+			
+			/**
+			 * category of the POI
+			 */
+			public static final String CATEGORY = "category";
+			
+			/**
+			 * a list of all of the columns
+			 */
+			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY};
+			
+		}
+	}
 }

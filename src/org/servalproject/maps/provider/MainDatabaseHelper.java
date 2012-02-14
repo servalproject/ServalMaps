@@ -36,6 +36,19 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ MapItemsContract.Locations.Table.TIMESTAMP + " INTEGER, "
 			+ MapItemsContract.Locations.Table.TIMEZONE + " TEXT)";
 	
+	private final String POI_CREATE = "CREATE TABLE " +
+			MapItemsContract.PointsOfInterest.CONTENT_URI_PATH + " ("
+			+ MapItemsContract.PointsOfInterest.Table._ID +" INTEGER PRIMARY KEY, "
+			+ MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER + " TEXT, "
+			+ MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID + " TEXT, "
+			+ MapItemsContract.PointsOfInterest.Table.LATITUDE + " REAL, "
+			+ MapItemsContract.PointsOfInterest.Table.LONGITUDE + " REAL, "
+			+ MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " INTEGER, "
+			+ MapItemsContract.PointsOfInterest.Table.TIMEZONE + " TEXT, "
+			+ MapItemsContract.PointsOfInterest.Table.TITLE + " TEXT, "
+			+ MapItemsContract.PointsOfInterest.Table.DESCRIPTION + " TEXT, "
+			+ MapItemsContract.PointsOfInterest.Table.CATEGORY + " INTEGER DEFAULT " + MapItemsContract.PointsOfInterest.DEFAULT_CATEGORY + ")";
+	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps";
 	public static final int DB_VERSION = 1;
@@ -55,7 +68,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// create the database tables
 		db.execSQL(LOCATIONS_CREATE);
-
+		db.execSQL(POI_CREATE);
 	}
 
 	@Override
