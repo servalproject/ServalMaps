@@ -43,6 +43,18 @@
     <string name="peer_info_ui_btn_back">Back to Map</string>
     <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
     
+    <!-- New POI Activity -->
+    <string name="new_poi_ui_lbl_heading">Add Point of Interest</string>
+    <string name="new_poi_ui_lbl_title">Title</string>
+    <string name="new_poi_ui_lbl_description">Description</string>
+    <string name="new_poi_ui_lbl_characters">Characters Remaining:</string>
+    <string name="new_poi_ui_btn_save">Save New POI</string>
+    <string name="new_poi_toast_title_missing">A title must be provided</string>
+    <string name="new_poi_toast_title_too_long">The title must be no longer than %d characters</string>
+    <string name="new_poi_toast_description_missing">A description must be provided</string>
+    <string name="new_poi_toast_description_too_long">The description must be no longer than %d characters</string>
+    <string name="new_poi_toast_save_error">The new POI could not be saved</string>
+    
     <!-- Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>

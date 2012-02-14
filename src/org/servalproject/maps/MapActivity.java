@@ -200,16 +200,20 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
+		Intent mIntent;
+		
 		switch(item.getItemId()){
 		case R.id.menu_map_activity_preferences:
 			// show the preferences activity
 			Log.v(TAG, "show the preferences activity");
-			Intent mIntent = new Intent(this, org.servalproject.maps.SettingsActivity.class);
+			mIntent = new Intent(this, org.servalproject.maps.SettingsActivity.class);
 			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_add_poi:
 			// show the add POI activity
 			Log.v(TAG, "show the add poi activity");
+			mIntent = new Intent(this, org.servalproject.maps.NewPoiActivity.class);
+			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_close:
 			// close this activity

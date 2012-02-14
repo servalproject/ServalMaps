@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/new_poi_ui_lbl_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/new_poi_ui_lbl_heading"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+     <TextView
+         android:id="@+id/new_poi_ui_lbl_title"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/new_poi_ui_lbl_title"/>
+
+     <EditText
+         android:id="@+id/new_poi_ui_txt_title"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" 
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:inputType="textCapWords">
+         <requestFocus />
+     </EditText>
+     
+     <TextView
+         android:id="@+id/new_poi_ui_lbl_description"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/new_poi_ui_lbl_description"/>
+
+     <EditText
+         android:id="@+id/new_poi_ui_txt_description"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:inputType="textMultiLine|textShortMessage"
+         android:lines="3">
+         
+     </EditText>
+
+     <LinearLayout
+         android:id="@+id/linearLayout1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+         <TextView
+                android:id="@+id/new_poi_ui_lbl_characters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+                android:layout_marginLeft="@dimen/ui_elem_margin_left"
+                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:text="@string/new_poi_ui_lbl_characters" />
+
+            <TextView
+                android:id="@+id/new_poi_ui_txt_characters"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+                android:layout_marginLeft="@dimen/ui_elem_margin_left"
+                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:text="" />
+     </LinearLayout>
+
+     <Button
+         android:id="@+id/new_poi_ui_btn_save"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:text="@string/new_poi_ui_btn_save" />
+
+</LinearLayout>
