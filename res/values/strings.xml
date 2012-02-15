@@ -103,6 +103,9 @@
     <string name="system_notification_title">Serval Maps</string>
     <string name="system_notification_content">Serval Maps is running and collecting location information</string>
     
+    <!-- MeshMS strings -->
+    <string name="meshms_template_location">ServalMaps:: I was at location %1$s, %2$s at %3$s ::</string>
+    
     <!-- misc strings -->
     <string name="misc_dialog_yes_button">Yes</string>
     <string name="misc_dialog_no_button">No</string>

@@ -23,6 +23,7 @@ package org.servalproject.maps.location;
 import java.util.TimeZone;
 
 import org.servalproject.maps.ServalMaps;
+import org.servalproject.maps.meshms.OutgoingMeshMS;
 import org.servalproject.maps.provider.MapItemsContract;
 
 import android.content.ContentResolver;
@@ -60,6 +61,8 @@ public class LocationCollector implements LocationListener {
 	
 	private ContentResolver contentResolver;
 	
+	private Context context;
+	
 	public LocationCollector(Context context) {
 
 		super();
@@ -74,6 +77,8 @@ public class LocationCollector implements LocationListener {
 		mApplication = null;
 		
 		contentResolver = context.getContentResolver();
+		
+		this.context = context;
 	}
 	
 	/**
@@ -122,6 +127,8 @@ public class LocationCollector implements LocationListener {
 				if(V_LOG) {
 					Log.v(TAG, "new location record created with id: " + newRecord.getLastPathSegment());
 				}
+				
+				OutgoingMeshMS.sendLocationMessage(context, newRecord.getLastPathSegment());
 			}catch (SQLException e) {
 				Log.e(TAG, "unable to add new location record", e);
 			}
