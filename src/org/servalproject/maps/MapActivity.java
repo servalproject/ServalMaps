@@ -74,6 +74,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	private OverlayList overlayList;
 	private MapView mapView;
 	
+	// phone number and sid
+	private String meshPhoneNumber = null;
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -131,7 +134,12 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
      	
      	// listen for changes in the preferences
      	preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
-		
+     	
+     	// get the phone number and sid
+     	ServalMaps mApplication = (ServalMaps) getApplication();
+     	meshPhoneNumber = mApplication.getPhoneNumber();
+     	mApplication = null;
+     	
 		// update the map without delay
 		updateHandler.post(updateMapTask);
 		
@@ -293,8 +301,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
 					
 					// determine what type of marker to create
-					// TODO use actual value for phone number
-					if(mPhoneNumber.equals("myphonenumber2") == true) {
+					if(mPhoneNumber.equals(meshPhoneNumber) == true) {
 						// this is a self marker
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, selfLocationMarker);
 						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);

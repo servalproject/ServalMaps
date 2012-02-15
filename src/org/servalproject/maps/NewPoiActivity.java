@@ -57,10 +57,13 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	private final int MAX_DESCRIPTION_CHARACTERS = 250;
 	private final int MAX_TITLE_CHARACTERS = 50;
 	
-	TextView txtCharacters;
+	private TextView txtCharacters;
 	
-	double latitude = -1;
-	double longitude;
+	private double latitude = -1;
+	private double longitude;
+	
+	private String phoneNumber;
+	private String subscriberId; 
 	
 	/*
 	 * (non-Javadoc)
@@ -92,6 +95,12 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         // listen for button presses
         Button mButton = (Button) findViewById(R.id.new_poi_ui_btn_save);
         mButton.setOnClickListener(this);
+        
+        // get the mesh phone number and sid
+        ServalMaps mApplication = (ServalMaps) getApplicationContext();
+		phoneNumber = mApplication.getPhoneNumber();
+		subscriberId = mApplication.getSid();
+		mApplication = null;
     }
     
     // keep track of the number of characters remaining in the description
@@ -193,9 +202,9 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			Toast.makeText(this, R.string.new_poi_toast_location_error, Toast.LENGTH_SHORT).show();
 		}
 		
-		//TODO update to use actual values from Serval Mesh
-		mValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, "myphonenumber");
-		mValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, "mysid");
+		// add phone number and sid
+		mValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, phoneNumber);
+		mValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, subscriberId);
 		
 		// determine which lat and long to use
 		if(latitude == -1) {

@@ -22,6 +22,7 @@ package org.servalproject.maps.location;
 
 import java.util.TimeZone;
 
+import org.servalproject.maps.ServalMaps;
 import org.servalproject.maps.provider.MapItemsContract;
 
 import android.content.ContentResolver;
@@ -54,9 +55,8 @@ public class LocationCollector implements LocationListener {
 	private static Location currentLocation = null;
 	private String timeZone = TimeZone.getDefault().getID();
 	
-	// TODO fill in with real phone and sid values
-	private String phoneNumber = "myphonenumber2";
-	private String subscriberId = "mysubscriberid2";
+	private String phoneNumber;
+	private String subscriberId;
 	
 	private ContentResolver contentResolver;
 	
@@ -67,6 +67,11 @@ public class LocationCollector implements LocationListener {
 		if(context == null) {
 			throw new IllegalArgumentException("the context parameter is required");
 		}
+		
+		ServalMaps mApplication = (ServalMaps) context.getApplicationContext();
+		phoneNumber = mApplication.getPhoneNumber();
+		subscriberId = mApplication.getSid();
+		mApplication = null;
 		
 		contentResolver = context.getContentResolver();
 	}
