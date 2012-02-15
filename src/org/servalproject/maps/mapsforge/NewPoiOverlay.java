@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.os.Vibrator;
 import android.util.Log;
 
 /**
@@ -41,6 +42,8 @@ public class NewPoiOverlay extends Overlay {
 	 */
 	private final boolean V_LOG = true;
 	private String TAG = "NewPoiOverlay";
+	
+	private final long VIBRATE_DURATION = 300; // 300 milliseconds
 	
 	/*
 	 * private class level variables
@@ -70,6 +73,10 @@ public class NewPoiOverlay extends Overlay {
 			Log.v(TAG, "Latitude: " + geoPoint.getLatitude());
 			Log.v(TAG, "longitude: " + geoPoint.getLongitude());
 		}
+		
+		// provide some haptic feedback using the vibrator
+		Vibrator mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+		mVibrator.vibrate(VIBRATE_DURATION);
 		
 		// create a new intent
 		Intent mIntent = new Intent(context, org.servalproject.maps.NewPoiActivity.class);

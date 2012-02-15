@@ -42,6 +42,7 @@
     <uses-permission android:name="org.servalproject.maps.provider.READ_ITEMS"/>
     <uses-permission android:name="org.servalproject.maps.provider.WRITE_ITEMS"/>
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:icon="@drawable/ic_launcher"
