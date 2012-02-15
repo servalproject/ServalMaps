@@ -128,7 +128,8 @@ public class LocationCollector implements LocationListener {
 					Log.v(TAG, "new location record created with id: " + newRecord.getLastPathSegment());
 				}
 				
-				OutgoingMeshMS.sendLocationMessage(context, newRecord.getLastPathSegment());
+				// functionality not required at this stage 
+				//OutgoingMeshMS.sendLocationMessage(context, newRecord.getLastPathSegment());
 			}catch (SQLException e) {
 				Log.e(TAG, "unable to add new location record", e);
 			}
