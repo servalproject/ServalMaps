@@ -23,7 +23,6 @@ package org.servalproject.maps.location;
 import java.util.TimeZone;
 
 import org.servalproject.maps.ServalMaps;
-import org.servalproject.maps.meshms.OutgoingMeshMS;
 import org.servalproject.maps.provider.MapItemsContract;
 
 import android.content.ContentResolver;
@@ -61,8 +60,6 @@ public class LocationCollector implements LocationListener {
 	
 	private ContentResolver contentResolver;
 	
-	private Context context;
-	
 	public LocationCollector(Context context) {
 
 		super();
@@ -77,8 +74,6 @@ public class LocationCollector implements LocationListener {
 		mApplication = null;
 		
 		contentResolver = context.getContentResolver();
-		
-		this.context = context;
 	}
 	
 	/**
