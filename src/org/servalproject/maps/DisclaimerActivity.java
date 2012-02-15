@@ -22,6 +22,7 @@ package org.servalproject.maps;
 
 import java.util.ArrayList;
 
+import org.servalproject.maps.batphone.PhoneNumberReceiver;
 import org.servalproject.maps.parcelables.MapDataInfo;
 
 import android.app.Activity;
@@ -50,11 +51,12 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	
 	private final int NO_FILES_DIALOG = 0;
 	private final int MANY_FILES_DIALOG = 1;
+	private final int NO_SERVAL_DIALOG = 2;
 	
 	/*
 	 * private class level variables
 	 */
-    private IntentFilter BroadcastFilter;
+	private PhoneNumberReceiver phoneNumberReceiver = null;
     private int mapFileCount = 0;
 	private ArrayList<MapDataInfo> mapDataInfoList = null;
 	private CharSequence[] mFileNames = null;
@@ -72,10 +74,8 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
         Button mButton = (Button) findViewById(R.id.disclaimer_ui_btn_continue);
         mButton.setOnClickListener(this);
         
-        // register the broadcast receiver
-        BroadcastFilter = new IntentFilter();
-        BroadcastFilter.addAction("org.servalproject.maps.MAP_DATA_LIST");
-        registerReceiver(MapDataReceiver, BroadcastFilter);
+        // register the various receivers
+        registerReceivers();
     }
     
     /*
@@ -87,9 +87,20 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		
 		// check which button was touched
 		if(v.getId() == R.id.disclaimer_ui_btn_continue) {
-			// show the send a message activity
-			Intent mSendActivityIntent = new Intent("org.servalproject.maps.MAP_DATA");
-			startService(mSendActivityIntent);
+			
+			// check to see if we know the device phone number
+			ServalMaps mApplication = (ServalMaps) getApplication();
+			
+			if(mApplication.getPhoneNumber() == null) {
+				// show the appropriate dialog
+				showDialog(NO_SERVAL_DIALOG);
+			} else {
+				
+				// check for files and go to the map activity
+				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
+				startService(mIntent);
+			}
+
 		}
 	}
 	
@@ -99,8 +110,8 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 */
 	@Override
 	public void onPause() {
-		// unregister the receiver when the activity is no longer active
-		unregisterReceiver(MapDataReceiver);
+		// unregister the various receivers
+		unRegisterReceivers();
 		super.onPause();
 	}
 	
@@ -110,9 +121,38 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 */
 	@Override
 	public void onResume() {
-		// register the receiver again when the activity becomes active
-		registerReceiver(MapDataReceiver, BroadcastFilter);
+		// register the various receivers
+		registerReceivers();
 		super.onResume();
+	}
+	
+	// private method to register the various broadcast receivers
+	private void registerReceivers() {
+		
+		// register the map data receiver
+        IntentFilter mBroadcastFilter = new IntentFilter();
+        mBroadcastFilter.addAction("org.servalproject.maps.MAP_DATA_LIST");
+        registerReceiver(MapDataReceiver, mBroadcastFilter);
+        
+        // register for the sticky broadcast from the main Serval Software
+        if(phoneNumberReceiver == null) {
+        	phoneNumberReceiver = new PhoneNumberReceiver(getApplication());
+        }
+        
+        mBroadcastFilter = new IntentFilter();
+        mBroadcastFilter.addAction("org.servalproject.SET_PRIMARY");
+        registerReceiver(phoneNumberReceiver, mBroadcastFilter);
+	}
+	
+	// private method to unregister the various broadcast receivers
+	private void unRegisterReceivers() {
+		
+		unregisterReceiver(MapDataReceiver);
+		
+		if(phoneNumberReceiver != null) {
+			unregisterReceiver(phoneNumberReceiver);
+		}
+		
 	}
 	
 	/*
@@ -194,6 +234,17 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			});
 			mDialog = mBuilder.create();
 			break;
+		case NO_SERVAL_DIALOG:
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_files)
+			.setCancelable(false)
+			.setPositiveButton(R.string.misc_dialog_ok_button, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					return;
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+			
 		default:
 			mDialog = null;
 		}
