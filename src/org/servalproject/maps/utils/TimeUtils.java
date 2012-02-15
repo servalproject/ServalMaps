@@ -19,12 +19,14 @@
  */
 package org.servalproject.maps.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.servalproject.maps.R;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 /**
  * a class that exposes a number of utility methods related to time
@@ -41,6 +43,15 @@ public class TimeUtils {
 	 * @return a string representation of the amount of time passed
 	 */
 	public static String calculateAge(long time, String timeZone, Context context) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(timeZone) == true) {
+			throw new IllegalArgumentException("the timeZone parameter is required");
+		}
+		
+		if(context == null) {
+			throw new IllegalArgumentException("the context parameter is required");
+		}
 		
 		String mReturn = null;
 		
@@ -78,6 +89,51 @@ public class TimeUtils {
     	}
 		
 		return mReturn;
+	}
+	
+	/**
+	 * format the given time and timezone into a more human friendly format
+	 * 
+	 * @param time the time to format
+	 * @param timeZone the time zone associated with the time
+	 * @return
+	 */
+	public static String formatDate(long time, String timeZone) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(timeZone) == true) {
+			throw new IllegalArgumentException("the timeZone parameter is required");
+		}
+		
+		// get a calendar instance to help with the formating of the date
+		Calendar mCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+		mCalendar.setTimeInMillis(time);
+		
+		SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a z");
+		
+		return mFormat.format(mCalendar.getTime());
+	}
+	
+	/**
+	 * format the given time and timezone into a more human friendly format
+	 * 
+	 * @param time the time to format
+	 * @param timeZone the time zone associated with the time
+	 * @return
+	 */
+	public static String formatDate(String time, String timeZone) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(time) == true) {
+			throw new IllegalArgumentException("the time parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(timeZone) == true) {
+			throw new IllegalArgumentException("the timeZone parameter is required");
+		}
+		
+		return formatDate(Long.parseLong(time), timeZone);
+		
 	}
 
 }
