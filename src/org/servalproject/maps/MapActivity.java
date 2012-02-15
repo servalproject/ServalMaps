@@ -54,6 +54,10 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	private final boolean V_LOG = true;
 	private final String  TAG = "MapActivity";
 	
+	/*
+	 * private class level variables
+	 */
+	
 	private Intent coreServiceIntent;
 	
 	private Handler updateHandler = new Handler();
@@ -393,9 +397,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
 					
 					mItems.add(mOverlayItem);
-					
 				}
-				
 			}
 			
 			// play nice and tidy up

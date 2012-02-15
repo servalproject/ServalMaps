@@ -57,6 +57,7 @@ public class OverlayList extends ArrayItemizedOverlay {
 	public boolean onTap(int index) {
 		
 		OverlayItem mItem = (OverlayItem)this.createItem(index);
+		Intent mIntent;
 		//HashMap<String, String> mExtraInfo;
 		
 		//determine what item was chosen
@@ -78,7 +79,7 @@ public class OverlayList extends ArrayItemizedOverlay {
 			}
 			
 			// show the peer information activity
-			Intent mIntent = new Intent(context, org.servalproject.maps.PeerInfoActivity.class);
+			mIntent = new Intent(context, org.servalproject.maps.PeerInfoActivity.class);
 			mIntent.putExtra("recordId", mItem.getRecordId());
 			context.startActivity(mIntent);
 			
@@ -87,6 +88,11 @@ public class OverlayList extends ArrayItemizedOverlay {
 			if(V_LOG){
 				Log.v(TAG, "user touched a poi marker");
 			}
+			
+			// show the poi information activity
+			mIntent = new Intent(context, org.servalproject.maps.PoiInfoActivity.class);
+			mIntent.putExtra("recordId", mItem.getRecordId());
+			context.startActivity(mIntent);
 			break;
 		default:
 			Log.e(TAG, "unknown marker type");
