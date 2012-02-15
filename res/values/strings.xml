@@ -75,6 +75,8 @@
     <string name="preferences_map_follow_summary">Keep the map centred on your location</string>
     <string name="preferences_map_update_interval_title">Map Update Interval</string>
     <string name="preferences_map_update_interval_summary">Define how often the map will update</string>
+    <string name="preferences_map_max_poi_age_title">Maximum POI Age</string>
+    <string name="preferences_map_max_poi_age_summary">Hide POI markers when older than this setting</string>
     
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>

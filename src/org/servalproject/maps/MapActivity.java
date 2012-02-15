@@ -63,6 +63,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	private volatile int updateDelay = defaultUpdateDelay;
 	private volatile boolean keepCentered = false;
 	
+	private long defaultPoiMaxAge = 43200 * 1000;
+	private volatile long poiMaxAge = defaultPoiMaxAge;
+	
 	private SharedPreferences preferences = null;
 	
 	// drawables for marker icons
@@ -185,6 +188,16 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						Log.v(TAG, "map will not keep centered on the users location");
 					}
 				}
+			} else if(key.equals("preferences_map_max_poi_age") == true) {
+				
+				String mPreference = preferences.getString("preferences_map_max_poi_age", null);
+				if(mPreference != null) {
+					poiMaxAge = Long.parseLong(mPreference) * 1000;
+				}
+				
+				if(V_LOG) {
+					Log.v(TAG, "new max POI age is '" + poiMaxAge + "'");
+				}
 			}
 		}
 	};
@@ -273,21 +286,23 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 			
 			//TODO improve the way information is retrieved and only get what is required
-			// get the content
+			// get the location marker content
 			Cursor mCursor = mContentResolver.query(MapItemsContract.Locations.LATEST_CONTENT_URI, null, null, null, null);
 			
+			// store the list of items
+			ArrayList<OverlayItem> mItems = new ArrayList<OverlayItem>();
+			
 			if(mCursor == null) {
-				Log.i(TAG, "a null cursor was returned");
+				Log.i(TAG, "a null cursor was returned when looking up location info");
 				return;
 			}
 			
 			if(V_LOG) {
-				Log.v(TAG, "rows in cursor: " + mCursor.getCount());
+				Log.v(TAG, "rows in location info cursor: " + mCursor.getCount());
 			}
 			
 			if(mCursor.getCount() > 0) {
 				// process the location records
-				ArrayList<OverlayItem> mLocations = new ArrayList<OverlayItem>();
 				GeoPoint mGeoPoint;
 				String mPhoneNumber;
 				OverlayItem mOverlayItem;
@@ -321,16 +336,75 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
 					}
 					
-					mLocations.add(mOverlayItem);
+					mItems.add(mOverlayItem);
 				}
 				
-				// update the overlay
-				overlayList.clear();
-				overlayList.addItems(mLocations);
-				overlayList.requestRedraw();
 			}
 			
+			// play nice and tidy up
 			mCursor.close();
+			
+			// get the POI content
+			String[] mProjection = new String[3];
+			mProjection[0] = MapItemsContract.PointsOfInterest.Table._ID;
+			mProjection[1] = MapItemsContract.PointsOfInterest.Table.LATITUDE;
+			mProjection[2] = MapItemsContract.PointsOfInterest.Table.LONGITUDE;
+			
+			// determine if we need to restrict the list of POIs
+			String mSelection = null;
+			String[] mSelectionArgs = null;
+			
+			// restrict the poi content returned if required
+			if(poiMaxAge != -1000) {
+				mSelection = MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " > ? ";
+				mSelectionArgs = new String[1];
+				mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
+			}
+			
+			mCursor = mContentResolver.query(
+					MapItemsContract.PointsOfInterest.CONTENT_URI, 
+					mProjection, 
+					mSelection, 
+					mSelectionArgs,
+					null);
+			
+			if(mCursor == null) {
+				Log.i(TAG, "a null cursor was returned when looking up POI info");
+				return;
+			}
+			
+			if(V_LOG) {
+				Log.v(TAG, "rows in POI cursor: " + mCursor.getCount());
+			}
+			
+			// process the list of poi records
+			if(mCursor.getCount() > 0) {
+				// process the location records
+				GeoPoint mGeoPoint;
+				OverlayItem mOverlayItem;
+				
+				while(mCursor.moveToNext()) {
+					
+					// get the geographic coordinates
+					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+					
+					mOverlayItem = new OverlayItem(mGeoPoint, null, null, poiLocationMarker);
+					mOverlayItem.setType(OverlayItems.POI_ITEM);
+					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
+					
+					mItems.add(mOverlayItem);
+					
+				}
+				
+			}
+			
+			// play nice and tidy up
+			mCursor.close();
+			
+			// update and redraw the overlay
+			overlayList.clear();
+			overlayList.addItems(mItems);
+			overlayList.requestRedraw();
 			
 			// add the task back onto the queue
 			updateHandler.postDelayed(updateMapTask, updateDelay);

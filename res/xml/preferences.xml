@@ -38,6 +38,14 @@
             android:entries="@array/preferences_map_update_intervals"
             android:entryValues="@array/preferences_map_update_intervals_values"
             />
+        <ListPreference 
+            android:key="preferences_map_max_poi_age"
+            android:title="@string/preferences_map_max_poi_age_title"
+            android:summary="@string/preferences_map_max_poi_age_summary"
+            android:defaultValue="43200"
+            android:entries="@array/preferences_map_max_poi_age_intervals"
+            android:entryValues="@array/preferences_map_max_poi_age_values"
+            />
     </PreferenceCategory>
     <!-- developer preferences -->
     <PreferenceCategory
