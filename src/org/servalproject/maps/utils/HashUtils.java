@@ -38,8 +38,8 @@ public class HashUtils {
 	 * generate a hash of a location message
 	 * 
 	 * @param phone the phone number
-	 * @param latitude the latitude coordinates
-	 * @param longitude the longitude coordinates
+	 * @param latitude the latitude coordinate
+	 * @param longitude the longitude coordinate
 	 * @param time the timestamp
 	 * @return a string representation of the hash
 	 */
@@ -50,13 +50,29 @@ public class HashUtils {
 		return createHash(mToHash);
 	}
 	
-	// calculate the md5 hash of a message as a string
+
+	/**
+	 * generate a hash of a point of interest message
+	 * 
+	 * @param phone the phone number
+	 * @param latitude the latitude coordinate
+	 * @param longitude the longitude coordinate
+	 * @param title the title of the POI
+	 * @param description the description of the POI
+	 * @return a string representation of the hash
+	 */
+	public static String hashPointOfInterestMessage(String phone, double latitude, double longitude, String title, String description) {
+		
+		String mToHash = phone + Double.toString(latitude) + Double.toString(longitude) + title + description;
+		
+		return createHash(mToHash);
+	}
+	
 	/*
 	 * the following method is based on code found here:
 	 * http://p-xr.com/android-snippet-making-a-md5-hash-from-a-string-in-java/
 	 * which is considered to be in the public domain
 	 */
-	// method to build the md5 hash of from the simpleMesgMS content
 	private static String createHash(String toHash) {
 		
 		String mResult = null;

@@ -24,6 +24,7 @@ import java.util.TimeZone;
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.protobuf.BinaryFileWriter;
 import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.utils.HashUtils;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -209,16 +210,26 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		
 		// determine which lat and long to use
 		if(latitude == -1) {
-			mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, mLocation.getLatitude());
-			mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, mLocation.getLongitude());
-		} else {
-			mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, latitude);
-			mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, longitude);
+			latitude = mLocation.getLatitude();
+			longitude = mLocation.getLongitude();
 		}
+		
+		mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, latitude);
+		mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, longitude);
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, System.currentTimeMillis());
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMEZONE, TimeZone.getDefault().getID());
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TITLE, title);
 		mValues.put(MapItemsContract.PointsOfInterest.Table.DESCRIPTION, description);
+		
+		// calculate and add the hash
+		String mHash = HashUtils.hashPointOfInterestMessage(
+				phoneNumber,
+				latitude,
+				longitude,
+				title,
+				description);
+
+		mValues.put(MapItemsContract.PointsOfInterest.Table.HASH, mHash);
 		
 		try {
 			Uri newRecord = getContentResolver().insert(MapItemsContract.PointsOfInterest.CONTENT_URI, mValues);
