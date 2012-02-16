@@ -23,9 +23,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder;
 import org.servalproject.maps.provider.MapItemsContract;
 import org.servalproject.maps.utils.HashUtils;
-import org.servalproject.maps.protobuf.LocationMessage.Message.Builder;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -34,17 +34,12 @@ import android.database.Cursor;
 import android.text.TextUtils;
 import android.util.Log;
 
-/**
- * undertakes all of the necessary work to 
- * read locations messages 
- * from the binary file and write the messages to the database
- */
-public class LocationReadWorker implements Runnable {
+public class PointsOfInterestWorker implements Runnable {
 	
 	/*
 	 * private class level constants
 	 */
-	private final String TAG = "LocationReadWorker";
+	private final String TAG = "PointsOfInterestWorker";
 	private final boolean V_LOG = true;
 	
 	/*
@@ -59,7 +54,7 @@ public class LocationReadWorker implements Runnable {
 	 * @param context the context object used to access a content resolver
 	 * @param filePath the path to the binary file
 	 */
-	public LocationReadWorker(Context context, String filePath) {
+	public PointsOfInterestWorker(Context context, String filePath) {
 		
 		// check the parameters
 		if(context == null) {
@@ -72,7 +67,6 @@ public class LocationReadWorker implements Runnable {
 		
 		this.context = context;
 		this.filePath = filePath;
-		
 	}
 
 	@Override
@@ -91,28 +85,29 @@ public class LocationReadWorker implements Runnable {
 		ContentResolver mContentResolver = context.getContentResolver();
 		ContentValues mNewValues = null;
 		Cursor mCursor = null;
-		Builder mMessageBuilder = LocationMessage.Message.newBuilder();
+		Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
+		
 		String mHash = null;
 		
-		String[] mProjection = {MapItemsContract.Locations.Table._ID};
-		String mSelection = MapItemsContract.Locations.Table.HASH + " = ?";
+		String[] mProjection = {MapItemsContract.PointsOfInterest.Table._ID};
+		String mSelection = MapItemsContract.PointsOfInterest.Table.HASH + " = ?";
 		String[] mSelectionArgs = new String[1];
 		
 		// loop through the data
 		try {
 			while(mMessageBuilder.mergeDelimitedFrom(mInput) == true) {
-			
-				// build the hash of the message
-				mHash = HashUtils.hashLocationMessage(
-						mMessageBuilder.getPhoneNumber(), 
+				
+				mHash = HashUtils.hashPointOfInterestMessage(
+						mMessageBuilder.getPhoneNumber(),
 						mMessageBuilder.getLatitude(),
 						mMessageBuilder.getLongitude(),
-						mMessageBuilder.getTimestamp());
+						mMessageBuilder.getTitle(),
+						mMessageBuilder.getDescription());
 				
 				mSelectionArgs[0] = mHash;
 				
 				mCursor = mContentResolver.query(
-						MapItemsContract.Locations.CONTENT_URI,
+						MapItemsContract.PointsOfInterest.CONTENT_URI,
 						mProjection,
 						mSelection,
 						mSelectionArgs,
@@ -128,24 +123,27 @@ public class LocationReadWorker implements Runnable {
 					// add new record
 					mNewValues = new ContentValues();
 					
-					mNewValues.put(MapItemsContract.Locations.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
-					mNewValues.put(MapItemsContract.Locations.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
-					mNewValues.put(MapItemsContract.Locations.Table.LATITUDE, mMessageBuilder.getLatitude());
-					mNewValues.put(MapItemsContract.Locations.Table.LONGITUDE, mMessageBuilder.getLongitude());
-					mNewValues.put(MapItemsContract.Locations.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
-					mNewValues.put(MapItemsContract.Locations.Table.TIMEZONE, mMessageBuilder.getTimeZone());
-					mNewValues.put(MapItemsContract.Locations.Table.HASH, mHash);
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, mMessageBuilder.getLatitude());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, mMessageBuilder.getLongitude());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.TIMEZONE, mMessageBuilder.getTimeZone());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.TITLE, mMessageBuilder.getTitle());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.DESCRIPTION, mMessageBuilder.getDescription());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.CATEGORY, mMessageBuilder.getCategory());
+					mNewValues.put(MapItemsContract.PointsOfInterest.Table.HASH, mHash);
 					
 					mContentResolver.insert(
-							MapItemsContract.Locations.CONTENT_URI,
+							MapItemsContract.PointsOfInterest.CONTENT_URI,
 							mNewValues);
 					
 					if(V_LOG) {
-						Log.v(TAG, "added new location record to the database");
+						Log.v(TAG, "added new POI record to the database");
 					}
 				} else {
 					if(V_LOG) {
-						Log.v(TAG, "skipped an existing location record");
+						Log.v(TAG, "skipped an existing POI record");
 					}
 				}
 				
@@ -168,5 +166,4 @@ public class LocationReadWorker implements Runnable {
 			}
 		}
 	}
-
 }
