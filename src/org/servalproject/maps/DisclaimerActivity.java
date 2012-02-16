@@ -85,6 +85,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		
+		// subvert the click method to test reading binary data
+		//BinaryFileReader.readLocations(this, Environment.getExternalStorageDirectory() + "/servalproject/maps/meshms/5550070072012-02-16.smapl");
+		
 		// check which button was touched
 		if(v.getId() == R.id.disclaimer_ui_btn_continue) {
 			

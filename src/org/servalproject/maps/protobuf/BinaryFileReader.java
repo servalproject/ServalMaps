@@ -38,10 +38,10 @@ public class BinaryFileReader {
 	//private static final boolean V_LOG = true;
 	
 	/**
-	 * read a file containing location information and add it to the database
+	 * read a file containing location messages and add them to the database
 	 * 
-	 * @param context
-	 * @param filePath
+	 * @param context a context used to get a contentResolver and other objects
+	 * @param filePath the full path to the binary POI file
 	 */
 	public static void readLocations(Context context, String filePath) {
 		
@@ -63,8 +63,33 @@ public class BinaryFileReader {
 		Thread mWorkerThread = new Thread(mWorker, "LocationImportWorker");
 		mWorkerThread.start();
 	}
-
 	
+	/**
+	 * read a file containing POI messages and add them to the database
+	 * @param context a context used to get a contentResolver and other objects
+	 * @param filePath the full path to the binary POI file
+	 */
+	public static void readPointsOfInterest(Context context, String filePath) {
+		
+		// check the parameters
+		if(context == null) {
+			throw new IllegalArgumentException("the context parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(filePath) == true) {
+			throw new IllegalArgumentException("the filePath parameter is required");
+		}
+		
+		if(testPath(filePath) == false) {
+			Log.e(TAG, "invalid file path: " + filePath);
+			return;
+		}
+		
+		PointsOfInterestWorker mWorker = new PointsOfInterestWorker(context, filePath);
+		Thread mWorkerThread = new Thread(mWorker, "PointsOfInterestImportWorker");
+		mWorkerThread.start();
+	}
+
 	// private method to test a path
 	private static boolean testPath(String path) {
 		

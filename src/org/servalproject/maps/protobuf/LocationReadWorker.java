@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.servalproject.maps.provider.MapItemsContract;
 import org.servalproject.maps.utils.HashUtils;
+import org.servalproject.maps.protobuf.LocationMessage.Message.Builder;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -90,7 +91,7 @@ public class LocationReadWorker implements Runnable {
 		ContentResolver mContentResolver = context.getContentResolver();
 		ContentValues mNewValues = null;
 		Cursor mCursor = null;
-		org.servalproject.maps.protobuf.LocationMessage.Message.Builder mMessageBuilder = LocationMessage.Message.newBuilder();
+		Builder mMessageBuilder = LocationMessage.Message.newBuilder();
 		String mHash = null;
 		
 		String[] mProjection = {MapItemsContract.Locations.Table._ID};
