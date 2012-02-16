@@ -35,7 +35,7 @@ public class BinaryFileReader {
 	 * private class level constants
 	 */
 	private static final String TAG = "BinaryFileReader";
-	private static final boolean V_LOG = true;
+	//private static final boolean V_LOG = true;
 	
 	/**
 	 * read a file containing location information and add it to the database
