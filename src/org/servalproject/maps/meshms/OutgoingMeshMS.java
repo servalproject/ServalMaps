@@ -69,7 +69,6 @@ public class OutgoingMeshMS {
 				mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)),
 				mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMEZONE)));
 		
-		//TODO prettify the time
 		//TODO add machine readable message content
 		String mContent = String.format(context.getString(R.string.meshms_template_location),
 				mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)),

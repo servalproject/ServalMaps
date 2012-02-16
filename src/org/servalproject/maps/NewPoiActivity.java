@@ -22,6 +22,7 @@ package org.servalproject.maps;
 import java.util.TimeZone;
 
 import org.servalproject.maps.location.LocationCollector;
+import org.servalproject.maps.protobuf.BinaryFileWriter;
 import org.servalproject.maps.provider.MapItemsContract;
 
 import android.app.Activity;
@@ -221,6 +222,8 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		
 		try {
 			Uri newRecord = getContentResolver().insert(MapItemsContract.PointsOfInterest.CONTENT_URI, mValues);
+			
+			BinaryFileWriter.writePointOfInterest(this, newRecord.getLastPathSegment());
 			if(V_LOG) {
 				Log.v(TAG, "new POI record created with id: " + newRecord.getLastPathSegment());
 			}

@@ -23,6 +23,7 @@ package org.servalproject.maps.location;
 import java.util.TimeZone;
 
 import org.servalproject.maps.ServalMaps;
+import org.servalproject.maps.protobuf.BinaryFileWriter;
 import org.servalproject.maps.provider.MapItemsContract;
 import org.servalproject.maps.utils.HashUtils;
 
@@ -50,6 +51,9 @@ public class LocationCollector implements LocationListener {
 	/*
 	 * class level variables
 	 */
+	private Context context;
+	
+	
 	/**
 	 * the most recent and most accurate location information
 	 */
@@ -75,6 +79,8 @@ public class LocationCollector implements LocationListener {
 		mApplication = null;
 		
 		contentResolver = context.getContentResolver();
+		
+		this.context = context;
 	}
 	
 	/**
@@ -129,6 +135,9 @@ public class LocationCollector implements LocationListener {
 				
 				// functionality not required at this stage 
 				//OutgoingMeshMS.sendLocationMessage(context, newRecord.getLastPathSegment());
+				
+				// write an entry to the binary log file
+				BinaryFileWriter.writeLocation(context,  newRecord.getLastPathSegment());
 			}catch (SQLException e) {
 				Log.e(TAG, "unable to add new location record", e);
 			}

@@ -72,6 +72,7 @@
     
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
+    <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
     
     <!-- Preferences -->
     <string name="preferences_category_developer_title">Developer Settings</string>
