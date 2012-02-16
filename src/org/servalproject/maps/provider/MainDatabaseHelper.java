@@ -34,7 +34,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ MapItemsContract.Locations.Table.LATITUDE + " REAL, "
 			+ MapItemsContract.Locations.Table.LONGITUDE + " REAL, "
 			+ MapItemsContract.Locations.Table.TIMESTAMP + " INTEGER, "
-			+ MapItemsContract.Locations.Table.TIMEZONE + " TEXT)";
+			+ MapItemsContract.Locations.Table.TIMEZONE + " TEXT, "
+			+ MapItemsContract.Locations.Table.HASH + " TEXT)";
+	
+	private final String LOCATIONS_HASH_INDEX = "CREATE INDEX location_hash_index ON "
+			+ MapItemsContract.Locations.CONTENT_URI_PATH + " ("
+			+ MapItemsContract.Locations.Table.HASH + ")";
 	
 	private final String POI_CREATE = "CREATE TABLE " +
 			MapItemsContract.PointsOfInterest.CONTENT_URI_PATH + " ("
@@ -47,10 +52,15 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ MapItemsContract.PointsOfInterest.Table.TIMEZONE + " TEXT, "
 			+ MapItemsContract.PointsOfInterest.Table.TITLE + " TEXT, "
 			+ MapItemsContract.PointsOfInterest.Table.DESCRIPTION + " TEXT, "
-			+ MapItemsContract.PointsOfInterest.Table.CATEGORY + " INTEGER DEFAULT " + MapItemsContract.PointsOfInterest.DEFAULT_CATEGORY + ")";
+			+ MapItemsContract.PointsOfInterest.Table.CATEGORY + " INTEGER DEFAULT " + MapItemsContract.PointsOfInterest.DEFAULT_CATEGORY + ", "
+			+ MapItemsContract.PointsOfInterest.Table.HASH + " TEXT)";
+	
+	private final String POI_HASH_INDEX = "CREATE INDEX poi_hash_index ON "
+			+ MapItemsContract.PointsOfInterest.CONTENT_URI_PATH + " ("
+			+ MapItemsContract.PointsOfInterest.Table.HASH + ")";
 	
 	// declare public class constants
-	public static final String DB_NAME = "serval-maps";
+	public static final String DB_NAME = "serval-maps.db";
 	public static final int DB_VERSION = 1;
 	
 	/**
@@ -61,20 +71,20 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 	MainDatabaseHelper(Context context) {
 		// context, database name, factory, db version
 		super(context, DB_NAME, null, DB_VERSION);
-
 	}
 			
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// create the database tables
 		db.execSQL(LOCATIONS_CREATE);
+		db.execSQL(LOCATIONS_HASH_INDEX);
 		db.execSQL(POI_CREATE);
+		db.execSQL(POI_HASH_INDEX);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
-
 	}
 
 }

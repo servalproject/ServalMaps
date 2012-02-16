@@ -24,6 +24,7 @@ import java.util.TimeZone;
 
 import org.servalproject.maps.ServalMaps;
 import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.utils.HashUtils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -109,13 +110,16 @@ public class LocationCollector implements LocationListener {
 			// save the location for later
 			currentLocation = location;
 			
+			long mTime = System.currentTimeMillis();
+			
 			ContentValues mNewValues = new ContentValues();
 			mNewValues.put(MapItemsContract.Locations.Table.PHONE_NUMBER, phoneNumber);
 			mNewValues.put(MapItemsContract.Locations.Table.SUBSCRIBER_ID, subscriberId);
 			mNewValues.put(MapItemsContract.Locations.Table.LATITUDE, location.getLatitude());
 			mNewValues.put(MapItemsContract.Locations.Table.LONGITUDE, location.getLongitude());
 			mNewValues.put(MapItemsContract.Locations.Table.TIMEZONE, timeZone);
-			mNewValues.put(MapItemsContract.Locations.Table.TIMESTAMP, System.currentTimeMillis());
+			mNewValues.put(MapItemsContract.Locations.Table.TIMESTAMP, mTime);
+			mNewValues.put(MapItemsContract.Locations.Table.HASH, HashUtils.hashLocationMessage(phoneNumber, location.getLatitude(), location.getLongitude(), mTime));
 
 			try {
 				Uri newRecord = contentResolver.insert(MapItemsContract.Locations.CONTENT_URI, mNewValues);

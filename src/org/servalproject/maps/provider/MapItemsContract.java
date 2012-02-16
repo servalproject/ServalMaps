@@ -117,9 +117,14 @@ public final class MapItemsContract {
 			public static final String TIMEZONE = "timezone";
 			
 			/**
+			 * hash of the message for index purposes
+			 */
+			public static final String HASH = "message_hash";
+			
+			/**
 			 * a list of all of the columns
 			 */
-			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE};
+			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, HASH};
 		}
 	}
 	
@@ -214,10 +219,14 @@ public final class MapItemsContract {
 			public static final String CATEGORY = "category";
 			
 			/**
+			 * hash of the message for index purposes
+			 */
+			public static final String HASH = "message_hash";
+			
+			/**
 			 * a list of all of the columns
 			 */
-			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY};
-			
+			public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY, HASH};
 		}
 	}
 }
