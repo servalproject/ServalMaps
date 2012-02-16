@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 import org.servalproject.maps.batphone.PhoneNumberReceiver;
 import org.servalproject.maps.parcelables.MapDataInfo;
-import org.servalproject.maps.protobuf.BinaryFileReader;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -35,7 +34,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
