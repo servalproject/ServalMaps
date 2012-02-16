@@ -37,14 +37,14 @@ import android.util.Log;
 
 /**
  * write a google protocol buffer based binary file 
- * containing location information
+ * containing location or point of interest information
  */
 public class BinaryFileWriter {
 	
 	/*
 	 * private class level constants
 	 */
-	private static final String TAG = "LocationWriter";
+	private static final String TAG = "BinaryFileWriter";
 	//private static final boolean V_LOG = true;
 	
 	/**
