@@ -102,7 +102,7 @@ public class BinaryFileWriter {
 		mFileName = mFileName.replace(" ", "");
 		mFileName = mFileName.replace("-", "");
 		
-		mFileName = mFileName + TimeUtils.getTodayAsString() + ".smapl";
+		mFileName = mFileName + "-" + TimeUtils.getTodayAsString() + ".smapl";
 		
 		// play nice and tidy up
 		mCursor.close();
@@ -178,7 +178,7 @@ public class BinaryFileWriter {
 		mFileName = mFileName.replace(" ", "");
 		mFileName = mFileName.replace("-", "");
 		
-		mFileName = mFileName + TimeUtils.getTodayAsString() + ".smapp";
+		mFileName = mFileName + "-" + TimeUtils.getTodayAsString() + ".smapp";
 		
 		// play nice and tidy up
 		mCursor.close();
