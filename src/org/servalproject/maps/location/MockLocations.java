@@ -218,7 +218,14 @@ public class MockLocations implements Runnable {
 			try {
 				Thread.sleep(mSleepTime * 1000);
 			} catch (InterruptedException e) {
-				Log.i(TAG, "thread was interrupted", e);
+				if(keepGoing == false) {
+					if(V_LOG) {
+						Log.v(TAG, "thread was interrupted and is stopping");
+					}
+					return;
+				} else {
+					Log.w(TAG, "thread was interrupted without being requested to stop", e);
+				}
 			}
 		}
 	}
