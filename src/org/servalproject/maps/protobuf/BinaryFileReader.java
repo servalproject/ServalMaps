@@ -19,7 +19,7 @@
  */
 package org.servalproject.maps.protobuf;
 
-import java.io.File;
+import org.servalproject.maps.utils.FileUtils;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -54,7 +54,7 @@ public class BinaryFileReader {
 			throw new IllegalArgumentException("the filePath parameter is required");
 		}
 		
-		if(testPath(filePath) == false) {
+		if(FileUtils.isFileReadable(filePath) == false) {
 			Log.e(TAG, "invalid file path: " + filePath);
 			return;
 		}
@@ -80,7 +80,7 @@ public class BinaryFileReader {
 			throw new IllegalArgumentException("the filePath parameter is required");
 		}
 		
-		if(testPath(filePath) == false) {
+		if(FileUtils.isFileReadable(filePath) == false) {
 			Log.e(TAG, "invalid file path: " + filePath);
 			return;
 		}
@@ -88,18 +88,6 @@ public class BinaryFileReader {
 		PointsOfInterestWorker mWorker = new PointsOfInterestWorker(context, filePath);
 		Thread mWorkerThread = new Thread(mWorker, "PointsOfInterestImportWorker");
 		mWorkerThread.start();
-	}
-
-	// private method to test a path
-	private static boolean testPath(String path) {
-		
-		File mFile = new File(path);
-		
-		if(mFile.isFile() && mFile.canRead()) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 }

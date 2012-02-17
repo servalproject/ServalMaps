@@ -19,13 +19,13 @@
  */
 package org.servalproject.maps.protobuf;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.content.ContentResolver;
@@ -67,7 +67,7 @@ public class BinaryFileWriter {
 		mOutputPath += context.getString(R.string.system_path_binary_data);
 		
 		// test the path
-		if(testPath(mOutputPath) == false) {
+		if(FileUtils.isDirectoryWritable(mOutputPath) == false) {
 			Log.e(TAG, "unable to access the required output directory");
 			return;
 		}
@@ -141,7 +141,7 @@ public class BinaryFileWriter {
 		mOutputPath += context.getString(R.string.system_path_binary_data);
 		
 		// test the path
-		if(testPath(mOutputPath) == false) {
+		if(FileUtils.isDirectoryWritable(mOutputPath) == false) {
 			Log.e(TAG, "unable to access the required output directory");
 			return;
 		}
@@ -194,18 +194,6 @@ public class BinaryFileWriter {
 		} catch (IOException e) {
 			Log.e(TAG, "unable to write to the output file", e);
 			return;
-		}
-	}
-	
-	// private method to check on the status of the path that we expect
-	private static boolean testPath(String path) {
-		
-		File mPath = new File(path);
-		
-		if(mPath.isDirectory() && mPath.canWrite()) {
-			return true;
-		} else {
-			return mPath.mkdirs();
 		}
 	}
 
