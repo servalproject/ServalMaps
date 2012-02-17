@@ -46,6 +46,21 @@
             android:entries="@array/preferences_map_max_poi_age_intervals"
             android:entryValues="@array/preferences_map_max_poi_age_values"
             />
+        <CheckBoxPreference
+            android:key="preferences_map_output_json"
+            android:title="@string/preferences_map_output_json_title"
+            android:summary="@string/preferences_map_output_json_summary"
+            android:defaultValue="false"/>
+        <ListPreference 
+            android:key="preferences_map_output_json_interval"
+            android:title="@string/preferences_map_output_json_interval_title"
+            android:summary="@string/preferences_map_output_json_interval_summary"
+            android:dependency="preferences_map_output_json"
+            android:defaultValue="300000"
+            android:entries="@array/preferences_map_output_json_intervals"
+            android:entryValues="@array/preferences_map_output_json_intervals_values"
+            />
+        
     </PreferenceCategory>
     <!-- developer preferences -->
     <PreferenceCategory

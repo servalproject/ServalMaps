@@ -22,6 +22,7 @@ package org.servalproject.maps.services;
 import java.io.IOException;
 
 import org.servalproject.maps.R;
+import org.servalproject.maps.location.JsonLocationWriter;
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.location.MockLocations;
 
@@ -46,6 +47,8 @@ public class CoreService extends Service {
 	// class level constants
 	private final int STATUS_NOTIFICATION = 0;
 	
+	private final String JSON_UPDATE_DELAY_DEFAULT = "60000";
+	
 	private final boolean V_LOG = true;
 	private final String  TAG = "CoreService";
 	
@@ -53,6 +56,9 @@ public class CoreService extends Service {
 	private LocationCollector locationCollector;
 	private LocationManager locationManager;
 	private MockLocations mockLocations = null;
+	private JsonLocationWriter jsonLocationWriter = null;
+	private Thread mockLocationsThread = null;
+	private Thread jsonLocationWriterThread = null;
 	
 	private SharedPreferences preferences = null;
 	
@@ -76,10 +82,25 @@ public class CoreService extends Service {
 		
 		// determine if mock locations should be used
 		if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
-			try{
+			try {
 				mockLocations = new MockLocations(this.getApplicationContext()); 
 			} catch (IOException e) {
 				Log.e(TAG, "unable to create MockLocations instance", e);
+			}
+		}
+		
+		// determine of JSON output should be created
+		if(preferences.getBoolean("preferences_map_output_json", false) == true) {
+			String updateDelay = preferences.getString("preferences_map_output_json_interval", null);
+			
+			if(updateDelay == null) {
+				updateDelay = JSON_UPDATE_DELAY_DEFAULT;
+			}
+			
+			try {
+				jsonLocationWriter = new JsonLocationWriter(getApplicationContext(), Long.parseLong(updateDelay));
+			} catch (IOException e) {
+				Log.e(TAG, "unable to create jsonLocationWriter instance", e);
 			}
 		}
 		
@@ -92,6 +113,13 @@ public class CoreService extends Service {
 			} else {
 				Log.v(TAG, "mock locations are being used");
 			}
+			
+			if(jsonLocationWriter == null) {
+				Log.v(TAG, "JSON location writing is not occuring");
+			} else {
+				Log.v(TAG, "JSON location writing is occuring");
+			}
+			
 			Log.v(TAG, "Service Created");
 		}
 		
@@ -109,6 +137,7 @@ public class CoreService extends Service {
 			
 			if(V_LOG) {
 				Log.v(TAG, "a change in shared preferences has been deteceted");
+				Log.v(TAG, "preference changed: '" + key + "'");
 			}
 			
 			// check to see if this is the preference that is of interest
@@ -136,6 +165,38 @@ public class CoreService extends Service {
 						mockLocations = null;
 					}
 				}
+			} else if(key.equals("preferences_map_output_json") == true) {
+				if(V_LOG) {
+					Log.v(TAG, "preference changed: 'preferences_map_output_json'");
+				}
+				
+				if(preferences.getBoolean("preferences_map_output_json", false) == true) {
+					// preference is true so start outputing json if required
+					if(jsonLocationWriter == null) {
+						String updateDelay = preferences.getString("preferences_map_output_json_interval", null);
+						
+						if(updateDelay == null) {
+							updateDelay = JSON_UPDATE_DELAY_DEFAULT;
+						}
+						try {
+							jsonLocationWriter = new JsonLocationWriter(getApplicationContext(), Long.parseLong(updateDelay));
+							Thread jsonLocationWriterThread = new Thread(jsonLocationWriter, "JsonLocationWriter");
+							jsonLocationWriterThread.start();
+						} catch (IOException e) {
+							Log.e(TAG, "unable to create jsonLocationWriter instance", e);
+						}
+					}
+				}
+			} else if(key.equals("preferences_map_output_json_interval") == true) {
+				String updateDelay = preferences.getString("preferences_map_output_json_interval", null);
+				
+				if(updateDelay == null) {
+					updateDelay = JSON_UPDATE_DELAY_DEFAULT;
+				}
+				
+				if(jsonLocationWriter != null) {
+					jsonLocationWriter.setUpdateDelay(Long.parseLong(updateDelay));
+				}
 			}
 			
 		}
@@ -158,8 +219,13 @@ public class CoreService extends Service {
 		addNotification();
 		
 		if(mockLocations != null) {
-			Thread mockLocationThread = new Thread(mockLocations, "MockLocations");
-			mockLocationThread.start();
+			mockLocationsThread = new Thread(mockLocations, "MockLocations");
+			mockLocationsThread.start();
+		}
+		
+		if(jsonLocationWriter != null) {
+			jsonLocationWriterThread = new Thread(jsonLocationWriter, "JsonLocationWriter");
+			jsonLocationWriterThread.start();
 		}
 		
 		// Register the listener with the Location Manager to receive location updates
@@ -223,6 +289,13 @@ public class CoreService extends Service {
 		
 		if(mockLocations != null) {
 			mockLocations.requestStop();
+			mockLocationsThread.interrupt();
+			
+		}
+		
+		if(jsonLocationWriter != null) {
+			jsonLocationWriter.requestStop();
+			jsonLocationWriterThread.interrupt();
 		}
 		
 		super.onDestroy();

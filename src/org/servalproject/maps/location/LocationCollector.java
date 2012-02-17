@@ -57,7 +57,7 @@ public class LocationCollector implements LocationListener {
 	/**
 	 * the most recent and most accurate location information
 	 */
-	private static Location currentLocation = null;
+	private static volatile Location currentLocation = null;
 	private String timeZone = TimeZone.getDefault().getID();
 	
 	private String phoneNumber;
