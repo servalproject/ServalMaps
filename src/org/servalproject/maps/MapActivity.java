@@ -70,6 +70,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	private long defaultPoiMaxAge = 43200 * 1000;
 	private volatile long poiMaxAge = defaultPoiMaxAge;
 	
+	private long defaultLocationMaxAge = 43200 * 1000;
+	private volatile long locationMaxAge = defaultPoiMaxAge;
+	
 	private SharedPreferences preferences = null;
 	
 	// drawables for marker icons
@@ -136,6 +139,17 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
  			updateDelay = Integer.parseInt(mPreference);
  		}
  		
+ 		// get the max poi and location age preferences
+ 		mPreference = preferences.getString("preferences_map_max_poi_age", null);
+		if(mPreference != null) {
+			poiMaxAge = Long.parseLong(mPreference) * 1000;
+		}
+		
+		mPreference = preferences.getString("preferences_map_max_location_age", null);
+		if(mPreference != null) {
+			locationMaxAge = Long.parseLong(mPreference) * 1000;
+		}
+ 		
  		// set flag to keep the map centered
  		keepCentered = preferences.getBoolean("preferences_map_follow", false);
      	
@@ -201,6 +215,16 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				
 				if(V_LOG) {
 					Log.v(TAG, "new max POI age is '" + poiMaxAge + "'");
+				}
+			} else if(key.equals("preferences_map_max_location_age") == true) {
+				
+				String mPreference = preferences.getString("preferences_map_max_location_age", null);
+				if(mPreference != null) {
+					locationMaxAge = Long.parseLong(mPreference) * 1000;
+				}
+				
+				if(V_LOG) {
+					Log.v(TAG, "new max location age is '" + locationMaxAge + "'");
 				}
 			}
 		}
@@ -310,8 +334,20 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				GeoPoint mGeoPoint;
 				String mPhoneNumber;
 				OverlayItem mOverlayItem;
+				long mLocationAge;
+				long mCompareTime = System.currentTimeMillis() - locationMaxAge;
 				
 				while(mCursor.moveToNext()) {
+					
+					// check on the age of the info if required
+					if(locationMaxAge != -1000) {
+						mLocationAge = mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP));
+						
+						if(mLocationAge < mCompareTime) {
+							// skip this record
+							continue;
+						}
+					}
 
 					// get the basic information
 					mPhoneNumber = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));

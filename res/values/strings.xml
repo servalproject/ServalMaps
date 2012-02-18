@@ -86,6 +86,8 @@
     <string name="preferences_map_update_interval_summary">Define how often the map will update</string>
     <string name="preferences_map_max_poi_age_title">Maximum POI Age</string>
     <string name="preferences_map_max_poi_age_summary">Hide POI markers when older than this setting</string>
+    <string name="preferences_map_max_location_age_title">Maximum Location Age</string>
+    <string name="preferences_map_max_location_age_summary">Hide Location markers when older than this setting</string>
     <string name="preferences_map_output_json_title">Output JSON Data</string>
     <string name="preferences_map_output_json_summary">Output location data as a JSON file periodically</string>
     <string name="preferences_map_output_json_interval_title">JSON Update Interval</string>

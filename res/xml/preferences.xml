@@ -46,6 +46,14 @@
             android:entries="@array/preferences_map_max_poi_age_intervals"
             android:entryValues="@array/preferences_map_max_poi_age_values"
             />
+        <ListPreference 
+            android:key="preferences_map_max_location_age"
+            android:title="@string/preferences_map_max_location_age_title"
+            android:summary="@string/preferences_map_max_location_age_summary"
+            android:defaultValue="43200"
+            android:entries="@array/preferences_map_max_location_age_intervals"
+            android:entryValues="@array/preferences_map_max_location_age_values"
+            />
         <CheckBoxPreference
             android:key="preferences_map_output_json"
             android:title="@string/preferences_map_output_json_title"

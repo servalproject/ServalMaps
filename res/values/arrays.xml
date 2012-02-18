@@ -56,6 +56,23 @@
         <item>604800</item>
         <item>-1</item>
     </string-array>
+    <string-array name="preferences_map_max_location_age_intervals">
+        <item>12 Hours</item>
+        <item>1 Day</item>
+        <item>2 Days</item>
+        <item>3 Days</item>
+        <item>1 Week</item>
+        <item>No Limit</item>
+    </string-array>
+    <!-- values in seconds -->
+    <string-array name="preferences_map_max_location_age_values">
+        <item>43200</item>
+        <item>86400</item>
+        <item>172800</item>
+        <item>259200</item>
+        <item>604800</item>
+        <item>-1</item>
+    </string-array>
      <string-array
         name="preferences_map_output_json_intervals">
         <item>1 Minute</item>

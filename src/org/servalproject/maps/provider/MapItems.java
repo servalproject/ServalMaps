@@ -136,14 +136,13 @@ public class MapItems extends ContentProvider {
 		if(mMatchedUri == LOCATION_LATEST_LIST_URI) {
 			// get the latest location records
 			
-			String[] mColumns = new String[MapItemsContract.Locations.Table.COLUMNS.length + 1];
-			
-			for(int i = 0; i < MapItemsContract.Locations.Table.COLUMNS.length; i++) {
-				mColumns[i] = MapItemsContract.Locations.Table.COLUMNS[i];
-			}
-			
-			mColumns[mColumns.length -1] = "MAX(" + MapItemsContract.Locations.Table.TIMESTAMP + ")"; 
-			
+			String[] mColumns = new String[6];
+			mColumns[0] = MapItemsContract.Locations.Table._ID;
+			mColumns[1] = MapItemsContract.Locations.Table.PHONE_NUMBER;
+			mColumns[2] = MapItemsContract.Locations.Table.LATITUDE;
+			mColumns[3] = MapItemsContract.Locations.Table.LONGITUDE;
+			mColumns[4] = MapItemsContract.Locations.Table.TIMESTAMP;
+			mColumns[5] = "MAX(" + MapItemsContract.Locations.Table.TIMESTAMP + ")";
 			
 			mResults = database.query(MapItemsContract.Locations.Table.TABLE_NAME, mColumns, null, null, MapItemsContract.Locations.Table.PHONE_NUMBER, null, null);
 			
