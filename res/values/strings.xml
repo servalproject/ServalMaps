@@ -92,6 +92,8 @@
     <string name="preferences_map_output_json_summary">Output location data as a JSON file periodically</string>
     <string name="preferences_map_output_json_interval_title">JSON Update Interval</string>
     <string name="preferences_map_output_json_interval_summary">Update JSON file with a new location every &#8230;</string>
+    <string name="preferences_map_show_track_title">Show My Track</string>
+    <string name="preferences_map_show_track_summary">Show my GPS trace as a track on the map</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>

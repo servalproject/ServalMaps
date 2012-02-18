@@ -55,6 +55,11 @@
             android:entryValues="@array/preferences_map_max_location_age_values"
             />
         <CheckBoxPreference
+            android:key="preferences_map_show_track"
+            android:title="@string/preferences_map_show_track_title"
+            android:summary="@string/preferences_map_show_track_summary"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
             android:key="preferences_map_output_json"
             android:title="@string/preferences_map_output_json_title"
             android:summary="@string/preferences_map_output_json_summary"

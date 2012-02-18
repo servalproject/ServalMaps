@@ -21,9 +21,12 @@ package org.servalproject.maps;
 
 import java.util.ArrayList;
 
+import org.mapsforge.android.maps.ArrayWayOverlay;
 import org.mapsforge.android.maps.GeoPoint;
 import org.mapsforge.android.maps.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.OverlayWay;
+import org.mapsforge.android.maps.WayOverlay;
 import org.servalproject.maps.mapsforge.NewPoiOverlay;
 import org.servalproject.maps.mapsforge.OverlayItem;
 import org.servalproject.maps.mapsforge.OverlayItems;
@@ -34,6 +37,8 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,7 +76,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	private volatile long poiMaxAge = defaultPoiMaxAge;
 	
 	private long defaultLocationMaxAge = 43200 * 1000;
-	private volatile long locationMaxAge = defaultPoiMaxAge;
+	private volatile long locationMaxAge = defaultLocationMaxAge;
 	
 	private SharedPreferences preferences = null;
 	
@@ -83,6 +88,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	// list of markers
 	private OverlayList overlayList;
 	private MapView mapView;
+	private ArrayWayOverlay arrayWayOverlay = null;
 	
 	// phone number and sid
 	private String meshPhoneNumber = null;
@@ -152,6 +158,20 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
  		
  		// set flag to keep the map centered
  		keepCentered = preferences.getBoolean("preferences_map_follow", false);
+ 		
+ 		// determine if we need to show the users GPS trace
+ 		if(preferences.getBoolean("preferences_map_show_track", false)) {
+ 			
+ 			// will be drawing a line not a polygon at this stage
+ 			Paint mDefaultFill = null;
+ 			Paint mDefaultLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+ 			mDefaultLine.setARGB(255, 85, 140, 248);
+ 			mDefaultLine.setStyle(Paint.Style.STROKE);
+ 			mDefaultLine.setStrokeWidth(2);
+ 			
+ 			arrayWayOverlay = new ArrayWayOverlay(mDefaultFill, mDefaultLine);
+ 			mapView.getOverlays().add(arrayWayOverlay);
+ 		}
      	
      	// listen for changes in the preferences
      	preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
@@ -226,7 +246,30 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				if(V_LOG) {
 					Log.v(TAG, "new max location age is '" + locationMaxAge + "'");
 				}
+			} else if(key.equals("preferences_map_show_track") == true) {
+				
+				// add the way overlay
+				// TODO add appropriate constants / private methods
+				if(preferences.getBoolean("preferences_map_show_track", false)) {
+		 			
+		 			// will be drawing a line not a polygon at this stage
+		 			Paint mDefaultFill = null;
+		 			Paint mDefaultLine = new Paint(Paint.ANTI_ALIAS_FLAG);
+		 			mDefaultLine.setARGB(255, 85, 140, 248);
+		 			mDefaultLine.setStyle(Paint.Style.STROKE);
+		 			mDefaultLine.setStrokeWidth(2);
+		 			
+		 			arrayWayOverlay = new ArrayWayOverlay(mDefaultFill, mDefaultLine);
+		 			mapView.getOverlays().add(arrayWayOverlay);
+		 		} else {
+		 			mapView.getOverlays().remove(arrayWayOverlay);
+		 			arrayWayOverlay.clear();
+		 			arrayWayOverlay = null;
+		 		}
+				
 			}
+			
+			
 		}
 	};
 	
@@ -313,7 +356,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// resolve the content uri
 			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 			
-			//TODO improve the way information is retrieved and only get what is required
 			// get the location marker content
 			Cursor mCursor = mContentResolver.query(MapItemsContract.Locations.LATEST_CONTENT_URI, null, null, null, null);
 			
@@ -426,11 +468,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				while(mCursor.moveToNext()) {
 					
 					// get the geographic coordinates
-					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LONGITUDE)));
 					
 					mOverlayItem = new OverlayItem(mGeoPoint, null, null, poiLocationMarker);
 					mOverlayItem.setType(OverlayItems.POI_ITEM);
-					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
+					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table._ID)));
 					
 					mItems.add(mOverlayItem);
 				}
@@ -439,10 +481,76 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// play nice and tidy up
 			mCursor.close();
 			
+			// build the gps track overlay if required
+			if(arrayWayOverlay != null) {
+				
+				// determine which fields to return
+				mProjection = new String[2];
+				mProjection[0] = MapItemsContract.Locations.Table.LATITUDE;
+				mProjection[1] = MapItemsContract.Locations.Table.LONGITUDE;
+				
+				// check if we need to take into account the age of the information
+				if(locationMaxAge != -1000) {
+				
+					mSelection = MapItemsContract.Locations.Table.PHONE_NUMBER + " = ? AND "
+							+ MapItemsContract.Locations.Table.TIMESTAMP + " > ?";
+					
+					mSelectionArgs = new String[2];
+					mSelectionArgs[0] = meshPhoneNumber;
+					mSelectionArgs[1] = Long.toString(System.currentTimeMillis() - locationMaxAge);
+				} else {
+					
+					mSelection = MapItemsContract.Locations.Table.PHONE_NUMBER + " = ?";
+					
+					mSelectionArgs = new String[1];
+					mSelectionArgs[0] = meshPhoneNumber;
+				}
+				
+				// get the data
+				mCursor = mContentResolver.query(
+						MapItemsContract.Locations.CONTENT_URI, 
+						mProjection, 
+						mSelection,
+						mSelectionArgs,
+						MapItemsContract.Locations.Table.TIMESTAMP);
+				
+				if(mCursor.getCount() > 0) {
+					if(V_LOG) {
+						Log.v(TAG, "gps track contains: '" + mCursor.getCount() + "' points");
+					}
+					
+					// declare array to hold our list of points
+					GeoPoint[][] mWayPoints = new GeoPoint[1][mCursor.getCount()];
+					int mCount = 0;
+					GeoPoint mGeoPoint;
+					
+					// populate the array
+					while(mCursor.moveToNext()) {
+						mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+						mWayPoints[0][mCount] = mGeoPoint;
+						mCount++;
+					}
+					
+					// play nice and tidy up
+					mCursor.close();
+					
+					OverlayWay mOverlayWay = new OverlayWay(mWayPoints, null, null);
+					
+					// update the overlay
+					arrayWayOverlay.clear();
+					arrayWayOverlay.addWay(mOverlayWay);
+				}
+				
+			}
+			
 			// update and redraw the overlay
 			overlayList.clear();
 			overlayList.addItems(mItems);
 			overlayList.requestRedraw();
+			
+			if(arrayWayOverlay != null) {
+				arrayWayOverlay.requestRedraw();
+			}
 			
 			// add the task back onto the queue
 			updateHandler.postDelayed(updateMapTask, updateDelay);
