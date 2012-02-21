@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.rhizome.Rhizome;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
@@ -112,6 +113,10 @@ public class BinaryFileWriter {
 			FileOutputStream mOutput = new FileOutputStream(mOutputPath + mFileName, true);
 			mMessageBuilder.build().writeDelimitedTo(mOutput);
 			mOutput.close();
+			
+			// add the file to rhizome
+			Rhizome.addFile(context, mOutputPath + mFileName);
+			
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, "unable to create the output file", e);
 			return;
@@ -183,11 +188,15 @@ public class BinaryFileWriter {
 		// play nice and tidy up
 		mCursor.close();
 		
-		// open the file
+		// open the file and write the data
 		try {
 			FileOutputStream mOutput = new FileOutputStream(mOutputPath + mFileName, true);
 			mMessageBuilder.build().writeDelimitedTo(mOutput);
 			mOutput.close();
+			
+			// add the file to rhizome
+			Rhizome.addFile(context, mOutputPath + mFileName);
+			
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, "unable to create the output file", e);
 			return;

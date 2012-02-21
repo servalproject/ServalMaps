@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.ServalMaps;
+import org.servalproject.maps.rhizome.Rhizome;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
@@ -46,6 +47,7 @@ public class JsonLocationWriter implements Runnable {
 	private String fileName = null;
 	private String jsonTemplate = null;
 	private Location previousLocation = null;
+	private Context context = null;
 	
 	/**
 	 * periodically write the current location of the device to a JSON file
@@ -92,6 +94,8 @@ public class JsonLocationWriter implements Runnable {
 		jsonTemplate = context.getString(R.string.misc_location_json_template);
 		
 		this.updateDelay = updateDelay;
+		
+		this.context = context;
 	}
 	
 	/**
@@ -149,6 +153,9 @@ public class JsonLocationWriter implements Runnable {
 					PrintWriter mOutput = new PrintWriter (new FileOutputStream(fileName, true));
 					mOutput.println(String.format(jsonTemplate, mLocation.getLatitude(), mLocation.getLongitude()));
 					mOutput.close();
+					
+					// add the file to rhizome
+					Rhizome.addFile(context, fileName);
 					
 					if(V_LOG) {
 						Log.v(TAG, "location values: '" + mLocation.getLatitude() + "','" +  mLocation.getLongitude() + "'");
