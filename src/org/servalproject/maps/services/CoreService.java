@@ -25,6 +25,7 @@ import org.servalproject.maps.R;
 import org.servalproject.maps.location.JsonLocationWriter;
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.location.MockLocations;
+import org.servalproject.maps.rhizome.RhizomeBroadcastReceiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,6 +33,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.IBinder;
@@ -61,6 +63,8 @@ public class CoreService extends Service {
 	private Thread jsonLocationWriterThread = null;
 	
 	private SharedPreferences preferences = null;
+	
+	private RhizomeBroadcastReceiver rhizomeBroadcastReceiver = null;
 	
 	/*
 	 * called when the service is created
@@ -122,6 +126,13 @@ public class CoreService extends Service {
 			
 			Log.v(TAG, "Service Created");
 		}
+		
+      // register for the Rhizome related broadcasts
+	  rhizomeBroadcastReceiver = new RhizomeBroadcastReceiver();
+      
+      IntentFilter mBroadcastFilter = new IntentFilter();
+      mBroadcastFilter.addAction("org.servalproject.rhizome.RECIEVE_FILE");
+      registerReceiver(rhizomeBroadcastReceiver, mBroadcastFilter);
 		
 	}
 	
@@ -297,6 +308,8 @@ public class CoreService extends Service {
 			jsonLocationWriter.requestStop();
 			jsonLocationWriterThread.interrupt();
 		}
+		
+		unregisterReceiver(rhizomeBroadcastReceiver);
 		
 		super.onDestroy();
 		

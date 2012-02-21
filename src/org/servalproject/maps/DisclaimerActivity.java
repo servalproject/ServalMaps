@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.servalproject.maps.batphone.PhoneNumberReceiver;
 import org.servalproject.maps.parcelables.MapDataInfo;
+import org.servalproject.maps.rhizome.RhizomeBroadcastReceiver;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -60,6 +61,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
     private int mapFileCount = 0;
 	private ArrayList<MapDataInfo> mapDataInfoList = null;
 	private CharSequence[] mFileNames = null;
+	private RhizomeBroadcastReceiver rhizomeBroadcastReceiver = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -157,6 +159,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			unregisterReceiver(phoneNumberReceiver);
 		}
 		
+		if(rhizomeBroadcastReceiver != null) {
+        	unregisterReceiver(rhizomeBroadcastReceiver);
+        }
 	}
 	
 	/*
