@@ -81,7 +81,7 @@ public class MapItems extends ContentProvider {
 	 * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
 	 */
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+	public synchronized Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		
 		int mMatchedUri = -1;
 		Cursor mResults = null;
@@ -168,7 +168,7 @@ public class MapItems extends ContentProvider {
 	 * @see android.content.ContentProvider#insert(android.net.Uri, android.content.ContentValues)
 	 */
 	@Override
-	public Uri insert(Uri uri, ContentValues values) {
+	public synchronized Uri insert(Uri uri, ContentValues values) {
 		
 		Uri mResults = null;
 		String mTable = null;
@@ -209,7 +209,7 @@ public class MapItems extends ContentProvider {
 	 * @see android.content.ContentProvider#getType(android.net.Uri)
 	 */
 	@Override
-	public String getType(Uri uri) {
+	public synchronized String getType(Uri uri) {
 		
 		// choose the mime type
 		switch(uriMatcher.match(uri)) {
@@ -232,13 +232,13 @@ public class MapItems extends ContentProvider {
 	
 
 	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
+	public synchronized int delete(Uri arg0, String arg1, String[] arg2) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
+	public synchronized int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
