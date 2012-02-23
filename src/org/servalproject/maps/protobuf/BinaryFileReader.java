@@ -19,6 +19,9 @@
  */
 package org.servalproject.maps.protobuf;
 
+import java.io.File;
+
+import org.servalproject.maps.ServalMaps;
 import org.servalproject.maps.utils.FileUtils;
 
 import android.content.Context;
@@ -59,9 +62,22 @@ public class BinaryFileReader {
 			return;
 		}
 		
-		LocationReadWorker mWorker = new LocationReadWorker(context, filePath);
-		Thread mWorkerThread = new Thread(mWorker, "LocationImportWorker");
-		mWorkerThread.start();
+		// check to see if the file path is to our own file
+		ServalMaps mServalMaps = (ServalMaps) context.getApplicationContext();
+		String mFileName = new File(filePath).getName();
+		String[] mFileParts = mFileName.split("-");
+		
+		String mPhoneNumber = mServalMaps.getPhoneNumber();
+		mPhoneNumber = mPhoneNumber.replace(" ", "");
+		mPhoneNumber = mPhoneNumber.replace("-", "");
+		
+		if(mFileParts[0].equals(mServalMaps.getPhoneNumber()) == false) {
+			LocationReadWorker mWorker = new LocationReadWorker(context, filePath);
+			Thread mWorkerThread = new Thread(mWorker, "LocationImportWorker");
+			mWorkerThread.start();
+		}
+		
+		
 	}
 	
 	/**
@@ -85,9 +101,20 @@ public class BinaryFileReader {
 			return;
 		}
 		
-		PointsOfInterestWorker mWorker = new PointsOfInterestWorker(context, filePath);
-		Thread mWorkerThread = new Thread(mWorker, "PointsOfInterestImportWorker");
-		mWorkerThread.start();
+		// check to see if the file path is to our own file
+		ServalMaps mServalMaps = (ServalMaps) context.getApplicationContext();
+		String mFileName = new File(filePath).getName();
+		String[] mFileParts = mFileName.split("-");
+		
+		String mPhoneNumber = mServalMaps.getPhoneNumber();
+		mPhoneNumber = mPhoneNumber.replace(" ", "");
+		mPhoneNumber = mPhoneNumber.replace("-", "");
+		
+		if(mFileParts[0].equals(mServalMaps.getPhoneNumber()) == false) {
+			PointsOfInterestWorker mWorker = new PointsOfInterestWorker(context, filePath);
+			Thread mWorkerThread = new Thread(mWorker, "PointsOfInterestImportWorker");
+			mWorkerThread.start();
+		}
 	}
 
 }

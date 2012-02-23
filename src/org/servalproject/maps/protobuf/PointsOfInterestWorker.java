@@ -31,6 +31,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -41,6 +42,8 @@ public class PointsOfInterestWorker implements Runnable {
 	 */
 	private final String TAG = "PointsOfInterestWorker";
 	private final boolean V_LOG = true;
+	
+	private final long sleepTime = 300;
 	
 	/*
 	 * private class level variables
@@ -89,36 +92,50 @@ public class PointsOfInterestWorker implements Runnable {
 		
 		String mHash = null;
 		
-		String[] mProjection = {MapItemsContract.PointsOfInterest.Table._ID};
-		String mSelection = MapItemsContract.PointsOfInterest.Table.HASH + " = ?";
-		String[] mSelectionArgs = new String[1];
+		long mLatestTimeStamp = -1;
 		
 		// loop through the data
 		try {
 			while(mMessageBuilder.mergeDelimitedFrom(mInput) == true) {
 				
-				mHash = HashUtils.hashPointOfInterestMessage(
-						mMessageBuilder.getPhoneNumber(),
-						mMessageBuilder.getLatitude(),
-						mMessageBuilder.getLongitude(),
-						mMessageBuilder.getTitle(),
-						mMessageBuilder.getDescription());
-				
-				mSelectionArgs[0] = mHash;
-				
-				mCursor = mContentResolver.query(
-						MapItemsContract.PointsOfInterest.CONTENT_URI,
-						mProjection,
-						mSelection,
-						mSelectionArgs,
-						null);
-				
-				// check to see what was returned and add record as required
-				if(mCursor.getCount() == 0) {
+				// check to see if we need to get the latest time stamp
+				if(mLatestTimeStamp == -1) {
 					
-					// play nice and tidy up
+					String[] mProjection = {MapItemsContract.PointsOfInterest.Table.TIMESTAMP};
+					String mSelection = MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER + " = ?";
+					String[] mSelectionArgs = new String[1];
+					mSelectionArgs[0] = mMessageBuilder.getPhoneNumber();
+					String mOrderBy = MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " DESC";
+					
+					mCursor = mContentResolver.query(
+							MapItemsContract.Locations.CONTENT_URI,
+							mProjection,
+							mSelection,
+							mSelectionArgs,
+							mOrderBy);
+					
+					if(mCursor.getCount() != 0) {
+						mCursor.moveToFirst();
+						
+						mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP));
+						
+					} else {
+						mLatestTimeStamp = 0;
+					}
+					
 					mCursor.close();
 					mCursor = null;
+				}
+				
+				if(mMessageBuilder.getTimestamp() > mLatestTimeStamp) {
+				
+					// compute the hash
+					mHash = HashUtils.hashPointOfInterestMessage(
+							mMessageBuilder.getPhoneNumber(),
+							mMessageBuilder.getLatitude(),
+							mMessageBuilder.getLongitude(),
+							mMessageBuilder.getTitle(),
+							mMessageBuilder.getDescription());
 					
 					// add new record
 					mNewValues = new ContentValues();
@@ -134,9 +151,14 @@ public class PointsOfInterestWorker implements Runnable {
 					mNewValues.put(MapItemsContract.PointsOfInterest.Table.CATEGORY, mMessageBuilder.getCategory());
 					mNewValues.put(MapItemsContract.PointsOfInterest.Table.HASH, mHash);
 					
-					mContentResolver.insert(
-							MapItemsContract.PointsOfInterest.CONTENT_URI,
-							mNewValues);
+					try {
+						mContentResolver.insert(
+								MapItemsContract.PointsOfInterest.CONTENT_URI,
+								mNewValues);
+					} catch (SQLiteException e) {
+						Log.e(TAG, "an error occurred while inserting data", e);
+						break;
+					}
 					
 					if(V_LOG) {
 						Log.v(TAG, "added new POI record to the database");
@@ -147,18 +169,22 @@ public class PointsOfInterestWorker implements Runnable {
 					}
 				}
 				
-				// play nice and tidy up
-				if(mCursor != null) {
-					mCursor.close();
-					mCursor = null;
-				}
-				
 				mNewValues = null;
+				
+				// don't hit the database so hard with writes to sleep for a bit
+				try {
+					Thread.sleep(sleepTime);
+				}catch (InterruptedException e) {
+					Log.w(TAG, "thread was interrupted unexepectantly");
+				}
 			}
 		} catch (IOException e) {
 			Log.e(TAG, "unable to read from the input file", e);
 			return;
-		} finally {
+		} catch (SQLiteException e) {
+			Log.e(TAG, "an error occurred while interfacing with the database", e);
+			return;	
+		}finally {
 			try {
 				mInput.close();
 			} catch (IOException e) {

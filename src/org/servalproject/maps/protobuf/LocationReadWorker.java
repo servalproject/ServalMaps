@@ -31,6 +31,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -46,6 +47,8 @@ public class LocationReadWorker implements Runnable {
 	 */
 	private final String TAG = "LocationReadWorker";
 	private final boolean V_LOG = true;
+	
+	private final long sleepTime = 300;
 	
 	/*
 	 * private class level variables
@@ -87,43 +90,60 @@ public class LocationReadWorker implements Runnable {
 			return;
 		}
 		
+		if(V_LOG) {
+			Log.v(TAG, "reading data from: " + filePath);
+		}
+		
 		// prepare helper variables
 		ContentResolver mContentResolver = context.getContentResolver();
 		ContentValues mNewValues = null;
 		Cursor mCursor = null;
 		Builder mMessageBuilder = LocationMessage.Message.newBuilder();
-		String mHash = null;
 		
-		String[] mProjection = {MapItemsContract.Locations.Table._ID};
-		String mSelection = MapItemsContract.Locations.Table.HASH + " = ?";
-		String[] mSelectionArgs = new String[1];
+		long mLatestTimeStamp = -1;
+		
+		String mHash = null;
 		
 		// loop through the data
 		try {
 			while(mMessageBuilder.mergeDelimitedFrom(mInput) == true) {
-			
-				// build the hash of the message
-				mHash = HashUtils.hashLocationMessage(
-						mMessageBuilder.getPhoneNumber(), 
-						mMessageBuilder.getLatitude(),
-						mMessageBuilder.getLongitude(),
-						mMessageBuilder.getTimestamp());
 				
-				mSelectionArgs[0] = mHash;
-				
-				mCursor = mContentResolver.query(
-						MapItemsContract.Locations.CONTENT_URI,
-						mProjection,
-						mSelection,
-						mSelectionArgs,
-						null);
-				
-				// check to see what was returned and add record as required
-				if(mCursor.getCount() == 0) {
+				// check to see if we need to get the latest time stamp
+				if(mLatestTimeStamp == -1) {
 					
-					// play nice and tidy up
+					String[] mProjection = {MapItemsContract.Locations.Table.TIMESTAMP};
+					String mSelection = MapItemsContract.Locations.Table.PHONE_NUMBER + " = ?";
+					String[] mSelectionArgs = new String[1];
+					mSelectionArgs[0] = mMessageBuilder.getPhoneNumber();
+					String mOrderBy = MapItemsContract.Locations.Table.TIMESTAMP + " DESC";
+					
+					mCursor = mContentResolver.query(
+							MapItemsContract.Locations.CONTENT_URI,
+							mProjection,
+							mSelection,
+							mSelectionArgs,
+							mOrderBy);
+					
+					if(mCursor.getCount() != 0) {
+						mCursor.moveToFirst();
+						
+						mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP));
+					} else {
+						mLatestTimeStamp = 0;
+					}
+					
 					mCursor.close();
 					mCursor = null;
+				}
+				
+				if(mMessageBuilder.getTimestamp() > mLatestTimeStamp) {
+					
+					// build a hash of the message
+					mHash = HashUtils.hashLocationMessage(
+                            mMessageBuilder.getPhoneNumber(),
+                            mMessageBuilder.getLatitude(),
+                            mMessageBuilder.getLongitude(),
+                            mMessageBuilder.getTimestamp());
 					
 					// add new record
 					mNewValues = new ContentValues();
@@ -136,9 +156,14 @@ public class LocationReadWorker implements Runnable {
 					mNewValues.put(MapItemsContract.Locations.Table.TIMEZONE, mMessageBuilder.getTimeZone());
 					mNewValues.put(MapItemsContract.Locations.Table.HASH, mHash);
 					
-					mContentResolver.insert(
-							MapItemsContract.Locations.CONTENT_URI,
-							mNewValues);
+					try {
+						mContentResolver.insert(
+								MapItemsContract.Locations.CONTENT_URI,
+								mNewValues);
+					} catch (SQLiteException e) {
+						Log.e(TAG, "an error occurred while inserting data", e);
+						break;
+					}
 					
 					if(V_LOG) {
 						Log.v(TAG, "added new location record to the database");
@@ -149,17 +174,21 @@ public class LocationReadWorker implements Runnable {
 					}
 				}
 				
-				// play nice and tidy up
-				if(mCursor != null) {
-					mCursor.close();
-					mCursor = null;
-				}
-				
 				mNewValues = null;
+				
+				// don't hit the database so hard with writes to sleep for a bit
+				try {
+					Thread.sleep(sleepTime);
+				}catch (InterruptedException e) {
+					Log.w(TAG, "thread was interrupted unexepectantly");
+				}
 			}
 		} catch (IOException e) {
 			Log.e(TAG, "unable to read from the input file", e);
 			return;
+		} catch (SQLiteException e) {
+			Log.e(TAG, "an error occurred while interfacing with the database", e);
+			return;	
 		} finally {
 			try {
 				mInput.close();

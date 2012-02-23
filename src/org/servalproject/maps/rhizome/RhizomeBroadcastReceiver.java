@@ -20,10 +20,18 @@
 
 package org.servalproject.maps.rhizome;
 
+import java.io.IOException;
+
+import org.servalproject.maps.R;
+import org.servalproject.maps.protobuf.BinaryFileContract;
+import org.servalproject.maps.protobuf.BinaryFileReader;
+import org.servalproject.maps.utils.FileUtils;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -40,6 +48,49 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 		
 		Bundle mBundle = intent.getExtras();
 		
+		if(intent.getAction().equals("org.servalproject.rhizome.RECIEVE_FILE") == false) {
+			Log.e(TAG, "called with an intent with an unexepcted intent action");
+			return;
+		}
+		
+		// see if the file is one we want to work with
+		String mFilePath = mBundle.getString("path");
+		
+		if(mFilePath == null) {
+			Log.e(TAG, "called with an intent missing the 'path' extra");
+		}
+		
+		// get the binary data directory
+		String mDataPath = Environment.getExternalStorageDirectory().getPath();
+		mDataPath += context.getString(R.string.system_path_binary_data);
+		
+		if(mFilePath.endsWith(BinaryFileContract.LOCATION_EXT) == true) {
+			// this is a binary location file
+			
+			// copy and process the file
+			try{
+				String mDataFile = FileUtils.copyFileToDir(mFilePath, mDataPath);
+				// process the file
+				BinaryFileReader.readLocations(context, mDataFile);
+			} catch (IOException e) {
+				Log.e(TAG, "unable to copy file", e);
+				return;
+			}
+
+		} else if(mFilePath.endsWith(BinaryFileContract.POI_EXT) == true) {
+			// this is a binary POI file
+			
+			// copy and process the file
+			try{
+				String mDataFile = FileUtils.copyFileToDir(mFilePath, mDataPath);
+				// process the file
+				BinaryFileReader.readPointsOfInterest(context, mDataFile);
+			} catch (IOException e) {
+				Log.e(TAG, "unable to copy file", e);
+				return;
+			}
+		}
+		
 		if(V_LOG) {
 			Log.v(TAG, "received intent with action: " + intent.getAction());
 			Log.v(TAG, "file name: " + mBundle.getString("path"));
@@ -47,5 +98,4 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 			Log.v(TAG, "name: " + mBundle.getString("name"));
 		}
 	}
-
 }

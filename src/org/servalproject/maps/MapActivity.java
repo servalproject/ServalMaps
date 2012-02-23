@@ -402,6 +402,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
 						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
 						
+						//debug code
+						Log.v(TAG, "new self location marker created");
+						
 						// recenter the map if required
 						if(keepCentered) {
 							mapView.getController().setCenter(mGeoPoint);
@@ -414,9 +417,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
 						mOverlayItem.setType(OverlayItems.PEER_LOCATION_ITEM);
 						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
+						
+						//debug code
+						Log.v(TAG, "new peer location marker created");
+
 					}
 					
 					mItems.add(mOverlayItem);
+					
 				}
 				
 			}
@@ -440,6 +448,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				mSelectionArgs = new String[1];
 				mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
 			}
+			
+			//debug code
+			Log.v(TAG, "mSelectionArgs[0]:" + mSelectionArgs[0]);
 			
 			mCursor = mContentResolver.query(
 					MapItemsContract.PointsOfInterest.CONTENT_URI, 

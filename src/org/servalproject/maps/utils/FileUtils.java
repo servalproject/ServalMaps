@@ -20,6 +20,10 @@
 package org.servalproject.maps.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 
 import android.text.TextUtils;
 
@@ -55,7 +59,6 @@ public class FileUtils {
 	 * @param path the full path to test
 	 * @return true if the path is a file and is readable
 	 */
-	// private method to test a path
 	public static boolean isFileReadable(String path) {
 		
 		if(TextUtils.isEmpty(path) == true) {
@@ -69,6 +72,50 @@ public class FileUtils {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * copies a file into a directory
+	 * 
+	 * @param filePath path to the source file
+	 * @param dirPath path to the destination directory
+	 * @return the full path of the destination file
+	 * @throws IOException 
+	 */
+	public static String copyFileToDir(String filePath, String dirPath) throws IOException {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(filePath) == true) {
+			throw new IllegalArgumentException("the filePath parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(dirPath) == true) {
+			throw new IllegalArgumentException("the dirPath paramter is required");
+		}
+		
+		if(isFileReadable(filePath) == false) {
+			throw new IOException("unable to access the source file");
+		}
+		
+		if(isDirectoryWritable(dirPath) == false) {
+			throw new IOException("unable to access the destination directory");
+		}
+		
+		String mFileName = new File(filePath).getName();
+		
+		// copy the file
+		// based on code found at the URL below and considered to be in the public domain
+		// http://stackoverflow.com/questions/1146153/copying-files-from-one-directory-to-another-in-java#answer-1146195
+		FileChannel mInputChannel = new FileInputStream(filePath).getChannel();
+		FileChannel mOutputChannel = new FileOutputStream(dirPath + mFileName).getChannel();
+		
+		mOutputChannel.transferFrom(mInputChannel, 0, mInputChannel.size());
+		
+		// play nice and tidy up
+		mInputChannel.close();
+		mOutputChannel.close();	
+		
+		return dirPath + mFileName;
 	}
 
 }

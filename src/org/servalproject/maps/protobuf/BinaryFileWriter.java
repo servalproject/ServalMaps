@@ -46,7 +46,7 @@ public class BinaryFileWriter {
 	 * private class level constants
 	 */
 	private static final String TAG = "BinaryFileWriter";
-	//private static final boolean V_LOG = true;
+	private static final boolean V_LOG = true;
 	
 	/**
 	 * write a location message to the file
@@ -94,16 +94,20 @@ public class BinaryFileWriter {
 		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER)));
 		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.SUBSCRIBER_ID)));
 		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)));
-		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
 		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)));
 		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMEZONE)));
+		
+		if(V_LOG) {
+			Log.v(TAG, "location message: " + mMessageBuilder.build().toString());
+		}
 		
 		// determine the file name
 		String mFileName = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
 		mFileName = mFileName.replace(" ", "");
 		mFileName = mFileName.replace("-", "");
 		
-		mFileName = mFileName + "-" + TimeUtils.getTodayAsString() + ".smapl";
+		mFileName = mFileName + "-" + TimeUtils.getTodayAsString() + BinaryFileContract.LOCATION_EXT;
 		
 		// play nice and tidy up
 		mCursor.close();
@@ -171,19 +175,19 @@ public class BinaryFileWriter {
 		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER)));
 		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID)));
 		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LATITUDE)));
-		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LONGITUDE)));
+		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LONGITUDE)));
 		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TIMESTAMP)));
 		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TIMEZONE)));
 		mMessageBuilder.setTitle(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TITLE)));
 		mMessageBuilder.setDescription(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.DESCRIPTION)));
-		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.CATEGORY)));
+		mMessageBuilder.setCategory(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.CATEGORY)));
 		
 		// determine the file name
 		String mFileName = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
 		mFileName = mFileName.replace(" ", "");
 		mFileName = mFileName.replace("-", "");
 		
-		mFileName = mFileName + "-" + TimeUtils.getTodayAsString() + ".smapp";
+		mFileName = mFileName + "-" + TimeUtils.getTodayAsString() + BinaryFileContract.POI_EXT;
 		
 		// play nice and tidy up
 		mCursor.close();

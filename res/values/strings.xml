@@ -29,7 +29,7 @@
     <string name="disclaimer_ui_btn_continue">I understand</string>
     <string name="disclaimer_ui_dialog_no_files">No map data files found. Do you wish to continue?</string>
     <string name="disclaimer_ui_dialog_many_files_title">Choose Map Data File</string>
-    <string name="disclaimer_ui_dialog_no_serval">Serval mesh phone number was not detected, confirm Serval mesh software is installed</string>
+    <string name="disclaimer_ui_dialog_no_serval">Serval mesh phone number was not detected, confirm Serval mesh software is installed before continuing</string>
     
     <!-- Maps Activity UI -->
     <string name="map_ui_toast_self_location">Your current location:\nLatitude: %1$f\nLongitude %2$f</string>

@@ -244,7 +244,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			mDialog = mBuilder.create();
 			break;
 		case NO_SERVAL_DIALOG:
-			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_files)
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval)
 			.setCancelable(false)
 			.setPositiveButton(R.string.misc_dialog_ok_button, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
