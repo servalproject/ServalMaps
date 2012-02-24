@@ -124,6 +124,8 @@
     <string name="misc_age_calculation_minutes">%d minutes</string>
     <string name="misc_age_calculation_hours">%d hours</string>
     <string name="misc_age_calculation_more_than_a_day">more than a day</string>
-    <string name="misc_location_json_template">{ "lat":"%1$s", "lng":"%2$s" },</string>
+    
+    <!-- <string name="misc_location_json_template">{ "lat":"%1$s", "lng":"%2$s" },</string> -->
+    <string name="misc_location_json_template">    [%1$s,%2$s],</string>
 
 </resources>

@@ -82,15 +82,30 @@ public class JsonLocationWriter implements Runnable {
 		
 		fileName = mOutputPath + fileName + "-locations-" + TimeUtils.getTodayAsString() + ".json";
 		
-		try {
-			FileOutputStream mOutput = new FileOutputStream(fileName, true);
-			mOutput.close();
-		}catch (FileNotFoundException e) {
-			throw new IOException("unable to open the output file");
-		} catch (IOException e) {
-			throw new IOException("unable to open the output file");
+		// see if we need to put the header into the file
+		if(FileUtils.isFileReadable(fileName) == false) {
+			// we need to create the file and add the header
+			try {
+				PrintWriter mOutput = new PrintWriter (new FileOutputStream(fileName, true));
+				
+				mOutput.println("{ \"type\": \"LineString\",");
+				mOutput.println("  \"coordinates\": [");
+				mOutput.close();
+			} catch (FileNotFoundException e) {
+				throw new IOException("unable to open the output file");
+			}
+		} else {
+			// we just need to check that we can access it
+			try {
+				FileOutputStream mOutput = new FileOutputStream(fileName, true);
+				mOutput.close();
+			}catch (FileNotFoundException e) {
+				throw new IOException("unable to open the output file");
+			} catch (IOException e) {
+				throw new IOException("unable to open the output file");
+			}
 		}
-		
+
 		jsonTemplate = context.getString(R.string.misc_location_json_template);
 		
 		this.updateDelay = updateDelay;
@@ -151,7 +166,7 @@ public class JsonLocationWriter implements Runnable {
 				// write the output
 				try {
 					PrintWriter mOutput = new PrintWriter (new FileOutputStream(fileName, true));
-					mOutput.println(String.format(jsonTemplate, mLocation.getLatitude(), mLocation.getLongitude()));
+					mOutput.println(String.format(jsonTemplate, mLocation.getLongitude(), mLocation.getLatitude()));
 					mOutput.close();
 					
 					// add the file to rhizome

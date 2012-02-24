@@ -191,7 +191,7 @@ public class CoreService extends Service {
 						}
 						try {
 							jsonLocationWriter = new JsonLocationWriter(getApplicationContext(), Long.parseLong(updateDelay));
-							Thread jsonLocationWriterThread = new Thread(jsonLocationWriter, "JsonLocationWriter");
+							jsonLocationWriterThread = new Thread(jsonLocationWriter, "JsonLocationWriter");
 							jsonLocationWriterThread.start();
 						} catch (IOException e) {
 							Log.e(TAG, "unable to create jsonLocationWriter instance", e);
