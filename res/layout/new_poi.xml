@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
     
     <TextView
@@ -80,6 +85,44 @@
                 android:layout_marginRight="@dimen/ui_elem_margin_right"
                 android:text="" />
      </LinearLayout>
+     
+     <TextView
+         android:id="@+id/new_poi_ui_lbl_latitude"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/new_poi_ui_lbl_latitude"/>
+
+    <EditText
+        android:id="@+id/new_poi_ui_txt_latitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:inputType="numberDecimal|numberSigned" />
+    
+    <TextView
+         android:id="@+id/new_poi_ui_lbl_longitude"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/new_poi_ui_lbl_longitude"/>
+
+    <EditText
+        android:id="@+id/new_poi_ui_txt_longitude"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:inputType="numberDecimal|numberSigned" />
 
      <Button
          android:id="@+id/new_poi_ui_btn_save"
@@ -89,4 +132,5 @@
          android:layout_marginLeft="@dimen/ui_elem_margin_left"
          android:text="@string/new_poi_ui_btn_save" />
 
-</LinearLayout>
+	</LinearLayout>
+</ScrollView>

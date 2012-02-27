@@ -84,6 +84,14 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         if(mBundle != null) {
         	latitude = mBundle.getDouble("latitude");
         	longitude = mBundle.getDouble("longitude");
+        } else {
+        	
+        	Location mLocation = LocationCollector.getLocation();
+        	
+        	if(mLocation != null) {
+        		latitude = mLocation.getLatitude();
+        		longitude = mLocation.getLongitude();
+        	}
         }
         
         // inform user of the character limit
@@ -93,6 +101,12 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         // watch for changes in the text of the description
         TextView mTextView = (TextView) findViewById(R.id.new_poi_ui_txt_description);
         mTextView.addTextChangedListener(descriptionWatcher);
+        
+        mTextView = (TextView) findViewById(R.id.new_poi_ui_txt_latitude);
+        mTextView.setText(Double.toString(latitude));
+        
+        mTextView = (TextView) findViewById(R.id.new_poi_ui_txt_longitude);
+        mTextView.setText(Double.toString(longitude));
         
         // listen for button presses
         Button mButton = (Button) findViewById(R.id.new_poi_ui_btn_save);
@@ -181,6 +195,40 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			}
 			
 			String mDescription = mView.getText().toString();
+			
+			// validate the latitude
+			mView = (TextView) findViewById(R.id.new_poi_ui_txt_latitude);
+			
+			if(TextUtils.isEmpty(mView.getText()) == true) {
+				Toast.makeText(this, R.string.new_poi_toast_latitude_missing, Toast.LENGTH_SHORT).show();
+				mView.requestFocus();
+				return;
+			}
+			
+			try {
+				latitude = Double.parseDouble(mView.toString());
+			} catch (NumberFormatException e) {
+				Toast.makeText(this, R.string.new_poi_toast_latitude_missing, Toast.LENGTH_SHORT).show();
+				mView.requestFocus();
+				return;
+			}
+			
+			// validate the longitude
+			mView = (TextView) findViewById(R.id.new_poi_ui_txt_longitude);
+			
+			if(TextUtils.isEmpty(mView.getText()) == true) {
+				Toast.makeText(this, R.string.new_poi_toast_longitude_missing, Toast.LENGTH_SHORT).show();
+				mView.requestFocus();
+				return;
+			}
+			
+			try {
+				longitude = Double.parseDouble(mView.toString());
+			} catch (NumberFormatException e) {
+				Toast.makeText(this, R.string.new_poi_toast_longitude_missing, Toast.LENGTH_SHORT).show();
+				mView.requestFocus();
+				return;
+			}
 			
 			// add the new POI
 			addNewPoi(mTitle, mDescription);

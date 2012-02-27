@@ -12,6 +12,12 @@
           android:visible="true" 
           android:icon="@drawable/ic_menu_add">
     </item>
+    <item android:id="@+id/menu_map_activity_centre_map"
+          android:enabled="true"
+          android:title="@string/menu_map_activity_centre_map"
+          android:visible="true"
+          android:icon="@drawable/ic_menu_mylocation">
+    </item>
     <item android:id="@+id/menu_map_activity_close" 
           android:enabled="true" 
           android:title="@string/menu_map_activity_close" 

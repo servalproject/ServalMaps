@@ -26,6 +26,7 @@ import org.mapsforge.android.maps.GeoPoint;
 import org.mapsforge.android.maps.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.OverlayWay;
+import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.mapsforge.NewPoiOverlay;
 import org.servalproject.maps.mapsforge.OverlayItem;
 import org.servalproject.maps.mapsforge.OverlayItems;
@@ -38,6 +39,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -45,6 +47,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /**
  * An activity to show a map
@@ -308,6 +311,17 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			Log.v(TAG, "show the add poi activity");
 			mIntent = new Intent(this, org.servalproject.maps.NewPoiActivity.class);
 			startActivity(mIntent);
+			return true;
+		case R.id.menu_map_activity_centre_map:
+			// recentre the map on the current location
+			Log.v(TAG, "recentre the map");
+			Location mLocation = LocationCollector.getLocation();
+			if(mLocation != null) {
+				GeoPoint mGeoPoint = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
+				mapView.getController().setCenter(mGeoPoint);
+			} else {
+				Toast.makeText(getApplicationContext(), R.string.map_ui_toast_location_unavailable, Toast.LENGTH_LONG).show();
+			}
 			return true;
 		case R.id.menu_map_activity_close:
 			// close this activity
