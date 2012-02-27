@@ -253,7 +253,7 @@ public class CoreService extends Service {
 		
 		//TODO update this with a better icon
 		//TODO update this with a custom notification with stats
-		int mNotificationIcon = R.drawable.ic_launcher;
+		int mNotificationIcon = R.drawable.ic_notification;
 		CharSequence mTickerText = getString(R.string.system_notification_ticker_text);
 		long mWhen = System.currentTimeMillis();
 		
