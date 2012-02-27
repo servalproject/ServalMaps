@@ -48,7 +48,7 @@ public class OverlayList extends ArrayItemizedOverlay {
 	 * @param context - the reference to the application context.
 	 */
 	public OverlayList(Drawable defaultMarker, Context context) {
-		super(defaultMarker, context);
+		super(defaultMarker);
 		
 		this.context = context;
 	}
