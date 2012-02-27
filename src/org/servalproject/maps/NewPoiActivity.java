@@ -206,7 +206,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			}
 			
 			try {
-				latitude = Double.parseDouble(mView.toString());
+				latitude = Double.parseDouble(mView.getText().toString());
 			} catch (NumberFormatException e) {
 				Toast.makeText(this, R.string.new_poi_toast_latitude_missing, Toast.LENGTH_SHORT).show();
 				mView.requestFocus();
@@ -223,7 +223,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			}
 			
 			try {
-				longitude = Double.parseDouble(mView.toString());
+				longitude = Double.parseDouble(mView.getText().toString());
 			} catch (NumberFormatException e) {
 				Toast.makeText(this, R.string.new_poi_toast_longitude_missing, Toast.LENGTH_SHORT).show();
 				mView.requestFocus();
