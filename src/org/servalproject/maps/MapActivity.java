@@ -350,7 +350,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		// stop the core service
 		stopService(coreServiceIntent);
 		
-		// top the handle / runnable looping action
+		// stop the handle / runnable looping action
 		updateHandler.removeCallbacks(updateMapTask);
 		
 		super.onDestroy();
@@ -363,25 +363,36 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	
 	/*
 	 * (non-Javadoc)
+	 * @see org.mapsforge.android.maps.MapActivity#onPause()
+	 */
+	@Override
+	public void onPause() {
+		
+		// stop the updating of the map
+		updateHandler.removeCallbacks(updateMapTask);
+		
+		super.onPause();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.mapsforge.android.maps.MapActivity#onResume()
+	 */
+	public void onResume() {
+		
+		// restart the updating of the map
+		updateHandler.post(updateMapTask);
+		
+		super.onResume();
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		
-		// undertake the required action based on the requestCode
-		switch(requestCode) {
-		case UPDATE_MAP:
-			if(V_LOG) {
-				Log.v(TAG, "initiating an out of schedule map update");
-			}
-			// update the map if possible
-			updateHandler.post(updateMapTask);
-			break;
-		default:
-			if(V_LOG) {
-				Log.v(TAG, "unrecognised requestCode in onActivityResult: " + requestCode);
-			}
-		}
 	}
 	
 	/*

@@ -232,9 +232,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			
 			// add the new POI
 			addNewPoi(mTitle, mDescription);
-			
-			// return to calling activity
-			setResult(MapActivity.UPDATE_MAP);
+
 			finish();
 		}
 	}
