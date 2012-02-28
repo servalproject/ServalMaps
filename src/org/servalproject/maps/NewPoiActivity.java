@@ -62,7 +62,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	private TextView txtCharacters;
 	
 	private double latitude = -1;
-	private double longitude;
+	private double longitude = -1;
 	
 	private String phoneNumber;
 	private String subscriberId; 
@@ -231,36 +231,28 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			}
 			
 			// add the new POI
-			addNewPoi(mTitle, mDescription);
-
-			finish();
+			if(addNewPoi(mTitle, mDescription) == true) {
+				finish();
+			}
 		}
 	}
 	
 	// add the new POI to the database
-	private void addNewPoi(String title, String description) {
+	private boolean addNewPoi(String title, String description) {
 		
 		// add the new POI to the database
 		ContentValues mValues = new ContentValues();
 		
-		// get the current location
-		Location mLocation = LocationCollector.getLocation();
-		
-		if(mLocation == null) {
+		// check on the coordinates
+		if(latitude == -1 || longitude == -1) {
 			// show an error message
 			Toast.makeText(this, R.string.new_poi_toast_location_error, Toast.LENGTH_SHORT).show();
+			return false;
 		}
 		
 		// add phone number and sid
 		mValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, phoneNumber);
 		mValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, subscriberId);
-		
-		// determine which lat and long to use
-		if(latitude == -1) {
-			latitude = mLocation.getLatitude();
-			longitude = mLocation.getLongitude();
-		}
-		
 		mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, latitude);
 		mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, longitude);
 		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, System.currentTimeMillis());
@@ -288,7 +280,10 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		}catch (SQLException e) {
 			Log.e(TAG, "unable to add new POI record", e);
 			Toast.makeText(this, R.string.new_poi_toast_save_error, Toast.LENGTH_SHORT).show();
+			return false;
 		}
+		
+		return true;
 	}
 
 }
