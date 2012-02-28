@@ -46,7 +46,7 @@ public class BinaryFileWriter {
 	 * private class level constants
 	 */
 	private static final String TAG = "BinaryFileWriter";
-	private static final boolean V_LOG = true;
+	private static final boolean V_LOG = false;
 	
 	/**
 	 * write a location message to the file
