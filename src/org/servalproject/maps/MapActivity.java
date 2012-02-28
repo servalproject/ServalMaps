@@ -55,6 +55,11 @@ import android.widget.Toast;
 public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	
 	/*
+	 * public class level constants
+	 */
+	public final static int UPDATE_MAP = 1;
+	
+	/*
 	 * private class level constants
 	 */
 	private final boolean V_LOG = true;
@@ -93,6 +98,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	
 	// phone number and sid
 	private String meshPhoneNumber = null;
+	
+	// check to know if a map update is running
+	private volatile boolean updateRunning = false;
 	
 	
 	/*
@@ -310,7 +318,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// show the add POI activity
 			Log.v(TAG, "show the add poi activity");
 			mIntent = new Intent(this, org.servalproject.maps.NewPoiActivity.class);
-			startActivity(mIntent);
+			startActivityForResult(mIntent, UPDATE_MAP);
 			return true;
 		case R.id.menu_map_activity_centre_map:
 			// recentre the map on the current location
@@ -354,7 +362,31 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	}
 	
 	/*
-	 *  methods and variables used to update the class
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		// undertake the required action based on the requestCode
+		switch(requestCode) {
+		case UPDATE_MAP:
+			if(V_LOG) {
+				Log.v(TAG, "initiating an out of schedule map update");
+			}
+			// update the map if possible
+			updateHandler.post(updateMapTask);
+			break;
+		default:
+			if(V_LOG) {
+				Log.v(TAG, "unrecognised requestCode in onActivityResult: " + requestCode);
+			}
+		}
+	
+	}
+	
+	/*
+	 *  methods and variables used to update the map
 	 */
 	
 	// task used to update the map ui with new markers
@@ -364,6 +396,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(V_LOG){
 				Log.v(TAG, "update map task running");
 			}
+			
+			if(updateRunning) {
+				// an update is already running so just return
+				return;
+			}
+			
+			// indicate the map update is underway
+			updateRunning = true;
 			
 			// resolve the content uri
 			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
@@ -416,9 +456,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
 						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
 						
-						//debug code
-						Log.v(TAG, "new self location marker created");
-						
 						// recenter the map if required
 						if(keepCentered) {
 							mapView.getController().setCenter(mGeoPoint);
@@ -431,9 +468,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
 						mOverlayItem.setType(OverlayItems.PEER_LOCATION_ITEM);
 						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
-						
-						//debug code
-						Log.v(TAG, "new peer location marker created");
 
 					}
 					
@@ -462,9 +496,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				mSelectionArgs = new String[1];
 				mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
 			}
-			
-			//debug code
-			Log.v(TAG, "mSelectionArgs[0]:" + mSelectionArgs[0]);
 			
 			mCursor = mContentResolver.query(
 					MapItemsContract.PointsOfInterest.CONTENT_URI, 
@@ -574,6 +605,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(arrayWayOverlay != null) {
 				arrayWayOverlay.requestRedraw();
 			}
+			
+			// indicate that a map update is finished
+			updateRunning = false;
 			
 			// add the task back onto the queue
 			updateHandler.postDelayed(updateMapTask, updateDelay);

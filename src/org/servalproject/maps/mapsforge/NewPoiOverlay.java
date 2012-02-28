@@ -23,7 +23,9 @@ import org.mapsforge.android.maps.GeoPoint;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Overlay;
 import org.mapsforge.android.maps.Projection;
+import org.servalproject.maps.MapActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -48,7 +50,7 @@ public class NewPoiOverlay extends Overlay {
 	/*
 	 * private class level variables
 	 */
-	private Context context;
+	private Activity context;
 	
 	/**
 	 * construct a new instance of this class
@@ -56,7 +58,7 @@ public class NewPoiOverlay extends Overlay {
 	public NewPoiOverlay(Context context) {
 		super();
 		
-		this.context = context;
+		this.context = (Activity) context;
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class NewPoiOverlay extends Overlay {
 		Intent mIntent = new Intent(context, org.servalproject.maps.NewPoiActivity.class);
 		mIntent.putExtra("latitude", geoPoint.getLatitude());
 		mIntent.putExtra("longitude", geoPoint.getLongitude());
-		context.startActivity(mIntent);
+		context.startActivityForResult(mIntent, MapActivity.UPDATE_MAP);
 		
 		// return true to indicate the long press has been dealt with
 		return true;

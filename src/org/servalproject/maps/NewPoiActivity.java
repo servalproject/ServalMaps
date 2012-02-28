@@ -234,6 +234,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			addNewPoi(mTitle, mDescription);
 			
 			// return to calling activity
+			setResult(MapActivity.UPDATE_MAP);
 			finish();
 		}
 	}
