@@ -382,7 +382,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				Log.v(TAG, "unrecognised requestCode in onActivityResult: " + requestCode);
 			}
 		}
-	
 	}
 	
 	/*
