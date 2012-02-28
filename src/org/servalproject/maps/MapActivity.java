@@ -57,7 +57,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	/*
 	 * public class level constants
 	 */
-	public final static int UPDATE_MAP = 1;
 	
 	/*
 	 * private class level constants
@@ -318,7 +317,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// show the add POI activity
 			Log.v(TAG, "show the add poi activity");
 			mIntent = new Intent(this, org.servalproject.maps.NewPoiActivity.class);
-			startActivityForResult(mIntent, UPDATE_MAP);
+			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_centre_map:
 			// recentre the map on the current location
