@@ -330,6 +330,12 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				Toast.makeText(getApplicationContext(), R.string.map_ui_toast_location_unavailable, Toast.LENGTH_LONG).show();
 			}
 			return true;
+		case R.id.menu_map_activity_poi_list:
+			// show the list of poi
+			Log.v(TAG, "show the list of pois");
+			mIntent = new Intent(this, org.servalproject.maps.PoiListActivity.class);
+			startActivity(mIntent);
+			return true;
 		case R.id.menu_map_activity_close:
 			// close this activity
 			finish();

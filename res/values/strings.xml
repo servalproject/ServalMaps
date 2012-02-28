@@ -69,11 +69,17 @@
     <string name="poi_info_ui_lbl_age">Information Age:</string>
     <string name="poi_info_toast_no_record_error">Unable to load required data at this time</string>
     
+    <!-- POI List Activity -->
+    <string name="poi_list_ui_lbl_heading">List of POIs</string>
+    <string name="poi_list_ui_toast_missing_data">Unable to lookup POI information at this time</string>
+    <string name="poi_list_ui_tiast_missing_poi_id">Unable to lookup POI id at this time</string>
+    
     <!-- Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
-    <string name="menu_map_activity_centre_map">Center Map</string>
+    <string name="menu_map_activity_centre_map">Centre Map</string>
     <string name="menu_map_activity_close">Close</string>
+    <string name="menu_map_activity_poi_list">List POIs</string>
     
     
     <!-- System wide strings -->
