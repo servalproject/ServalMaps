@@ -23,8 +23,7 @@ import java.util.TimeZone;
 
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.protobuf.BinaryFileWriter;
-import org.servalproject.maps.provider.MapItemsContract;
-import org.servalproject.maps.utils.HashUtils;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 
 import android.app.Activity;
 import android.content.ContentValues;
@@ -251,27 +250,17 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		}
 		
 		// add phone number and sid
-		mValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, phoneNumber);
-		mValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, subscriberId);
-		mValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, latitude);
-		mValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, longitude);
-		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, System.currentTimeMillis());
-		mValues.put(MapItemsContract.PointsOfInterest.Table.TIMEZONE, TimeZone.getDefault().getID());
-		mValues.put(MapItemsContract.PointsOfInterest.Table.TITLE, title);
-		mValues.put(MapItemsContract.PointsOfInterest.Table.DESCRIPTION, description);
-		
-		// calculate and add the hash
-		String mHash = HashUtils.hashPointOfInterestMessage(
-				phoneNumber,
-				latitude,
-				longitude,
-				title,
-				description);
-
-		mValues.put(MapItemsContract.PointsOfInterest.Table.HASH, mHash);
+		mValues.put(PointsOfInterestContract.Table.PHONE_NUMBER, phoneNumber);
+		mValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, subscriberId);
+		mValues.put(PointsOfInterestContract.Table.LATITUDE, latitude);
+		mValues.put(PointsOfInterestContract.Table.LONGITUDE, longitude);
+		mValues.put(PointsOfInterestContract.Table.TIMESTAMP, System.currentTimeMillis());
+		mValues.put(PointsOfInterestContract.Table.TIMEZONE, TimeZone.getDefault().getID());
+		mValues.put(PointsOfInterestContract.Table.TITLE, title);
+		mValues.put(PointsOfInterestContract.Table.DESCRIPTION, description);
 		
 		try {
-			Uri newRecord = getContentResolver().insert(MapItemsContract.PointsOfInterest.CONTENT_URI, mValues);
+			Uri newRecord = getContentResolver().insert(PointsOfInterestContract.CONTENT_URI, mValues);
 			
 			BinaryFileWriter.writePointOfInterest(this, newRecord.getLastPathSegment());
 			if(V_LOG) {

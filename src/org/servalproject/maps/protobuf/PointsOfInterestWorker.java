@@ -24,8 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder;
-import org.servalproject.maps.provider.MapItemsContract;
-import org.servalproject.maps.utils.HashUtils;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -90,8 +89,6 @@ public class PointsOfInterestWorker implements Runnable {
 		Cursor mCursor = null;
 		Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
 		
-		String mHash = null;
-		
 		long mLatestTimeStamp = -1;
 		
 		// loop through the data
@@ -101,14 +98,14 @@ public class PointsOfInterestWorker implements Runnable {
 				// check to see if we need to get the latest time stamp
 				if(mLatestTimeStamp == -1) {
 					
-					String[] mProjection = {MapItemsContract.PointsOfInterest.Table.TIMESTAMP};
-					String mSelection = MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER + " = ?";
+					String[] mProjection = {PointsOfInterestContract.Table.TIMESTAMP};
+					String mSelection = PointsOfInterestContract.Table.PHONE_NUMBER + " = ?";
 					String[] mSelectionArgs = new String[1];
 					mSelectionArgs[0] = mMessageBuilder.getPhoneNumber();
-					String mOrderBy = MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " DESC";
+					String mOrderBy = PointsOfInterestContract.Table.TIMESTAMP + " DESC";
 					
 					mCursor = mContentResolver.query(
-							MapItemsContract.Locations.CONTENT_URI,
+							PointsOfInterestContract.CONTENT_URI,
 							mProjection,
 							mSelection,
 							mSelectionArgs,
@@ -117,7 +114,7 @@ public class PointsOfInterestWorker implements Runnable {
 					if(mCursor.getCount() != 0) {
 						mCursor.moveToFirst();
 						
-						mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP));
+						mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMESTAMP));
 						
 					} else {
 						mLatestTimeStamp = 0;
@@ -128,32 +125,23 @@ public class PointsOfInterestWorker implements Runnable {
 				}
 				
 				if(mMessageBuilder.getTimestamp() > mLatestTimeStamp) {
-				
-					// compute the hash
-					mHash = HashUtils.hashPointOfInterestMessage(
-							mMessageBuilder.getPhoneNumber(),
-							mMessageBuilder.getLatitude(),
-							mMessageBuilder.getLongitude(),
-							mMessageBuilder.getTitle(),
-							mMessageBuilder.getDescription());
 					
 					// add new record
 					mNewValues = new ContentValues();
 					
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.LATITUDE, mMessageBuilder.getLatitude());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.LONGITUDE, mMessageBuilder.getLongitude());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.TIMEZONE, mMessageBuilder.getTimeZone());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.TITLE, mMessageBuilder.getTitle());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.DESCRIPTION, mMessageBuilder.getDescription());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.CATEGORY, mMessageBuilder.getCategory());
-					mNewValues.put(MapItemsContract.PointsOfInterest.Table.HASH, mHash);
+					mNewValues.put(PointsOfInterestContract.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
+					mNewValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
+					mNewValues.put(PointsOfInterestContract.Table.LATITUDE, mMessageBuilder.getLatitude());
+					mNewValues.put(PointsOfInterestContract.Table.LONGITUDE, mMessageBuilder.getLongitude());
+					mNewValues.put(PointsOfInterestContract.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
+					mNewValues.put(PointsOfInterestContract.Table.TIMEZONE, mMessageBuilder.getTimeZone());
+					mNewValues.put(PointsOfInterestContract.Table.TITLE, mMessageBuilder.getTitle());
+					mNewValues.put(PointsOfInterestContract.Table.DESCRIPTION, mMessageBuilder.getDescription());
+					mNewValues.put(PointsOfInterestContract.Table.CATEGORY, mMessageBuilder.getCategory());
 					
 					try {
 						mContentResolver.insert(
-								MapItemsContract.PointsOfInterest.CONTENT_URI,
+								PointsOfInterestContract.CONTENT_URI,
 								mNewValues);
 					} catch (SQLiteException e) {
 						Log.e(TAG, "an error occurred while inserting data", e);

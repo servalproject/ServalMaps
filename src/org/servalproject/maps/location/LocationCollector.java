@@ -24,8 +24,7 @@ import java.util.TimeZone;
 
 import org.servalproject.maps.ServalMaps;
 import org.servalproject.maps.protobuf.BinaryFileWriter;
-import org.servalproject.maps.provider.MapItemsContract;
-import org.servalproject.maps.utils.HashUtils;
+import org.servalproject.maps.provider.LocationsContract;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -111,24 +110,21 @@ public class LocationCollector implements LocationListener {
 				Log.v(TAG, "Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
 			}
 			
-			//TODO do this database stuff in a AsyncTask to free up the main thread
-			
 			// save the location for later
 			currentLocation = location;
 			
 			long mTime = System.currentTimeMillis();
 			
 			ContentValues mNewValues = new ContentValues();
-			mNewValues.put(MapItemsContract.Locations.Table.PHONE_NUMBER, phoneNumber);
-			mNewValues.put(MapItemsContract.Locations.Table.SUBSCRIBER_ID, subscriberId);
-			mNewValues.put(MapItemsContract.Locations.Table.LATITUDE, location.getLatitude());
-			mNewValues.put(MapItemsContract.Locations.Table.LONGITUDE, location.getLongitude());
-			mNewValues.put(MapItemsContract.Locations.Table.TIMEZONE, timeZone);
-			mNewValues.put(MapItemsContract.Locations.Table.TIMESTAMP, mTime);
-			mNewValues.put(MapItemsContract.Locations.Table.HASH, HashUtils.hashLocationMessage(phoneNumber, location.getLatitude(), location.getLongitude(), mTime));
+			mNewValues.put(LocationsContract.Table.PHONE_NUMBER, phoneNumber);
+			mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, subscriberId);
+			mNewValues.put(LocationsContract.Table.LATITUDE, location.getLatitude());
+			mNewValues.put(LocationsContract.Table.LONGITUDE, location.getLongitude());
+			mNewValues.put(LocationsContract.Table.TIMEZONE, timeZone);
+			mNewValues.put(LocationsContract.Table.TIMESTAMP, mTime);
 
 			try {
-				Uri newRecord = contentResolver.insert(MapItemsContract.Locations.CONTENT_URI, mNewValues);
+				Uri newRecord = contentResolver.insert(LocationsContract.CONTENT_URI, mNewValues);
 				if(V_LOG) {
 					Log.v(TAG, "new location record created with id: " + newRecord.getLastPathSegment());
 				}

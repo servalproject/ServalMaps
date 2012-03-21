@@ -23,9 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.servalproject.maps.provider.MapItemsContract;
-import org.servalproject.maps.utils.HashUtils;
 import org.servalproject.maps.protobuf.LocationMessage.Message.Builder;
+import org.servalproject.maps.provider.LocationsContract;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -102,8 +101,6 @@ public class LocationReadWorker implements Runnable {
 		
 		long mLatestTimeStamp = -1;
 		
-		String mHash = null;
-		
 		// loop through the data
 		try {
 			while(mMessageBuilder.mergeDelimitedFrom(mInput) == true) {
@@ -111,14 +108,14 @@ public class LocationReadWorker implements Runnable {
 				// check to see if we need to get the latest time stamp
 				if(mLatestTimeStamp == -1) {
 					
-					String[] mProjection = {MapItemsContract.Locations.Table.TIMESTAMP};
-					String mSelection = MapItemsContract.Locations.Table.PHONE_NUMBER + " = ?";
+					String[] mProjection = {LocationsContract.Table.TIMESTAMP};
+					String mSelection = LocationsContract.Table.PHONE_NUMBER + " = ?";
 					String[] mSelectionArgs = new String[1];
 					mSelectionArgs[0] = mMessageBuilder.getPhoneNumber();
-					String mOrderBy = MapItemsContract.Locations.Table.TIMESTAMP + " DESC";
+					String mOrderBy = LocationsContract.Table.TIMESTAMP + " DESC";
 					
 					mCursor = mContentResolver.query(
-							MapItemsContract.Locations.CONTENT_URI,
+							LocationsContract.CONTENT_URI,
 							mProjection,
 							mSelection,
 							mSelectionArgs,
@@ -127,7 +124,7 @@ public class LocationReadWorker implements Runnable {
 					if(mCursor.getCount() != 0) {
 						mCursor.moveToFirst();
 						
-						mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP));
+						mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP));
 					} else {
 						mLatestTimeStamp = 0;
 					}
@@ -138,27 +135,19 @@ public class LocationReadWorker implements Runnable {
 				
 				if(mMessageBuilder.getTimestamp() > mLatestTimeStamp) {
 					
-					// build a hash of the message
-					mHash = HashUtils.hashLocationMessage(
-                            mMessageBuilder.getPhoneNumber(),
-                            mMessageBuilder.getLatitude(),
-                            mMessageBuilder.getLongitude(),
-                            mMessageBuilder.getTimestamp());
-					
 					// add new record
 					mNewValues = new ContentValues();
 					
-					mNewValues.put(MapItemsContract.Locations.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
-					mNewValues.put(MapItemsContract.Locations.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
-					mNewValues.put(MapItemsContract.Locations.Table.LATITUDE, mMessageBuilder.getLatitude());
-					mNewValues.put(MapItemsContract.Locations.Table.LONGITUDE, mMessageBuilder.getLongitude());
-					mNewValues.put(MapItemsContract.Locations.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
-					mNewValues.put(MapItemsContract.Locations.Table.TIMEZONE, mMessageBuilder.getTimeZone());
-					mNewValues.put(MapItemsContract.Locations.Table.HASH, mHash);
+					mNewValues.put(LocationsContract.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
+					mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
+					mNewValues.put(LocationsContract.Table.LATITUDE, mMessageBuilder.getLatitude());
+					mNewValues.put(LocationsContract.Table.LONGITUDE, mMessageBuilder.getLongitude());
+					mNewValues.put(LocationsContract.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
+					mNewValues.put(LocationsContract.Table.TIMEZONE, mMessageBuilder.getTimeZone());
 					
 					try {
 						mContentResolver.insert(
-								MapItemsContract.Locations.CONTENT_URI,
+								LocationsContract.CONTENT_URI,
 								mNewValues);
 					} catch (SQLiteException e) {
 						Log.e(TAG, "an error occurred while inserting data", e);

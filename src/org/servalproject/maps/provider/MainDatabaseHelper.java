@@ -27,37 +27,27 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 	
 	// declare private class constants
 	private final String LOCATIONS_CREATE = "CREATE TABLE " + 
-			MapItemsContract.Locations.CONTENT_URI_PATH + " ("
-			+ MapItemsContract.Locations.Table._ID + " INTEGER PRIMARY KEY, "
-			+ MapItemsContract.Locations.Table.PHONE_NUMBER + " TEXT, "
-			+ MapItemsContract.Locations.Table.SUBSCRIBER_ID + " TEXT, "
-			+ MapItemsContract.Locations.Table.LATITUDE + " REAL, "
-			+ MapItemsContract.Locations.Table.LONGITUDE + " REAL, "
-			+ MapItemsContract.Locations.Table.TIMESTAMP + " INTEGER, "
-			+ MapItemsContract.Locations.Table.TIMEZONE + " TEXT, "
-			+ MapItemsContract.Locations.Table.HASH + " TEXT)";
-	
-	private final String LOCATIONS_HASH_INDEX = "CREATE INDEX location_hash_index ON "
-			+ MapItemsContract.Locations.CONTENT_URI_PATH + " ("
-			+ MapItemsContract.Locations.Table.HASH + ")";
+			LocationsContract.CONTENT_URI_PATH + " ("
+			+ LocationsContract.Table._ID + " INTEGER PRIMARY KEY, "
+			+ LocationsContract.Table.PHONE_NUMBER + " TEXT, "
+			+ LocationsContract.Table.SUBSCRIBER_ID + " TEXT, "
+			+ LocationsContract.Table.LATITUDE + " REAL, "
+			+ LocationsContract.Table.LONGITUDE + " REAL, "
+			+ LocationsContract.Table.TIMESTAMP + " INTEGER, "
+			+ LocationsContract.Table.TIMEZONE + " TEXT)";
 	
 	private final String POI_CREATE = "CREATE TABLE " +
-			MapItemsContract.PointsOfInterest.CONTENT_URI_PATH + " ("
-			+ MapItemsContract.PointsOfInterest.Table._ID +" INTEGER PRIMARY KEY, "
-			+ MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER + " TEXT, "
-			+ MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID + " TEXT, "
-			+ MapItemsContract.PointsOfInterest.Table.LATITUDE + " REAL, "
-			+ MapItemsContract.PointsOfInterest.Table.LONGITUDE + " REAL, "
-			+ MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " INTEGER, "
-			+ MapItemsContract.PointsOfInterest.Table.TIMEZONE + " TEXT, "
-			+ MapItemsContract.PointsOfInterest.Table.TITLE + " TEXT, "
-			+ MapItemsContract.PointsOfInterest.Table.DESCRIPTION + " TEXT, "
-			+ MapItemsContract.PointsOfInterest.Table.CATEGORY + " INTEGER DEFAULT " + MapItemsContract.PointsOfInterest.DEFAULT_CATEGORY + ", "
-			+ MapItemsContract.PointsOfInterest.Table.HASH + " TEXT)";
-	
-	private final String POI_HASH_INDEX = "CREATE INDEX poi_hash_index ON "
-			+ MapItemsContract.PointsOfInterest.CONTENT_URI_PATH + " ("
-			+ MapItemsContract.PointsOfInterest.Table.HASH + ")";
+			PointsOfInterestContract.CONTENT_URI_PATH + " ("
+			+ PointsOfInterestContract.Table._ID +" INTEGER PRIMARY KEY, "
+			+ PointsOfInterestContract.Table.PHONE_NUMBER + " TEXT, "
+			+ PointsOfInterestContract.Table.SUBSCRIBER_ID + " TEXT, "
+			+ PointsOfInterestContract.Table.LATITUDE + " REAL, "
+			+ PointsOfInterestContract.Table.LONGITUDE + " REAL, "
+			+ PointsOfInterestContract.Table.TIMESTAMP + " INTEGER, "
+			+ PointsOfInterestContract.Table.TIMEZONE + " TEXT, "
+			+ PointsOfInterestContract.Table.TITLE + " TEXT, "
+			+ PointsOfInterestContract.Table.DESCRIPTION + " TEXT, "
+			+ PointsOfInterestContract.Table.CATEGORY + " INTEGER DEFAULT " + PointsOfInterestContract.DEFAULT_CATEGORY + ")";
 	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps.db";
@@ -77,9 +67,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// create the database tables
 		db.execSQL(LOCATIONS_CREATE);
-		db.execSQL(LOCATIONS_HASH_INDEX);
 		db.execSQL(POI_CREATE);
-		db.execSQL(POI_HASH_INDEX);
 	}
 
 	@Override

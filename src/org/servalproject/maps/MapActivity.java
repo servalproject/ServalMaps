@@ -31,7 +31,8 @@ import org.servalproject.maps.mapsforge.NewPoiOverlay;
 import org.servalproject.maps.mapsforge.OverlayItem;
 import org.servalproject.maps.mapsforge.OverlayItems;
 import org.servalproject.maps.mapsforge.OverlayList;
-import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.provider.LocationsContract;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -424,7 +425,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 			
 			// get the location marker content
-			Cursor mCursor = mContentResolver.query(MapItemsContract.Locations.LATEST_CONTENT_URI, null, null, null, null);
+			Cursor mCursor = mContentResolver.query(LocationsContract.LATEST_CONTENT_URI, null, null, null, null);
 			
 			// store the list of items
 			ArrayList<OverlayItem> mItems = new ArrayList<OverlayItem>();
@@ -450,7 +451,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 					
 					// check on the age of the info if required
 					if(locationMaxAge != -1000) {
-						mLocationAge = mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP));
+						mLocationAge = mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP));
 						
 						if(mLocationAge < mCompareTime) {
 							// skip this record
@@ -459,17 +460,17 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 					}
 
 					// get the basic information
-					mPhoneNumber = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
+					mPhoneNumber = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
 					
 					// get the geographic coordinates
-					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
 					
 					// determine what type of marker to create
 					if(mPhoneNumber.equals(meshPhoneNumber) == true) {
 						// this is a self marker
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, selfLocationMarker);
 						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
-						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
+						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(LocationsContract.Table._ID)));
 						
 						// recenter the map if required
 						if(keepCentered) {
@@ -482,7 +483,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						// this is a peer marker
 						mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
 						mOverlayItem.setType(OverlayItems.PEER_LOCATION_ITEM);
-						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.Locations.Table._ID)));
+						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(LocationsContract.Table._ID)));
 
 					}
 					
@@ -497,9 +498,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			
 			// get the POI content
 			String[] mProjection = new String[3];
-			mProjection[0] = MapItemsContract.PointsOfInterest.Table._ID;
-			mProjection[1] = MapItemsContract.PointsOfInterest.Table.LATITUDE;
-			mProjection[2] = MapItemsContract.PointsOfInterest.Table.LONGITUDE;
+			mProjection[0] = PointsOfInterestContract.Table._ID;
+			mProjection[1] = PointsOfInterestContract.Table.LATITUDE;
+			mProjection[2] = PointsOfInterestContract.Table.LONGITUDE;
 			
 			// determine if we need to restrict the list of POIs
 			String mSelection = null;
@@ -507,13 +508,13 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			
 			// restrict the poi content returned if required
 			if(poiMaxAge != -1000) {
-				mSelection = MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " > ? ";
+				mSelection = PointsOfInterestContract.Table.TIMESTAMP + " > ? ";
 				mSelectionArgs = new String[1];
 				mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
 			}
 			
 			mCursor = mContentResolver.query(
-					MapItemsContract.PointsOfInterest.CONTENT_URI, 
+					PointsOfInterestContract.CONTENT_URI, 
 					mProjection, 
 					mSelection, 
 					mSelectionArgs,
@@ -537,11 +538,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				while(mCursor.moveToNext()) {
 					
 					// get the geographic coordinates
-					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LONGITUDE)));
+					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)));
 					
 					mOverlayItem = new OverlayItem(mGeoPoint, null, null, poiLocationMarker);
 					mOverlayItem.setType(OverlayItems.POI_ITEM);
-					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table._ID)));
+					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(PointsOfInterestContract.Table._ID)));
 					
 					mItems.add(mOverlayItem);
 				}
@@ -555,21 +556,21 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				
 				// determine which fields to return
 				mProjection = new String[2];
-				mProjection[0] = MapItemsContract.Locations.Table.LATITUDE;
-				mProjection[1] = MapItemsContract.Locations.Table.LONGITUDE;
+				mProjection[0] = LocationsContract.Table.LATITUDE;
+				mProjection[1] = LocationsContract.Table.LONGITUDE;
 				
 				// check if we need to take into account the age of the information
 				if(locationMaxAge != -1000) {
 				
-					mSelection = MapItemsContract.Locations.Table.PHONE_NUMBER + " = ? AND "
-							+ MapItemsContract.Locations.Table.TIMESTAMP + " > ?";
+					mSelection = LocationsContract.Table.PHONE_NUMBER + " = ? AND "
+							+ LocationsContract.Table.TIMESTAMP + " > ?";
 					
 					mSelectionArgs = new String[2];
 					mSelectionArgs[0] = meshPhoneNumber;
 					mSelectionArgs[1] = Long.toString(System.currentTimeMillis() - locationMaxAge);
 				} else {
 					
-					mSelection = MapItemsContract.Locations.Table.PHONE_NUMBER + " = ?";
+					mSelection = LocationsContract.Table.PHONE_NUMBER + " = ?";
 					
 					mSelectionArgs = new String[1];
 					mSelectionArgs[0] = meshPhoneNumber;
@@ -577,11 +578,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				
 				// get the data
 				mCursor = mContentResolver.query(
-						MapItemsContract.Locations.CONTENT_URI, 
+						LocationsContract.CONTENT_URI, 
 						mProjection, 
 						mSelection,
 						mSelectionArgs,
-						MapItemsContract.Locations.Table.TIMESTAMP);
+						LocationsContract.Table.TIMESTAMP);
 				
 				if(mCursor.getCount() > 0) {
 					if(V_LOG) {
@@ -595,7 +596,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 					
 					// populate the array
 					while(mCursor.moveToNext()) {
-						mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+						mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
 						mWayPoints[0][mCount] = mGeoPoint;
 						mCount++;
 					}

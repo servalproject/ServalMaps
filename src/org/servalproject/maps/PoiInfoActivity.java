@@ -19,7 +19,7 @@
  */
 package org.servalproject.maps;
 
-import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.app.Activity;
@@ -59,7 +59,7 @@ public class PoiInfoActivity extends Activity {
 		// resolve the content uri
 		ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 		
-		Uri mContentUri = Uri.parse(MapItemsContract.PointsOfInterest.CONTENT_URI.toString() + "/" + mIntent.getIntExtra("recordId", -1));
+		Uri mContentUri = Uri.parse(PointsOfInterestContract.CONTENT_URI.toString() + "/" + mIntent.getIntExtra("recordId", -1));
 		
 		// get the content
 		Cursor mCursor = mContentResolver.query(mContentUri, null, null, null, null);
@@ -70,16 +70,16 @@ public class PoiInfoActivity extends Activity {
 			mCursor.moveToFirst();
 			
 			TextView mView = (TextView) findViewById(R.id.poi_info_ui_txt_title);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TITLE)));
+			mView.setText(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TITLE)));
 			
 			mView = (TextView) findViewById(R.id.poi_info_ui_txt_description);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.DESCRIPTION)));
+			mView.setText(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
 			
 			mView = (TextView) findViewById(R.id.poi_info_ui_txt_age);
 			mView.setText(
 					TimeUtils.calculateAge(
-						mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TIMESTAMP)),
-						mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TIMEZONE)),
+						mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMESTAMP)),
+						mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)),
 						getApplicationContext()));
 			
 		} else {

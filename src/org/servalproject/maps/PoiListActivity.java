@@ -19,9 +19,8 @@
  */
 package org.servalproject.maps;
 
-import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -78,7 +77,7 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		// define the map between columns and layout elements
 		String[] mColumnNames = new String[1];
-		mColumnNames[0] = MapItemsContract.PointsOfInterest.Table.TITLE;
+		mColumnNames[0] = PointsOfInterestContract.Table.TITLE;
 		
 		int[] mLayoutElements = new int[1];
 		mLayoutElements[0] = R.id.poi_list_ui_enty_title;
@@ -114,8 +113,8 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		// get the data
 		String[] mProjection = new String[2];
-		mProjection[0] = MapItemsContract.PointsOfInterest.Table._ID;
-		mProjection[1] = MapItemsContract.PointsOfInterest.Table.TITLE;
+		mProjection[0] = PointsOfInterestContract.Table._ID;
+		mProjection[1] = PointsOfInterestContract.Table.TITLE;
 		
 		// determine if we need to restrict the list of POIs
 		String mSelection = null;
@@ -123,20 +122,20 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		// restrict the poi content returned if required
 		if(poiMaxAge != -1000) {
-			mSelection = MapItemsContract.PointsOfInterest.Table.TIMESTAMP + " > ? ";
+			mSelection = PointsOfInterestContract.Table.TIMESTAMP + " > ? ";
 			mSelectionArgs = new String[1];
 			mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
 		}
 		
 		// determine the order by
-		String mOrderBy = MapItemsContract.PointsOfInterest.Table.TITLE + " ASC";
+		String mOrderBy = PointsOfInterestContract.Table.TITLE + " ASC";
 		
 		// get a content resolver
 		ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 		
 		// get the data
 		return mContentResolver.query(
-				MapItemsContract.PointsOfInterest.CONTENT_URI, 
+				PointsOfInterestContract.CONTENT_URI, 
 				mProjection, 
 				mSelection, 
 				mSelectionArgs,
@@ -200,11 +199,11 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		if(cursor.moveToPosition(position) == true) {
 			
 			if(V_LOG) {
-				Log.v(TAG, "item in cursor has id: " + cursor.getInt(cursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table._ID)));
+				Log.v(TAG, "item in cursor has id: " + cursor.getInt(cursor.getColumnIndex(PointsOfInterestContract.Table._ID)));
 			}
 			
 			Intent mIntent = new Intent(this, org.servalproject.maps.PoiInfoActivity.class);
-			mIntent.putExtra("recordId", cursor.getInt(cursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table._ID)));
+			mIntent.putExtra("recordId", cursor.getInt(cursor.getColumnIndex(PointsOfInterestContract.Table._ID)));
 			startActivity(mIntent);
 			
 		} else {

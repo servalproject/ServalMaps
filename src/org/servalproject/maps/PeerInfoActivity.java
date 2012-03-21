@@ -19,7 +19,7 @@
  */
 package org.servalproject.maps;
 
-import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.app.Activity;
@@ -60,7 +60,7 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 		// resolve the content uri
 		ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 		
-		Uri mContentUri = Uri.parse(MapItemsContract.Locations.CONTENT_URI.toString() + "/" + mIntent.getIntExtra("recordId", -1));
+		Uri mContentUri = Uri.parse(LocationsContract.CONTENT_URI.toString() + "/" + mIntent.getIntExtra("recordId", -1));
 		
 		// get the content
 		Cursor mCursor = mContentResolver.query(mContentUri, null, null, null, null);
@@ -71,23 +71,23 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			mCursor.moveToFirst();
 			
 			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER)));
+			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_latitude);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)));
+			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_longitude);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
+			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_age);
 			mView.setText(
 					TimeUtils.calculateAge(
-						mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)),
-						mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMEZONE)),
+						mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP)),
+						mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.TIMEZONE)),
 						getApplicationContext()));
 			
 		} else {
-			// TODO show error
+			// show an error
 			Toast.makeText(getApplicationContext(), R.string.peer_info_toast_no_record_error, Toast.LENGTH_LONG).show();
 			Log.e(TAG, "Unable to load records, supplied id: " + mIntent.getIntExtra("recordId", -1));
 			mCursor.close();

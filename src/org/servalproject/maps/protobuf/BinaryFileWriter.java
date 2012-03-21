@@ -24,7 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.servalproject.maps.R;
-import org.servalproject.maps.provider.MapItemsContract;
+import org.servalproject.maps.provider.LocationsContract;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 import org.servalproject.maps.rhizome.Rhizome;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
@@ -76,7 +77,7 @@ public class BinaryFileWriter {
 		// get the record
 		ContentResolver mContentResolver = context.getContentResolver();
 		
-		Uri mContentUri = Uri.parse(MapItemsContract.Locations.CONTENT_URI.toString() + "/" + recordId);
+		Uri mContentUri = Uri.parse(LocationsContract.CONTENT_URI.toString() + "/" + recordId);
 		
 		Cursor mCursor = mContentResolver.query(mContentUri, null, null, null, null);
 		
@@ -91,19 +92,19 @@ public class BinaryFileWriter {
 		org.servalproject.maps.protobuf.LocationMessage.Message.Builder mMessageBuilder = LocationMessage.Message.newBuilder();
 		
 		// populate the message
-		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER)));
-		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.SUBSCRIBER_ID)));
-		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LATITUDE)));
-		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.Locations.Table.LONGITUDE)));
-		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMESTAMP)));
-		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.TIMEZONE)));
+		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
+		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.SUBSCRIBER_ID)));
+		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
+		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
+		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP)));
+		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.TIMEZONE)));
 		
 		if(V_LOG) {
 			Log.v(TAG, "location message: " + mMessageBuilder.build().toString());
 		}
 		
 		// determine the file name
-		String mFileName = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
+		String mFileName = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
 		mFileName = mFileName.replace(" ", "");
 		mFileName = mFileName.replace("-", "");
 		
@@ -158,7 +159,7 @@ public class BinaryFileWriter {
 		// get the record
 		ContentResolver mContentResolver = context.getContentResolver();
 		
-		Uri mContentUri = Uri.parse(MapItemsContract.PointsOfInterest.CONTENT_URI.toString() + "/" + recordId);
+		Uri mContentUri = Uri.parse(PointsOfInterestContract.CONTENT_URI.toString() + "/" + recordId);
 		
 		Cursor mCursor = mContentResolver.query(mContentUri, null, null, null, null);
 		
@@ -172,18 +173,18 @@ public class BinaryFileWriter {
 		
 		org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
 		
-		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.PHONE_NUMBER)));
-		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.SUBSCRIBER_ID)));
-		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LATITUDE)));
-		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.LONGITUDE)));
-		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TIMESTAMP)));
-		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TIMEZONE)));
-		mMessageBuilder.setTitle(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.TITLE)));
-		mMessageBuilder.setDescription(mCursor.getString(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.DESCRIPTION)));
-		mMessageBuilder.setCategory(mCursor.getLong(mCursor.getColumnIndex(MapItemsContract.PointsOfInterest.Table.CATEGORY)));
+		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHONE_NUMBER)));
+		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.SUBSCRIBER_ID)));
+		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE)));
+		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)));
+		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMESTAMP)));
+		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)));
+		mMessageBuilder.setTitle(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TITLE)));
+		mMessageBuilder.setDescription(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
+		mMessageBuilder.setCategory(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.CATEGORY)));
 		
 		// determine the file name
-		String mFileName = mCursor.getString(mCursor.getColumnIndex(MapItemsContract.Locations.Table.PHONE_NUMBER));
+		String mFileName = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
 		mFileName = mFileName.replace(" ", "");
 		mFileName = mFileName.replace("-", "");
 		

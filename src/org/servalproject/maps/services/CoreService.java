@@ -300,13 +300,17 @@ public class CoreService extends Service {
 		
 		if(mockLocations != null) {
 			mockLocations.requestStop();
-			mockLocationsThread.interrupt();
+			if(mockLocationsThread != null) {
+				mockLocationsThread.interrupt();
+			}
 			
 		}
 		
 		if(jsonLocationWriter != null) {
 			jsonLocationWriter.requestStop();
-			jsonLocationWriterThread.interrupt();
+			if(jsonLocationWriterThread != null) {
+				jsonLocationWriterThread.interrupt();
+			}
 		}
 		
 		unregisterReceiver(rhizomeBroadcastReceiver);
