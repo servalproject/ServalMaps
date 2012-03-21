@@ -34,6 +34,11 @@ import android.util.Log;
  */
 public class MapItems extends ContentProvider {
 	
+	/**
+	 * authority string for the content provider
+	 */
+	public static final String AUTHORITY = "org.servalproject.maps.provider.items";
+	
 	// private class level constants
 	private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 	
@@ -62,12 +67,12 @@ public class MapItems extends ContentProvider {
 		
 		// define URis that we'll match against
 		//uriMatcher.addURI(MapItemsContract.Locations.CONTENT_URI, LOCATION_DIR_URI);
-		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH, LOCATION_LIST_URI);
-		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH + "/#", LOCATION_ITEM_URI);
-		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.Locations.CONTENT_URI_PATH + "/latest", LOCATION_LATEST_LIST_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, LocationsContract.CONTENT_URI_PATH, LOCATION_LIST_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, LocationsContract.CONTENT_URI_PATH + "/#", LOCATION_ITEM_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, LocationsContract.CONTENT_URI_PATH + "/latest", LOCATION_LATEST_LIST_URI);
 		
-		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.PointsOfInterest.CONTENT_URI_PATH, POI_LIST_URI);
-		uriMatcher.addURI(MapItemsContract.AUTHORITY, MapItemsContract.PointsOfInterest.CONTENT_URI_PATH + "/#", POI_ITEM_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, PointsOfInterestContract.CONTENT_URI_PATH, POI_LIST_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, PointsOfInterestContract.CONTENT_URI_PATH + "/#", POI_ITEM_URI);
 		
 		// create the database connection
 		databaseHelper = new MainDatabaseHelper(getContext());
@@ -91,16 +96,16 @@ public class MapItems extends ContentProvider {
 		case LOCATION_LIST_URI:
 			// uri matches all of the table
 			if(TextUtils.isEmpty(sortOrder) == true) {
-				sortOrder = MapItemsContract.Locations.Table._ID + " ASC";
+				sortOrder = LocationsContract.Table._ID + " ASC";
 			}
 			mMatchedUri = LOCATION_LIST_URI;
 			break;
 		case LOCATION_ITEM_URI:
 			// uri matches one record
 			if(TextUtils.isEmpty(selection) == true) {
-				selection = MapItemsContract.Locations.Table._ID + " = " + uri.getLastPathSegment();
+				selection = LocationsContract.Table._ID + " = " + uri.getLastPathSegment();
 			} else {
-				selection += "AND " + MapItemsContract.Locations.Table._ID + " = " + uri.getLastPathSegment();
+				selection += "AND " + LocationsContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
 			mMatchedUri = LOCATION_ITEM_URI;
 			break;
@@ -111,16 +116,16 @@ public class MapItems extends ContentProvider {
 		case POI_LIST_URI:
 			// uri matches all of the table
 			if(TextUtils.isEmpty(sortOrder) == true) {
-				sortOrder = MapItemsContract.PointsOfInterest.Table._ID + " ASC";
+				sortOrder = PointsOfInterestContract.Table._ID + " ASC";
 			}
 			mMatchedUri = POI_LIST_URI;
 			break;
 		case POI_ITEM_URI:
 			// uri matches one record
 			if(TextUtils.isEmpty(selection) == true) {
-				selection = MapItemsContract.PointsOfInterest.Table._ID + " = " + uri.getLastPathSegment();
+				selection = PointsOfInterestContract.Table._ID + " = " + uri.getLastPathSegment();
 			} else {
-				selection += "AND " + MapItemsContract.PointsOfInterest.Table._ID + " = " + uri.getLastPathSegment();
+				selection += "AND " + PointsOfInterestContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
 			mMatchedUri = POI_ITEM_URI;
 			break;
@@ -137,21 +142,21 @@ public class MapItems extends ContentProvider {
 			// get the latest location records
 			
 			String[] mColumns = new String[6];
-			mColumns[0] = MapItemsContract.Locations.Table._ID;
-			mColumns[1] = MapItemsContract.Locations.Table.PHONE_NUMBER;
-			mColumns[2] = MapItemsContract.Locations.Table.LATITUDE;
-			mColumns[3] = MapItemsContract.Locations.Table.LONGITUDE;
-			mColumns[4] = MapItemsContract.Locations.Table.TIMESTAMP;
-			mColumns[5] = "MAX(" + MapItemsContract.Locations.Table.TIMESTAMP + ")";
+			mColumns[0] = LocationsContract.Table._ID;
+			mColumns[1] = LocationsContract.Table.PHONE_NUMBER;
+			mColumns[2] = LocationsContract.Table.LATITUDE;
+			mColumns[3] = LocationsContract.Table.LONGITUDE;
+			mColumns[4] = LocationsContract.Table.TIMESTAMP;
+			mColumns[5] = "MAX(" + LocationsContract.Table.TIMESTAMP + ")";
 			
-			mResults = database.query(MapItemsContract.Locations.Table.TABLE_NAME, mColumns, null, null, MapItemsContract.Locations.Table.PHONE_NUMBER, null, null);
+			mResults = database.query(LocationsContract.Table.TABLE_NAME, mColumns, null, null, LocationsContract.Table.PHONE_NUMBER, null, null);
 			
 		} else if (mMatchedUri == LOCATION_LIST_URI || mMatchedUri == LOCATION_ITEM_URI){
 			// execute the query as provided
-			mResults = database.query(MapItemsContract.Locations.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
+			mResults = database.query(LocationsContract.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
 		} else if(mMatchedUri == POI_LIST_URI || mMatchedUri == POI_ITEM_URI) {
 			// execute the query as provided
-			mResults = database.query(MapItemsContract.PointsOfInterest.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
+			mResults = database.query(PointsOfInterestContract.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
 		}
 		
 		// play nice and tidy up
@@ -177,12 +182,12 @@ public class MapItems extends ContentProvider {
 		// chose the table name
 		switch(uriMatcher.match(uri)) {
 		case LOCATION_LIST_URI:
-			mTable = MapItemsContract.Locations.CONTENT_URI_PATH;
-			mContentUri = MapItemsContract.Locations.CONTENT_URI;
+			mTable = LocationsContract.CONTENT_URI_PATH;
+			mContentUri = LocationsContract.CONTENT_URI;
 			break;
 		case POI_LIST_URI:
-			mTable = MapItemsContract.PointsOfInterest.CONTENT_URI_PATH;
-			mContentUri = MapItemsContract.PointsOfInterest.CONTENT_URI;
+			mTable = PointsOfInterestContract.CONTENT_URI_PATH;
+			mContentUri = PointsOfInterestContract.CONTENT_URI;
 			break;
 		default:
 			// unknown uri found
@@ -214,15 +219,15 @@ public class MapItems extends ContentProvider {
 		// choose the mime type
 		switch(uriMatcher.match(uri)) {
 		case LOCATION_LIST_URI:
-			return MapItemsContract.Locations.CONTENT_TYPE_LIST;
+			return LocationsContract.CONTENT_TYPE_LIST;
 		case LOCATION_ITEM_URI:
-			return MapItemsContract.Locations.CONTENT_TYPE_ITEM;
+			return LocationsContract.CONTENT_TYPE_ITEM;
 		case LOCATION_LATEST_LIST_URI:
-			return MapItemsContract.Locations.CONTENT_TYPE_LIST;
+			return LocationsContract.CONTENT_TYPE_LIST;
 		case POI_LIST_URI:
-			return MapItemsContract.PointsOfInterest.CONTENT_TYPE_LIST;
+			return PointsOfInterestContract.CONTENT_TYPE_LIST;
 		case POI_ITEM_URI:
-			return MapItemsContract.PointsOfInterest.CONTENT_TYPE_ITEM;
+			return PointsOfInterestContract.CONTENT_TYPE_ITEM;
 		default:
 			// unknown uri found
 			Log.e(TAG, "unknown URI detected on getType: " + uri.toString());
@@ -233,14 +238,14 @@ public class MapItems extends ContentProvider {
 
 	@Override
 	public synchronized int delete(Uri arg0, String arg1, String[] arg2) {
-		// TODO Auto-generated method stub
-		return 0;
+		//TODO implement code when required
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 	@Override
 	public synchronized int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		return 0;
+		//TODO implement code when required
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 }
