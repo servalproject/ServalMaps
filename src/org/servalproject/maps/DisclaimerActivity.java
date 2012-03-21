@@ -20,6 +20,7 @@
 
 package org.servalproject.maps;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.servalproject.maps.batphone.PhoneNumberReceiver;
@@ -228,10 +229,12 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		case MANY_FILES_DIALOG:
 			
 			mFileNames = new CharSequence[mapDataInfoList.size()];
+			File mFile = null;
 			
 			for(int i = 0; i < mapDataInfoList.size(); i++) {
 				MapDataInfo mInfo = mapDataInfoList.get(i);
-				mFileNames[i] = mInfo.getFileName();
+				mFile = new File(mInfo.getFileName());
+				mFileNames[i] = mFile.getName();
 			}
 			
 			mBuilder.setTitle(R.string.disclaimer_ui_dialog_many_files_title)

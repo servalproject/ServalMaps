@@ -42,6 +42,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -126,7 +127,11 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		mapView.setBuiltInZoomControls(true);
 		
 		if(mMapFileName != null) {
-			mapView.setMapFile(mMapFileName);
+			
+			String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
+			mMapDataPath += getString(R.string.system_path_map_data);
+			
+			mapView.setMapFile(mMapDataPath + mMapFileName);
 		}
 		
 		setContentView(mapView);
