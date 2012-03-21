@@ -80,7 +80,7 @@ public class JsonLocationWriter implements Runnable {
 		fileName = fileName.replace(" ", "");
 		fileName = fileName.replace("-", "");
 		
-		fileName = mOutputPath + fileName + "-locations-" + TimeUtils.getTodayAsString() + ".json";
+		fileName = mOutputPath + fileName + "-locations-" + TimeUtils.getToday() + ".json";
 		
 		// see if we need to put the header into the file
 		if(FileUtils.isFileReadable(fileName) == false) {

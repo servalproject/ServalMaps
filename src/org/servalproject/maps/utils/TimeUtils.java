@@ -149,5 +149,19 @@ public class TimeUtils {
 		
 		return mFormat.format(mCalendar.getTime());
 	}
+	
+	/**
+	 * return today's date as a string
+	 */
+	public static String getToday() {
+		
+		// get a calendar instance to help with the formating of the date
+		Calendar mCalendar = Calendar.getInstance();
+		mCalendar.setTimeInMillis(System.currentTimeMillis());
+		
+		SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+		
+		return mFormat.format(mCalendar.getTime());
+	}
 
 }
