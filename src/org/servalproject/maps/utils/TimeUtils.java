@@ -139,13 +139,13 @@ public class TimeUtils {
 	/**
 	 * return today's date as a string
 	 */
-	public static String getTodayAsString() {
+	public static String getTodayWithHour() {
 		
 		// get a calendar instance to help with the formating of the date
 		Calendar mCalendar = Calendar.getInstance();
 		mCalendar.setTimeInMillis(System.currentTimeMillis());
 		
-		SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd-HH");
 		
 		return mFormat.format(mCalendar.getTime());
 	}
