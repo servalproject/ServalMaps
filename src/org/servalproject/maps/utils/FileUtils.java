@@ -171,5 +171,4 @@ public class FileUtils {
 		
 		return mOutputFile.getCanonicalPath();
 	}
-
 }
