@@ -19,6 +19,7 @@
  */
 package org.servalproject.maps.protobuf;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -173,8 +174,12 @@ public class LocationReadWorker implements Runnable {
 				}
 			}
 		} catch (IOException e) {
-			Log.e(TAG, "unable to read from the input file", e);
-			return;
+			try {
+				Log.e(TAG, "error in parsing record from file at byte: " + mInput.getChannel().position());
+			} catch (IOException e1) {
+				Log.e(TAG, "error in parsing record from file", e1);
+				return;
+			}
 		} catch (SQLiteException e) {
 			Log.e(TAG, "an error occurred while interfacing with the database", e);
 			return;	
@@ -184,6 +189,9 @@ public class LocationReadWorker implements Runnable {
 			} catch (IOException e) {
 				Log.e(TAG, "unable to close input file", e);
 			}
+			
+			File mFile = new File(filePath);
+			mFile.delete();
 		}
 	}
 

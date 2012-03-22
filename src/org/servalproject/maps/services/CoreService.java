@@ -20,6 +20,8 @@
 package org.servalproject.maps.services;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.location.JsonLocationWriter;
@@ -45,15 +47,17 @@ import android.util.Log;
  * undertaken even while activities are not present
  */
 public class CoreService extends Service {
-	
+
 	// class level constants
 	private final int STATUS_NOTIFICATION = 0;
-	
+
 	private final String JSON_UPDATE_DELAY_DEFAULT = "60000";
-	
+
 	private final boolean V_LOG = true;
 	private final String  TAG = "CoreService";
-	
+
+	private final int THREAD_POOL_SIZE = 2;
+
 	// class level variables
 	private LocationCollector locationCollector;
 	private LocationManager locationManager;
@@ -61,11 +65,13 @@ public class CoreService extends Service {
 	private JsonLocationWriter jsonLocationWriter = null;
 	private Thread mockLocationsThread = null;
 	private Thread jsonLocationWriterThread = null;
-	
+
 	private SharedPreferences preferences = null;
-	
+
 	private RhizomeBroadcastReceiver rhizomeBroadcastReceiver = null;
 	
+	private ExecutorService executor = null;
+
 	/*
 	 * called when the service is created
 	 * 
@@ -74,16 +80,16 @@ public class CoreService extends Service {
 	 */
 	@Override
 	public void onCreate() {
-		
+
 		// create the necessary supporting variables
 		locationCollector = new LocationCollector(this.getApplicationContext());
-		
+
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		
+
 		// get the preferences
 		preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
+
 		// determine if mock locations should be used
 		if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
 			try {
@@ -92,50 +98,53 @@ public class CoreService extends Service {
 				Log.e(TAG, "unable to create MockLocations instance", e);
 			}
 		}
-		
+
 		// determine of JSON output should be created
 		if(preferences.getBoolean("preferences_map_output_json", false) == true) {
 			String updateDelay = preferences.getString("preferences_map_output_json_interval", null);
-			
+
 			if(updateDelay == null) {
 				updateDelay = JSON_UPDATE_DELAY_DEFAULT;
 			}
-			
+
 			try {
 				jsonLocationWriter = new JsonLocationWriter(getApplicationContext(), Long.parseLong(updateDelay));
 			} catch (IOException e) {
 				Log.e(TAG, "unable to create jsonLocationWriter instance", e);
 			}
 		}
-		
+
 		// listen for changes in the preferences
 		preferences.registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
-		
+
 		if(V_LOG) {
 			if(mockLocations == null) {
 				Log.v(TAG, "mock locations are not used");
 			} else {
 				Log.v(TAG, "mock locations are being used");
 			}
-			
+
 			if(jsonLocationWriter == null) {
 				Log.v(TAG, "JSON location writing is not occuring");
 			} else {
 				Log.v(TAG, "JSON location writing is occuring");
 			}
-			
+
 			Log.v(TAG, "Service Created");
 		}
 		
-      // register for the Rhizome related broadcasts
-	  rhizomeBroadcastReceiver = new RhizomeBroadcastReceiver();
-      
-      IntentFilter mBroadcastFilter = new IntentFilter();
-      mBroadcastFilter.addAction("org.servalproject.rhizome.RECIEVE_FILE");
-      registerReceiver(rhizomeBroadcastReceiver, mBroadcastFilter);
-		
+		// create the executor service with the required thread pool
+		executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+
+		// register for the Rhizome related broadcasts
+		rhizomeBroadcastReceiver = new RhizomeBroadcastReceiver(executor);
+
+		IntentFilter mBroadcastFilter = new IntentFilter();
+		mBroadcastFilter.addAction("org.servalproject.rhizome.RECIEVE_FILE");
+		registerReceiver(rhizomeBroadcastReceiver, mBroadcastFilter);
+
 	}
-	
+
 	// listen for changes to the shared preferences
 	private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 
@@ -145,18 +154,18 @@ public class CoreService extends Service {
 		 */
 		@Override
 		public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-			
+
 			if(V_LOG) {
 				Log.v(TAG, "a change in shared preferences has been deteceted");
 				Log.v(TAG, "preference changed: '" + key + "'");
 			}
-			
+
 			// check to see if this is the preference that is of interest
 			if(key.equals("preferences_developer_mock_locations") == true) {
 				if(V_LOG) {
 					Log.v(TAG, "preference changed: 'preferences_developer_mock_locations'");
 				}
-				
+
 				// see if the preference is true
 				if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
 					// preference is true so start using mock locations if required
@@ -180,12 +189,12 @@ public class CoreService extends Service {
 				if(V_LOG) {
 					Log.v(TAG, "preference changed: 'preferences_map_output_json'");
 				}
-				
+
 				if(preferences.getBoolean("preferences_map_output_json", false) == true) {
 					// preference is true so start outputing json if required
 					if(jsonLocationWriter == null) {
 						String updateDelay = preferences.getString("preferences_map_output_json_interval", null);
-						
+
 						if(updateDelay == null) {
 							updateDelay = JSON_UPDATE_DELAY_DEFAULT;
 						}
@@ -200,19 +209,19 @@ public class CoreService extends Service {
 				}
 			} else if(key.equals("preferences_map_output_json_interval") == true) {
 				String updateDelay = preferences.getString("preferences_map_output_json_interval", null);
-				
+
 				if(updateDelay == null) {
 					updateDelay = JSON_UPDATE_DELAY_DEFAULT;
 				}
-				
+
 				if(jsonLocationWriter != null) {
 					jsonLocationWriter.setUpdateDelay(Long.parseLong(updateDelay));
 				}
 			}
-			
+
 		}
 	};
-	
+
 	/*
 	 * called when the service is started
 	 * 
@@ -221,65 +230,65 @@ public class CoreService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		
+
 		if(V_LOG) {
 			Log.v(TAG, "Service Started");
 		}
-		
+
 		// add the notification icon
 		addNotification();
-		
+
 		if(mockLocations != null) {
 			mockLocationsThread = new Thread(mockLocations, "MockLocations");
 			mockLocationsThread.start();
 		}
-		
+
 		if(jsonLocationWriter != null) {
 			jsonLocationWriterThread = new Thread(jsonLocationWriter, "JsonLocationWriter");
 			jsonLocationWriterThread.start();
 		}
-		
+
 		// Register the listener with the Location Manager to receive location updates
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationCollector);
-		
+
 		// If service gets killed, after returning from here, restart
-	    return START_STICKY;
+		return START_STICKY;
 	}
-	
+
 	// private method used to add the notification icon
 	private void addNotification() {
 		// add a notification icon
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		
+
 		//TODO update this with a better icon
 		//TODO update this with a custom notification with stats
 		int mNotificationIcon = R.drawable.ic_notification;
 		CharSequence mTickerText = getString(R.string.system_notification_ticker_text);
 		long mWhen = System.currentTimeMillis();
-		
+
 		// create the notification and set the flag so that it stays up
 		Notification mNotification = new Notification(mNotificationIcon, mTickerText, mWhen);
 		mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
-		
+
 		// get the content of the notification
 		CharSequence mNotificationTitle = getString(R.string.system_notification_title);
 		CharSequence mNotificationContent = getString(R.string.system_notification_content);
-		
+
 		// create the intent for the notification
 		// set flags so that the user returns to this activity and not a new one
 		Intent mNotificationIntent = new Intent(this, org.servalproject.maps.MapActivity.class);
 		mNotificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		
+
 		// create a pending intent so that the system can use the above intent at a later time.
 		PendingIntent mPendingIntent = PendingIntent.getActivity(this, 0, mNotificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-		
+
 		// complete the setup of the notification
 		mNotification.setLatestEventInfo(getApplicationContext(), mNotificationTitle, mNotificationContent, mPendingIntent);
-		
+
 		// add the notification
 		mNotificationManager.notify(STATUS_NOTIFICATION, mNotification);
 	}
-	
+
 	/*
 	 * called when the service kills the service
 	 * 
@@ -288,35 +297,39 @@ public class CoreService extends Service {
 	 */
 	@Override
 	public void onDestroy() {
-		
+
 		// tidy up any used resources etc.
-		
+
 		// clear the notification
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancel(STATUS_NOTIFICATION);
-		
+
 		// stop listening for location updates
 		locationManager.removeUpdates(locationCollector);
-		
+
 		if(mockLocations != null) {
 			mockLocations.requestStop();
 			if(mockLocationsThread != null) {
 				mockLocationsThread.interrupt();
 			}
-			
+
 		}
-		
+
 		if(jsonLocationWriter != null) {
 			jsonLocationWriter.requestStop();
 			if(jsonLocationWriterThread != null) {
 				jsonLocationWriterThread.interrupt();
 			}
 		}
-		
+
 		unregisterReceiver(rhizomeBroadcastReceiver);
 		
-		super.onDestroy();
+		if(executor != null) {
+			executor.shutdown();
+		}
 		
+		super.onDestroy();
+
 		if(V_LOG) {
 			Log.v(TAG, "Service Destroyed");
 		}

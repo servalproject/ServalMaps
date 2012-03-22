@@ -25,6 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import org.servalproject.maps.protobuf.BinaryFileContract;
+
 import android.text.TextUtils;
 
 /**
@@ -116,6 +118,58 @@ public class FileUtils {
 		mOutputChannel.close();	
 		
 		return dirPath + mFileName;
+	}
+	
+	/**
+	 * copies a file into a directory
+	 * 
+	 * @param filePath path to the source file
+	 * @param dirPath path to the destination directory
+	 * @return the full path of the destination file
+	 * @throws IOException 
+	 */
+	public static String copyFileToDirWithTmpName(String filePath, String dirPath) throws IOException {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(filePath) == true) {
+			throw new IllegalArgumentException("the filePath parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(dirPath) == true) {
+			throw new IllegalArgumentException("the dirPath paramter is required");
+		}
+		
+		if(isFileReadable(filePath) == false) {
+			throw new IOException("unable to access the source file");
+		}
+		
+		if(isDirectoryWritable(dirPath) == false) {
+			throw new IOException("unable to access the destination directory");
+		}
+		
+		String mFileName = new File(filePath).getName();
+		
+		File mOutputFile = null;
+		
+		if(mFileName.endsWith(BinaryFileContract.LOCATION_EXT)) {
+			mOutputFile = File.createTempFile(BinaryFileContract.LOCATION_EXT, null, new File(dirPath));
+		} else {
+			mOutputFile = File.createTempFile(BinaryFileContract.POI_EXT, null, new File(dirPath));
+		}
+		
+		// copy the file
+		// based on code found at the URL below and considered to be in the public domain
+		// http://stackoverflow.com/questions/1146153/copying-files-from-one-directory-to-another-in-java#answer-1146195
+		FileChannel mInputChannel = new FileInputStream(filePath).getChannel();
+		FileChannel mOutputChannel = new FileOutputStream(mOutputFile).getChannel();
+		
+		mOutputChannel.transferFrom(mInputChannel, 0, mInputChannel.size());
+		
+		// play nice and tidy up
+		mInputChannel.close();
+		mOutputChannel.close();	
+		
+		return mOutputFile.getCanonicalPath();
 	}
 
 }
