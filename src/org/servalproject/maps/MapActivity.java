@@ -33,6 +33,7 @@ import org.servalproject.maps.mapsforge.OverlayItems;
 import org.servalproject.maps.mapsforge.OverlayList;
 import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.provider.PointsOfInterestContract;
+import org.servalproject.maps.utils.FileUtils;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -128,10 +129,14 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		
 		if(mMapFileName != null) {
 			
-			String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
-			mMapDataPath += getString(R.string.system_path_map_data);
+			if(FileUtils.isFileReadable(mMapFileName) == false) {
+				String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
+				mMapDataPath += getString(R.string.system_path_map_data);
+				mapView.setMapFile(mMapDataPath + mMapFileName);
+			} else {
+				mapView.setMapFile(mMapFileName);
+			}
 			
-			mapView.setMapFile(mMapDataPath + mMapFileName);
 		}
 		
 		setContentView(mapView);

@@ -35,6 +35,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -85,10 +86,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
      */
 	@Override
 	public void onClick(View v) {
-		
-		// subvert the click method to test reading binary data
-		//BinaryFileReader.readLocations(this, Environment.getExternalStorageDirectory() + "/servalproject/maps/meshms/555007007-2012-02-16.smapl");
-		//BinaryFileReader.readPointsOfInterest(this, Environment.getExternalStorageDirectory() +"/servalproject/maps/meshms/555007007-2012-02-16.smapp");
 		
 		// check which button was touched
 		if(v.getId() == R.id.disclaimer_ui_btn_continue) {
