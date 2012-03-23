@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.servalproject.maps.protobuf.LocationMessage.Message.Builder;
 import org.servalproject.maps.provider.LocationsContract;
 
 import android.content.ContentResolver;
@@ -98,13 +97,13 @@ public class LocationReadWorker implements Runnable {
 		ContentResolver mContentResolver = context.getContentResolver();
 		ContentValues mNewValues = null;
 		Cursor mCursor = null;
-		Builder mMessageBuilder = LocationMessage.Message.newBuilder();
+		LocationMessage.Message mMessage;
 		
 		long mLatestTimeStamp = -1;
 		
 		// loop through the data
 		try {
-			while(mMessageBuilder.mergeDelimitedFrom(mInput) == true) {
+			while((mMessage = LocationMessage.Message.parseDelimitedFrom(mInput)) != null) {
 				
 				// check to see if we need to get the latest time stamp
 				if(mLatestTimeStamp == -1) {
@@ -112,7 +111,7 @@ public class LocationReadWorker implements Runnable {
 					String[] mProjection = {LocationsContract.Table.TIMESTAMP};
 					String mSelection = LocationsContract.Table.PHONE_NUMBER + " = ?";
 					String[] mSelectionArgs = new String[1];
-					mSelectionArgs[0] = mMessageBuilder.getPhoneNumber();
+					mSelectionArgs[0] = mMessage.getPhoneNumber();
 					String mOrderBy = LocationsContract.Table.TIMESTAMP + " DESC";
 					
 					mCursor = mContentResolver.query(
@@ -134,17 +133,17 @@ public class LocationReadWorker implements Runnable {
 					mCursor = null;
 				}
 				
-				if(mMessageBuilder.getTimestamp() > mLatestTimeStamp) {
+				if(mMessage.getTimestamp() > mLatestTimeStamp) {
 					
 					// add new record
 					mNewValues = new ContentValues();
 					
-					mNewValues.put(LocationsContract.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
-					mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
-					mNewValues.put(LocationsContract.Table.LATITUDE, mMessageBuilder.getLatitude());
-					mNewValues.put(LocationsContract.Table.LONGITUDE, mMessageBuilder.getLongitude());
-					mNewValues.put(LocationsContract.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
-					mNewValues.put(LocationsContract.Table.TIMEZONE, mMessageBuilder.getTimeZone());
+					mNewValues.put(LocationsContract.Table.PHONE_NUMBER, mMessage.getPhoneNumber());
+					mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, mMessage.getSubsciberId());
+					mNewValues.put(LocationsContract.Table.LATITUDE, mMessage.getLatitude());
+					mNewValues.put(LocationsContract.Table.LONGITUDE, mMessage.getLongitude());
+					mNewValues.put(LocationsContract.Table.TIMESTAMP, mMessage.getTimestamp());
+					mNewValues.put(LocationsContract.Table.TIMEZONE, mMessage.getTimeZone());
 					
 					try {
 						mContentResolver.insert(
@@ -161,6 +160,13 @@ public class LocationReadWorker implements Runnable {
 				} else {
 					if(V_LOG) {
 						Log.v(TAG, "skipped an existing location record");
+					}
+					
+					// don't hit the CPU so hard so sleep for a bit
+					try {
+						Thread.sleep(sleepTime);
+					}catch (InterruptedException e) {
+						Log.w(TAG, "thread was interrupted unexepectantly");
 					}
 				}
 				

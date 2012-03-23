@@ -24,7 +24,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder;
 import org.servalproject.maps.provider.PointsOfInterestContract;
 
 import android.content.ContentResolver;
@@ -88,13 +87,13 @@ public class PointsOfInterestWorker implements Runnable {
 		ContentResolver mContentResolver = context.getContentResolver();
 		ContentValues mNewValues = null;
 		Cursor mCursor = null;
-		Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
+		PointOfInterestMessage.Message mMessage;
 		
 		long mLatestTimeStamp = -1;
 		
 		// loop through the data
 		try {
-			while(mMessageBuilder.mergeDelimitedFrom(mInput) == true) {
+			while((mMessage = PointOfInterestMessage.Message.parseDelimitedFrom(mInput)) != null) {
 				
 				// check to see if we need to get the latest time stamp
 				if(mLatestTimeStamp == -1) {
@@ -102,7 +101,7 @@ public class PointsOfInterestWorker implements Runnable {
 					String[] mProjection = {PointsOfInterestContract.Table.TIMESTAMP};
 					String mSelection = PointsOfInterestContract.Table.PHONE_NUMBER + " = ?";
 					String[] mSelectionArgs = new String[1];
-					mSelectionArgs[0] = mMessageBuilder.getPhoneNumber();
+					mSelectionArgs[0] = mMessage.getPhoneNumber();
 					String mOrderBy = PointsOfInterestContract.Table.TIMESTAMP + " DESC";
 					
 					mCursor = mContentResolver.query(
@@ -125,20 +124,20 @@ public class PointsOfInterestWorker implements Runnable {
 					mCursor = null;
 				}
 				
-				if(mMessageBuilder.getTimestamp() > mLatestTimeStamp) {
+				if(mMessage.getTimestamp() > mLatestTimeStamp) {
 					
 					// add new record
 					mNewValues = new ContentValues();
 					
-					mNewValues.put(PointsOfInterestContract.Table.PHONE_NUMBER, mMessageBuilder.getPhoneNumber());
-					mNewValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, mMessageBuilder.getSubsciberId());
-					mNewValues.put(PointsOfInterestContract.Table.LATITUDE, mMessageBuilder.getLatitude());
-					mNewValues.put(PointsOfInterestContract.Table.LONGITUDE, mMessageBuilder.getLongitude());
-					mNewValues.put(PointsOfInterestContract.Table.TIMESTAMP, mMessageBuilder.getTimestamp());
-					mNewValues.put(PointsOfInterestContract.Table.TIMEZONE, mMessageBuilder.getTimeZone());
-					mNewValues.put(PointsOfInterestContract.Table.TITLE, mMessageBuilder.getTitle());
-					mNewValues.put(PointsOfInterestContract.Table.DESCRIPTION, mMessageBuilder.getDescription());
-					mNewValues.put(PointsOfInterestContract.Table.CATEGORY, mMessageBuilder.getCategory());
+					mNewValues.put(PointsOfInterestContract.Table.PHONE_NUMBER, mMessage.getPhoneNumber());
+					mNewValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, mMessage.getSubsciberId());
+					mNewValues.put(PointsOfInterestContract.Table.LATITUDE, mMessage.getLatitude());
+					mNewValues.put(PointsOfInterestContract.Table.LONGITUDE, mMessage.getLongitude());
+					mNewValues.put(PointsOfInterestContract.Table.TIMESTAMP, mMessage.getTimestamp());
+					mNewValues.put(PointsOfInterestContract.Table.TIMEZONE, mMessage.getTimeZone());
+					mNewValues.put(PointsOfInterestContract.Table.TITLE, mMessage.getTitle());
+					mNewValues.put(PointsOfInterestContract.Table.DESCRIPTION, mMessage.getDescription());
+					mNewValues.put(PointsOfInterestContract.Table.CATEGORY, mMessage.getCategory());
 					
 					try {
 						mContentResolver.insert(
@@ -155,6 +154,13 @@ public class PointsOfInterestWorker implements Runnable {
 				} else {
 					if(V_LOG) {
 						Log.v(TAG, "skipped an existing POI record");
+					}
+					
+					// don't hit the CPU so hard so sleep for a bit
+					try {
+						Thread.sleep(sleepTime);
+					}catch (InterruptedException e) {
+						Log.w(TAG, "thread was interrupted unexepectantly");
 					}
 				}
 				
