@@ -32,7 +32,7 @@
     <string name="disclaimer_ui_dialog_no_serval">Serval mesh phone number was not detected, confirm Serval mesh software is installed before continuing</string>
     
     <!-- Maps Activity UI -->
-    <string name="map_ui_toast_self_location">Your current location:\nLatitude: %1$f\nLongitude %2$f</string>
+    <string name="map_ui_toast_self_location">Your current location:\nLatitude: %1$f\nLongitude: %2$f</string>
     <string name="map_ui_toast_location_unavailable">Unable to centre the map at this time</string>
     
     <!-- Peer Info Activity UI -->
@@ -123,21 +123,17 @@
     <string name="system_notification_ticker_text">Serval Maps Running</string>
     <string name="system_notification_title">Serval Maps</string>
     <string name="system_notification_content">Serval Maps is running and collecting location information</string>
-    
-    <!-- MeshMS strings -->
-    <string name="meshms_template_location">ServalMaps:: I was at location %1$s, %2$s at %3$s ::</string>
-    
+
     <!-- misc strings -->
     <string name="misc_dialog_yes_button">Yes</string>
     <string name="misc_dialog_no_button">No</string>
-    <string name="misc_dialog_ok_button">Ok</string>
+    <string name="misc_dialog_ok_button">OK</string>
     
     <string name="misc_age_calculation_seconds">%d seconds</string>
     <string name="misc_age_calculation_minutes">%d minutes</string>
     <string name="misc_age_calculation_hours">%d hours</string>
     <string name="misc_age_calculation_more_than_a_day">more than a day</string>
-    
-    <!-- <string name="misc_location_json_template">{ "lat":"%1$s", "lng":"%2$s" },</string> -->
+   
     <string name="misc_location_json_template">    [%1$s,%2$s],</string>
 
 </resources>
