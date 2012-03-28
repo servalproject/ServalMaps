@@ -19,13 +19,13 @@
  */
 package org.servalproject.maps.mapsforge;
 
-import org.mapsforge.android.maps.GeoPoint;
+import org.mapsforge.core.GeoPoint;
 import android.graphics.drawable.Drawable;
 
 /**
  * a class used to represent an overlay item
  */
-public class OverlayItem extends org.mapsforge.android.maps.OverlayItem implements OverlayItems {
+public class OverlayItem extends org.mapsforge.android.maps.overlay.OverlayItem implements OverlayItems {
 	
 	/*
 	 * public class level variables

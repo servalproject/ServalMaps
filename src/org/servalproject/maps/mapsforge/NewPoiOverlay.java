@@ -19,9 +19,9 @@
  */
 package org.servalproject.maps.mapsforge;
 
-import org.mapsforge.android.maps.GeoPoint;
+import org.mapsforge.core.GeoPoint;
 import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Overlay;
+import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.Projection;
 
 import android.app.Activity;

@@ -19,13 +19,14 @@
  */
 package org.servalproject.maps;
 
+import java.io.File;
 import java.util.ArrayList;
 
-import org.mapsforge.android.maps.ArrayWayOverlay;
-import org.mapsforge.android.maps.GeoPoint;
-import org.mapsforge.android.maps.ItemizedOverlay;
+import org.mapsforge.android.maps.overlay.ArrayWayOverlay;
+import org.mapsforge.core.GeoPoint;
+import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.OverlayWay;
+import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.mapsforge.NewPoiOverlay;
 import org.servalproject.maps.mapsforge.OverlayItem;
@@ -132,9 +133,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(FileUtils.isFileReadable(mMapFileName) == false) {
 				String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
 				mMapDataPath += getString(R.string.system_path_map_data);
-				mapView.setMapFile(mMapDataPath + mMapFileName);
+				mapView.setMapFile(new File(mMapDataPath + mMapFileName));
 			} else {
-				mapView.setMapFile(mMapFileName);
+				mapView.setMapFile(new File(mMapFileName));
 			}
 			
 		}

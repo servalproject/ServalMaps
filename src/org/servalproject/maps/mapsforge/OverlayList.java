@@ -19,7 +19,7 @@
  */
 package org.servalproject.maps.mapsforge;
 
-import org.mapsforge.android.maps.ArrayItemizedOverlay;
+import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
 import org.servalproject.maps.R;
 
 import android.content.Context;

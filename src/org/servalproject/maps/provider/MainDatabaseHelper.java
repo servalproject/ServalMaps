@@ -49,6 +49,16 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ PointsOfInterestContract.Table.DESCRIPTION + " TEXT, "
 			+ PointsOfInterestContract.Table.CATEGORY + " INTEGER DEFAULT " + PointsOfInterestContract.DEFAULT_CATEGORY + ")";
 	
+	private final String LOCATIONS_INDEX = "CREATE INDEX locations_timestamp_desc ON "
+			+ LocationsContract.CONTENT_URI_PATH + " ("
+			+ LocationsContract.Table.PHONE_NUMBER + " ASC, "
+			+ LocationsContract.Table.TIMESTAMP + " DESC)";
+	
+	private final String POI_INDEX = "CREATE INDEX poi_timestamp_desc ON "
+			+ PointsOfInterestContract.CONTENT_URI_PATH + " ("
+			+ PointsOfInterestContract.Table.PHONE_NUMBER + " ASC, "
+			+ PointsOfInterestContract.Table.TIMESTAMP + " DESC)";
+	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps.db";
 	public static final int DB_VERSION = 1;
@@ -68,6 +78,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 		// create the database tables
 		db.execSQL(LOCATIONS_CREATE);
 		db.execSQL(POI_CREATE);
+		
+		db.execSQL(LOCATIONS_INDEX);
+		db.execSQL(POI_INDEX);
 	}
 
 	@Override
