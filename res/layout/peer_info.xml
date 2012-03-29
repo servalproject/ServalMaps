@@ -140,6 +140,31 @@
                 android:text="" />
 
         </TableRow>
+        
+         <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/peer_info_ui_lbl_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+                android:layout_marginLeft="@dimen/ui_elem_margin_left"
+                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:text="@string/peer_info_ui_lbl_distance" />
+
+            <TextView
+                android:id="@+id/peer_info_ui_txt_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+                android:layout_marginLeft="@dimen/ui_elem_margin_left"
+                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:text="" />
+
+        </TableRow>
     </TableLayout>
 
     <LinearLayout

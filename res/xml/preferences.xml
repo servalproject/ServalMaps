@@ -73,7 +73,27 @@
             android:entries="@array/preferences_map_output_json_intervals"
             android:entryValues="@array/preferences_map_output_json_intervals_values"
             />
-        
+    </PreferenceCategory>
+    <!-- measurement preferences -->
+    <PreferenceCategory 
+        android:key="preferences_category_measurement"
+        android:title="@string/preferences_category_measurement_title">
+        <ListPreference 
+            android:key="preferences_measurement_units"
+            android:title="@string/preferences_measurement_units_title"
+            android:summary="@string/preferences_measurement_units_summary"
+            android:defaultValue="10"
+            android:entries="@array/preferences_measurement_units_intervals"
+            android:entryValues="@array/preferences_measurement_units_intervals_values"
+            />
+        <ListPreference 
+            android:key="preferences_measurement_algorithm"
+            android:title="@string/preferences_measurement_algorithm_title"
+            android:summary="@string/preferences_measurement_algorithm_summary"
+            android:defaultValue="1"
+            android:entries="@array/preferences_measurement_algorithm_intervals"
+            android:entryValues="@array/preferences_measurement_algorithm_intervals_values"
+            />
     </PreferenceCategory>
     <!-- developer preferences -->
     <PreferenceCategory

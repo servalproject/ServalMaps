@@ -41,6 +41,7 @@
     <string name="peer_info_ui_lbl_latitude">Latitude:</string>
     <string name="peer_info_ui_lbl_longitude">Longitude:</string>
     <string name="peer_info_ui_lbl_age">Information Age:</string>
+    <string name="peer_info_ui_lbl_distance">Approximate Distance:</string>
     <string name="peer_info_ui_btn_call">Call Peer</string>
     <string name="peer_info_ui_btn_back">Back to Map</string>
     <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
@@ -68,6 +69,7 @@
     <string name="poi_info_ui_lbl_description">Description</string>
     <string name="poi_info_ui_lbl_age">Information Age:</string>
     <string name="poi_info_toast_no_record_error">Unable to load required data at this time</string>
+    <string name="poi_info_ui_lbl_distance">Approximate Distance:</string>
     
     <!-- POI List Activity -->
     <string name="poi_list_ui_lbl_heading">List of POIs</string>
@@ -80,11 +82,6 @@
     <string name="menu_map_activity_centre_map">Centre Map</string>
     <string name="menu_map_activity_close">Close</string>
     <string name="menu_map_activity_poi_list">List POIs</string>
-    
-    
-    <!-- System wide strings -->
-    <string name="system_path_map_data">/servalproject/maps/map-data/</string>
-    <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
     
     <!-- Preferences -->
     <string name="preferences_category_developer_title">Developer Settings</string>
@@ -106,6 +103,16 @@
     <string name="preferences_map_output_json_interval_summary">Update JSON file with a new location every &#8230;</string>
     <string name="preferences_map_show_track_title">Show My Track</string>
     <string name="preferences_map_show_track_summary">Show my GPS trace as a track on the map</string>
+    
+    <string name="preferences_category_measurement_title">Measurement Settings</string>
+    <string name="preferences_measurement_units_title">Measurement Units</string>
+    <string name="preferences_measurement_units_summary">Units used to measure distances</string>
+    <string name="preferences_measurement_algorithm_title">Measurement Algorithm</string>
+    <string name="preferences_measurement_algorithm_summary">Algorithm used to measure distances</string>
+        
+    <!-- System wide strings -->
+    <string name="system_path_map_data">/servalproject/maps/map-data/</string>
+    <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>
@@ -129,10 +136,17 @@
     <string name="misc_dialog_no_button">No</string>
     <string name="misc_dialog_ok_button">OK</string>
     
+    <string name="misc_not_available">Not Available</string>
+    
     <string name="misc_age_calculation_seconds">%d seconds</string>
     <string name="misc_age_calculation_minutes">%d minutes</string>
     <string name="misc_age_calculation_hours">%d hours</string>
     <string name="misc_age_calculation_more_than_a_day">more than a day</string>
+    
+    <string name="misc_disance_metres">%s metres</string>
+    <string name="misc_disance_kms">%s kms</string>
+    <string name="misc_disance_miles">%s mi</string>
+    <string name="misc_disance_nautical_miles">%s nm</string>
    
     <string name="misc_location_json_template">    [%1$s,%2$s],</string>
 

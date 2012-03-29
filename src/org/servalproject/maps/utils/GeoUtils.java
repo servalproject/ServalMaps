@@ -84,7 +84,7 @@ public class GeoUtils {
 			break;
 		case HAVERSINE_FORMULA:
 			mDistance = haversineFormula(lat1, lon1, lat2, lon2);
-			mDistance = mDistance / 1000;
+			//mDistance = mDistance / 1000;
 			break;
 		default:
 			throw new IllegalArgumentException("unknown formula flag detected");
