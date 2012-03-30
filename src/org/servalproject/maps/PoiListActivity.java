@@ -33,7 +33,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 /**
@@ -76,14 +75,33 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		}
 		
 		// define the map between columns and layout elements
-		String[] mColumnNames = new String[1];
+		// ensure that these two lists are always the same size
+		// ensure list of column names matches those in getcursor
+		String[] mColumnNames = new String[5];
 		mColumnNames[0] = PointsOfInterestContract.Table.TITLE;
+		mColumnNames[1] = PointsOfInterestContract.Table.TIMESTAMP;
+		mColumnNames[2] = PointsOfInterestContract.Table.TIMEZONE;
+		mColumnNames[3] = PointsOfInterestContract.Table.LATITUDE;
+		mColumnNames[4] = PointsOfInterestContract.Table.LONGITUDE;
 		
-		int[] mLayoutElements = new int[1];
-		mLayoutElements[0] = R.id.poi_list_ui_enty_title;
+		int[] mLayoutElements = new int[5];
+		mLayoutElements[0] = R.id.poi_list_ui_entry_title;
+		mLayoutElements[1] = R.id.poi_list_ui_entry_age;
+		mLayoutElements[2] = PoiListAdapter.PLACE_HOLDER;
+		mLayoutElements[3] = R.id.poi_list_ui_txt_distance;
+		mLayoutElements[4] = PoiListAdapter.PLACE_HOLDER;
+		
+		
 		
 		// create the data adapter
-		SimpleCursorAdapter mDataAdapter = new SimpleCursorAdapter(
+//		SimpleCursorAdapter mDataAdapter = new SimpleCursorAdapter(
+//				this,
+//				R.layout.poi_list_entry, 
+//				cursor, 
+//				mColumnNames, 
+//				mLayoutElements);
+		
+		PoiListAdapter mDataAdapter = new PoiListAdapter(
 				this,
 				R.layout.poi_list_entry, 
 				cursor, 
@@ -94,7 +112,7 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		// get a reference to the list view
 		ListView mListView = getListView();
-		mListView.setTextFilterEnabled(true); // allow filtering by the user by adding in content
+		//mListView.setTextFilterEnabled(true); // allow filtering by the user by adding in content
 		mListView.setOnItemClickListener(this);
 	}
 	
@@ -112,9 +130,13 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		}
 		
 		// get the data
-		String[] mProjection = new String[2];
+		String[] mProjection = new String[6];
 		mProjection[0] = PointsOfInterestContract.Table._ID;
 		mProjection[1] = PointsOfInterestContract.Table.TITLE;
+		mProjection[2] = PointsOfInterestContract.Table.TIMESTAMP;
+		mProjection[3] = PointsOfInterestContract.Table.TIMEZONE;
+		mProjection[4] = PointsOfInterestContract.Table.LATITUDE;
+		mProjection[5] = PointsOfInterestContract.Table.LONGITUDE;
 		
 		// determine if we need to restrict the list of POIs
 		String mSelection = null;

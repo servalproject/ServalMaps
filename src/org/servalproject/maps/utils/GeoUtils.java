@@ -19,6 +19,15 @@
  */
 package org.servalproject.maps.utils;
 
+import java.text.DecimalFormat;
+
+import org.servalproject.maps.R;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
 /**
  * a utility class that contains geographic utility methods
  */
@@ -61,6 +70,88 @@ public class GeoUtils {
 	public static final double NAUTICAL_MILE_CONVERT_FACTOR = 0.000539956803;
 	
 	/**
+	 * calculate the distance between the provided geocoordinate pair using preferences
+	 * for the algorithm and units
+	 *  
+	 * @param lat1 the latitude of the first coordinate pair
+	 * @param lon1 the longitude of the first coordinate pair
+	 * @param lat2 the latitude of the second coordinate pair
+	 * @param lon2 the longitude of the second coordinate pair
+	 * @param context a context to use to get access to resources and preferences
+	 * @return
+	 */
+	public static String calculateDistanceWithDefaults(double lat1, double lon1, double lat2, double lon2, Context context) {
+		// get the preferences for the distance calculation
+		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+		
+		String mPreference = mPreferences.getString("preferences_measurement_units", null);
+		
+		int mUnits = GeoUtils.METRE_UNITS;
+		
+		if(mPreference != null) {
+			mUnits = Integer.parseInt(mPreference);
+		}
+		
+		mPreference = mPreferences.getString("preferences_measurement_algorithm", null);
+		
+		int mAlgorithm = GeoUtils.HAVERSINE_FORMULA;
+		
+		if(mPreference != null) {
+			mAlgorithm = Integer.parseInt(mPreference);
+		}
+		
+		double mDistance = GeoUtils.calculateDistance(
+				lat1, 
+				lon1,
+				lat2,
+				lon2,
+				mAlgorithm,
+				mUnits);
+		
+		Log.d("123", "" + mUnits);
+		Log.d("345", "" + mAlgorithm);
+		Log.d("678", "" + mDistance);
+		
+		Log.d("a", "" + lat1);
+		Log.d("b", "" + lon1);
+		Log.d("c", "" + lat2);
+		Log.d("d", "" + lon2);
+		
+		String mDistanceAsString = null;
+		
+		if(mDistance != Double.NaN) {
+			
+			// round to two decimal places
+			DecimalFormat mFormat = new DecimalFormat("#.##");
+			
+			switch(mUnits){
+			case GeoUtils.METRE_UNITS:
+				// use metres string
+				if(mDistance > 1) {
+					mDistanceAsString = String.format(context.getString(R.string.misc_disance_kms), mFormat.format(mDistance));
+				} else {
+					mDistance = mDistance * 1000;
+					mDistanceAsString = String.format(context.getString(R.string.misc_disance_metres), mFormat.format(mDistance));
+				}
+				break;
+			case GeoUtils.MILE_UNITS:
+				// use mile units
+				mDistanceAsString = String.format(context.getString(R.string.misc_disance_miles), mFormat.format(mDistance));
+				break;
+			case GeoUtils.NAUTICAL_MILE_UNITS:
+				// use nautical mile units
+				mDistanceAsString = String.format(context.getString(R.string.misc_disance_nautical_miles), mFormat.format(mDistance));
+				break;
+			}
+			
+		} else {
+			mDistanceAsString = context.getString(R.string.misc_not_available);
+		}
+		
+		return mDistanceAsString;
+	}
+	
+	/**
 	 * calculate the distance between two sets of latitude and longitude coordinate pairs
 	 * 
 	 * @param lat1 the latitude of the first coordinate pair
@@ -94,6 +185,15 @@ public class GeoUtils {
 		if(mDistance == Double.NaN) {
 			return mDistance;
 		}
+		
+		Log.d("901", "" + units);
+		Log.d("234", "" + formula);
+		Log.d("567", "" + mDistance);
+		
+		Log.d("e", "" + lat1);
+		Log.d("f", "" + lon1);
+		Log.d("g", "" + lat2);
+		Log.d("h", "" + lon2);
 		
 		// convert distance to the required units
 		switch(units) {
