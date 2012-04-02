@@ -91,16 +91,6 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		mLayoutElements[3] = R.id.poi_list_ui_txt_distance;
 		mLayoutElements[4] = PoiListAdapter.PLACE_HOLDER;
 		
-		
-		
-		// create the data adapter
-//		SimpleCursorAdapter mDataAdapter = new SimpleCursorAdapter(
-//				this,
-//				R.layout.poi_list_entry, 
-//				cursor, 
-//				mColumnNames, 
-//				mLayoutElements);
-		
 		PoiListAdapter mDataAdapter = new PoiListAdapter(
 				this,
 				R.layout.poi_list_entry, 
@@ -186,6 +176,10 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 	public void onResume() {
 		
 		// get the data
+		if(cursor != null) {
+			cursor.close();
+			cursor = null;
+		}
 		cursor = getCursor();
 		super.onResume();
 	}
