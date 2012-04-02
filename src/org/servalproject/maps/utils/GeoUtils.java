@@ -26,7 +26,6 @@ import org.servalproject.maps.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * a utility class that contains geographic utility methods
@@ -108,15 +107,6 @@ public class GeoUtils {
 				mAlgorithm,
 				mUnits);
 		
-		Log.d("123", "" + mUnits);
-		Log.d("345", "" + mAlgorithm);
-		Log.d("678", "" + mDistance);
-		
-		Log.d("a", "" + lat1);
-		Log.d("b", "" + lon1);
-		Log.d("c", "" + lat2);
-		Log.d("d", "" + lon2);
-		
 		String mDistanceAsString = null;
 		
 		if(mDistance != Double.NaN) {
@@ -185,15 +175,6 @@ public class GeoUtils {
 		if(mDistance == Double.NaN) {
 			return mDistance;
 		}
-		
-		Log.d("901", "" + units);
-		Log.d("234", "" + formula);
-		Log.d("567", "" + mDistance);
-		
-		Log.d("e", "" + lat1);
-		Log.d("f", "" + lon1);
-		Log.d("g", "" + lat2);
-		Log.d("h", "" + lon2);
 		
 		// convert distance to the required units
 		switch(units) {
