@@ -76,12 +76,17 @@
     <string name="poi_list_ui_toast_missing_data">Unable to lookup POI information at this time</string>
     <string name="poi_list_ui_tiast_missing_poi_id">Unable to lookup POI id at this time</string>
     
+    <!-- About Activity -->
+    <string name="about_ui_lbl">About Serval Maps</string>
+    <string name="about_ui_txt">Serval Maps is an application that supports collaborative mapping activities using a <a href="http://servalproject.org">Serval Project</a> mesh network. \n\nMap rendering is achieved using the <a href="http://mapsforge.org">mapsforge-map rendering</a> library using data sourced from <a href="http://www.openstreetmap.org">OpenStreetMap</a>.\n\nMap data &#xA9; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>. More information about OpenStreetMap licensing is <a href="http://www.openstreetmap.org/copyright">available here</a>.\n\nMore information about Serval Maps is available in the <a href="http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page">Serval Project Wiki</a>.</string>
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
     <string name="menu_map_activity_centre_map">Centre Map</string>
     <string name="menu_map_activity_close">Close</string>
     <string name="menu_map_activity_poi_list">List POIs</string>
+    <string name="menu_map_activity_help_about">About</string>
     
     <!--  POI List Menu UI -->
     <string name="menu_poi_list_activity_sort_alpha">Sort by Title</string>

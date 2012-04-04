@@ -348,6 +348,12 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			mIntent = new Intent(this, org.servalproject.maps.PoiListActivity.class);
 			startActivity(mIntent);
 			return true;
+		case R.id.menu_map_activity_help_about:
+			// show the help text
+			Log.v(TAG, "show the help activity");
+			mIntent = new Intent(this, org.servalproject.maps.AboutActivity.class);
+			startActivity(mIntent);
+			return true;
 		case R.id.menu_map_activity_close:
 			// close this activity
 			finish();

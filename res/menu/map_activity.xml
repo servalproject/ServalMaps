@@ -24,6 +24,13 @@
           android:visible="true"
           android:icon="@drawable/ic_menu_mylocation">
     </item>
+    <item android:id="@+id/menu_map_activity_help_about"
+          android:enabled="true"
+          android:title="@string/menu_map_activity_help_about"
+          android:visible="true"
+          android:icon="@drawable/ic_menu_help">
+    </item>
+    
     <item android:id="@+id/menu_map_activity_close" 
           android:enabled="true" 
           android:title="@string/menu_map_activity_close" 
