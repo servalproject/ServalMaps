@@ -113,6 +113,12 @@ public class LocationCollector implements LocationListener {
 			// save the location for later
 			currentLocation = location;
 			
+			if(phoneNumber == null || subscriberId == null) {
+				// these may be null but will be populated once the 
+				// sticky to Serval Mesh returns
+				return;
+			}
+			
 			long mTime = System.currentTimeMillis();
 			
 			ContentValues mNewValues = new ContentValues();
