@@ -21,12 +21,18 @@ package org.servalproject.maps;
 
 import android.app.Application;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * extends the base application to enable sharing of information
  * between components
  */
 public class ServalMaps extends Application {
+	
+	/*
+	 * class level constants
+	 */
+	public final String TAG = "ServalMaps";
 
 	/*
 	 * class level variables
@@ -80,6 +86,17 @@ public class ServalMaps extends Application {
 	 */
 	public String getSid() {
 		return sid;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Application#onLowMemory()
+	 */
+	@Override
+	public void onLowMemory() {
+		
+		Log.v(TAG, "onLowMemory method called");
+		
 	}
 	
 }
