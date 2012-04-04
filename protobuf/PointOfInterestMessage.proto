@@ -30,5 +30,6 @@ message Message {
 	optional string timeZone    = 6;
 	optional string title       = 7;
 	optional string description = 8;
-	optional int64  category    = 9;
+	optional int64  category    = 9; // can we delete this now?
+	optional string photo       = 10;
 }
