@@ -105,6 +105,10 @@ public class FileUtils {
 		
 		String mFileName = new File(filePath).getName();
 		
+		if(dirPath.endsWith(File.separator) == false) {
+			dirPath = dirPath + File.separator;
+		}
+		
 		// copy the file
 		// based on code found at the URL below and considered to be in the public domain
 		// http://stackoverflow.com/questions/1146153/copying-files-from-one-directory-to-another-in-java#answer-1146195
