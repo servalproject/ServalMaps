@@ -19,18 +19,24 @@
  */
 package org.servalproject.maps;
 
+import java.io.File;
 import java.util.TimeZone;
 
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.protobuf.BinaryFileWriter;
 import org.servalproject.maps.provider.PointsOfInterestContract;
+import org.servalproject.maps.utils.FileUtils;
+import org.servalproject.maps.utils.HashUtils;
+import org.servalproject.maps.utils.MediaUtils;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.SQLException;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -52,12 +58,15 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	private final boolean V_LOG = true;
 	private final String  TAG = "NewPoiActivity";
 	
-	/*
-	 * private class level variables
-	 */
 	private final int MAX_DESCRIPTION_CHARACTERS = 250;
 	private final int MAX_TITLE_CHARACTERS = 50;
 	
+	private final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+
+	
+	/*
+	 * private class level variables
+	 */
 	private TextView txtCharacters;
 	
 	private double latitude = -1;
@@ -65,6 +74,8 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	
 	private String phoneNumber;
 	private String subscriberId; 
+	
+	private Uri photoFileUri;
 	
 	/*
 	 * (non-Javadoc)
@@ -109,6 +120,9 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         
         // listen for button presses
         Button mButton = (Button) findViewById(R.id.new_poi_ui_btn_save);
+        mButton.setOnClickListener(this);
+        
+        mButton = (Button) findViewById(R.id.new_poi_ui_btn_photo);
         mButton.setOnClickListener(this);
         
         // get the mesh phone number and sid
@@ -233,7 +247,52 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			if(addNewPoi(mTitle, mDescription) == true) {
 				finish();
 			}
+			break;
+		case R.id.new_poi_ui_btn_photo:
+			// use the inbuilt camera app to take a photo
+			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+		    photoFileUri = MediaUtils.getOutputMediaFileUri(MediaUtils.MEDIA_TYPE_IMAGE); // create a file to save the image
+		    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoFileUri); // set the image file name
+
+		    // start the image capture Intent
+		    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+			break;
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+	        if (resultCode == Activity.RESULT_OK) {
+	            // Image captured and saved to fileUri specified in the Intent
+	        	// check on the returned intent data
+	        	if(data == null) {
+	        		// no return intent so check the uri that was supplied
+	        		if(FileUtils.isFileReadable(photoFileUri.getPath()) == false) {
+	        			photoFileUri = null;
+	        		} 
+	        	} else {
+	        		if(FileUtils.isFileReadable(data.getData().getPath()) == false) {
+	        			photoFileUri = null;
+	        		} 
+	        	}
+	        	
+	        	if(photoFileUri == null) {
+	        		// no photo available, inform user
+	        		Toast.makeText(this, R.string.new_poi_toast_no_photo, Toast.LENGTH_SHORT).show();
+	        	}
+	        } else if (resultCode == RESULT_CANCELED) {
+	            // User cancelled the image capture
+	        } else {
+	            // Image capture failed, advise user
+	        	Toast.makeText(this, R.string.new_poi_toast_no_photo, Toast.LENGTH_SHORT).show();
+	        }
+	    }
 	}
 	
 	// add the new POI to the database
@@ -249,7 +308,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			return false;
 		}
 		
-		// add phone number and sid
+		// add rest of the fields
 		mValues.put(PointsOfInterestContract.Table.PHONE_NUMBER, phoneNumber);
 		mValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, subscriberId);
 		mValues.put(PointsOfInterestContract.Table.LATITUDE, latitude);
@@ -258,6 +317,32 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		mValues.put(PointsOfInterestContract.Table.TIMEZONE, TimeZone.getDefault().getID());
 		mValues.put(PointsOfInterestContract.Table.TITLE, title);
 		mValues.put(PointsOfInterestContract.Table.DESCRIPTION, description);
+		
+		// check to see if a photo is available
+		if(photoFileUri != null) {
+			// process the photo
+			// generate a hash of this poi
+			String mHash = HashUtils.hashPointOfInterestMessage(
+					phoneNumber, 
+					latitude, 
+					longitude, 
+					title, 
+					description);
+			
+			// store the name of the photo
+			String mPhotoName = MediaUtils.PHOTO_FILE_PREFIX + mHash + ".jpg";
+			
+			// rename the file
+			File mPhotoFile = new File(photoFileUri.getPath());
+			
+			mPhotoName = mPhotoFile.getParent() + File.separator + mPhotoName;
+			
+			Log.v(TAG, mPhotoName);
+			
+			mPhotoFile.renameTo(new File(mPhotoName));
+			
+			mValues.put(PointsOfInterestContract.Table.PHOTO, new File(mPhotoName).getName());
+		}
 		
 		try {
 			Uri newRecord = getContentResolver().insert(PointsOfInterestContract.CONTENT_URI, mValues);
@@ -275,4 +360,5 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		return true;
 	}
 
+	
 }

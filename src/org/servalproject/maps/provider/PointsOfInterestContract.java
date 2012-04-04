@@ -120,8 +120,13 @@ public class PointsOfInterestContract {
 		public static final String CATEGORY = "category";
 		
 		/**
+		 * photo associated with this POI
+		 */
+		public static final String PHOTO = "photo";
+		
+		/**
 		 * a list of all of the columns
 		 */
-		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY};
+		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY, PHOTO};
 	}
 }

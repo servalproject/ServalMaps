@@ -19,6 +19,7 @@
  */
 package org.servalproject.maps.protobuf;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.provider.PointsOfInterestContract;
 import org.servalproject.maps.rhizome.Rhizome;
 import org.servalproject.maps.utils.FileUtils;
+import org.servalproject.maps.utils.MediaUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.content.ContentResolver;
@@ -182,6 +184,16 @@ public class BinaryFileWriter {
 		mMessageBuilder.setTitle(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TITLE)));
 		mMessageBuilder.setDescription(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
 		mMessageBuilder.setCategory(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.CATEGORY)));
+		
+		String mPhotoName = mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
+		
+		// check to see if a photo is associated with this poi
+		if(mPhotoName != null) {
+			mMessageBuilder.setPhoto(mPhotoName);
+			
+			// add the image to Rhizome
+			Rhizome.addFile(context, MediaUtils.getMediaStore() + File.separator + mPhotoName);
+		}
 		
 		// determine the file name
 		String mFileName = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));

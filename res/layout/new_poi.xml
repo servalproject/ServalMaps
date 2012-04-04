@@ -123,6 +123,14 @@
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right"
         android:inputType="numberDecimal|numberSigned" />
+    
+    <Button
+         android:id="@+id/new_poi_ui_btn_photo"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:text="@string/new_poi_ui_btn_photo" />
 
      <Button
          android:id="@+id/new_poi_ui_btn_save"

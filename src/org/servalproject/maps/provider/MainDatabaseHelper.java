@@ -47,7 +47,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ PointsOfInterestContract.Table.TIMEZONE + " TEXT, "
 			+ PointsOfInterestContract.Table.TITLE + " TEXT, "
 			+ PointsOfInterestContract.Table.DESCRIPTION + " TEXT, "
-			+ PointsOfInterestContract.Table.CATEGORY + " INTEGER DEFAULT " + PointsOfInterestContract.DEFAULT_CATEGORY + ")";
+			+ PointsOfInterestContract.Table.CATEGORY + " INTEGER DEFAULT " + PointsOfInterestContract.DEFAULT_CATEGORY + ", "
+			+ PointsOfInterestContract.Table.PHOTO + " TEXT)";
 	
 	private final String LOCATIONS_INDEX = "CREATE INDEX locations_timestamp_desc ON "
 			+ LocationsContract.CONTENT_URI_PATH + " ("

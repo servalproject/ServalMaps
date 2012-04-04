@@ -54,6 +54,8 @@
     <string name="new_poi_ui_lbl_description">Description</string>
     <string name="new_poi_ui_lbl_characters">Characters Remaining:</string>
     <string name="new_poi_ui_btn_save">Save New POI</string>
+    <string name="new_poi_ui_btn_photo">Add New Photo</string>
+    
     <string name="new_poi_toast_title_missing">A title must be provided</string>
     <string name="new_poi_toast_title_too_long">The title must be no longer than %d characters</string>
     <string name="new_poi_toast_description_missing">A description must be provided</string>
@@ -62,6 +64,7 @@
     <string name="new_poi_toast_location_error">Unable to determine POI location, new record was not saved</string>
     <string name="new_poi_toast_latitude_missing">A latitude must be provided</string>
     <string name="new_poi_toast_longitude_missing">A longitude must be provided</string>
+    <string name="new_poi_toast_no_photo">Unable to capture a photo</string>
     
     <!-- View POI Info Activity -->
     <string name="poi_info_ui_lbl_heading">Point of Interest</string>
