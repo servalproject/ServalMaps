@@ -30,6 +30,7 @@ import org.servalproject.maps.protobuf.BinaryFileContract;
 import org.servalproject.maps.protobuf.LocationReadWorker;
 import org.servalproject.maps.protobuf.PointsOfInterestWorker;
 import org.servalproject.maps.utils.FileUtils;
+import org.servalproject.maps.utils.MediaUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -102,8 +103,20 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 		mPhoneNumber = mPhoneNumber.replace("-", "");
 		
 		if(mFileParts[0].equals(mServalMaps.getPhoneNumber()) == true) { 
-			// this looks like our own file
+			// this doesn't look like one of our own binary files
 			return;
+		}
+		
+		// is it one of our images?
+		if(mFileName.startsWith(MediaUtils.PHOTO_FILE_PREFIX) && mFileName.endsWith(".jpg")) {
+			// this is a serval maps photo
+			try {
+				FileUtils.copyFileToDir(mFilePath, MediaUtils.getMediaStore());
+				Log.d(TAG, MediaUtils.getMediaStore());
+			} catch (IOException e) {
+				Log.e(TAG, "unable to copy file", e);
+				return;
+			}
 		}
 		
 		// get the binary data directory

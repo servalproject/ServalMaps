@@ -138,6 +138,7 @@ public class PointsOfInterestWorker implements Runnable {
 					mNewValues.put(PointsOfInterestContract.Table.TITLE, mMessage.getTitle());
 					mNewValues.put(PointsOfInterestContract.Table.DESCRIPTION, mMessage.getDescription());
 					mNewValues.put(PointsOfInterestContract.Table.CATEGORY, mMessage.getCategory());
+					mNewValues.put(PointsOfInterestContract.Table.PHOTO, mMessage.getPhoto());
 					
 					try {
 						mContentResolver.insert(
