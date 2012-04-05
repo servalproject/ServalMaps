@@ -73,6 +73,8 @@
     <string name="poi_info_ui_lbl_age">Information Age:</string>
     <string name="poi_info_toast_no_record_error">Unable to load required data at this time</string>
     <string name="poi_info_ui_lbl_distance">Approximate Distance:</string>
+    <string name="poi_info_ui_btn_photo">View Photo</string>
+    <string name="poi_into_toast_no_photo">Unable to show the photo as this time</string>
     
     <!-- POI List Activity -->
     <string name="poi_list_ui_lbl_heading">List of POIs</string>

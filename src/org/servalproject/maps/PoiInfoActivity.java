@@ -19,11 +19,15 @@
  */
 package org.servalproject.maps;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.provider.PointsOfInterestContract;
+import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.GeoUtils;
+import org.servalproject.maps.utils.MediaUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.app.Activity;
@@ -36,19 +40,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /**
  * an activity used to display information about a point of interest
  */
-public class PoiInfoActivity extends Activity {
+public class PoiInfoActivity extends Activity implements OnClickListener {
 	
 	/*
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
 	private final String  TAG = "PoiInfoActivity";
+	
+	/*
+	 * private class level variables
+	 */
+	private String photoName = null;
 	
 	/*
 	 * create the activity
@@ -89,6 +101,16 @@ public class PoiInfoActivity extends Activity {
 						mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)),
 						getApplicationContext()));
 			
+			// check to see if we need to show the view photo button
+			photoName = mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO));
+			Button mButton = (Button) findViewById(R.id.poi_info_ui_btn_photo);
+			
+			if(photoName == null) {
+				mButton.setVisibility(View.GONE);
+			} else {
+				mButton.setOnClickListener(this);
+			}
+			
 			// calculate the distance between user and POI if possible
 			Location mLocation = LocationCollector.getLocation();
 			
@@ -121,9 +143,6 @@ public class PoiInfoActivity extends Activity {
 						mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)),
 						mAlgorithm,
 						mUnits);
-				
-				//debug code
-				Log.d(TAG, "distance: " + mDistance);
 				
 				String mDistanceAsString = null;
 				
@@ -175,5 +194,33 @@ public class PoiInfoActivity extends Activity {
 		// play nice and tidy up
 		mCursor.close();
     }
+
+	@Override
+	public void onClick(View v) {
+		
+		// check which button was pressed
+		switch(v.getId()) {
+		case R.id.poi_info_ui_btn_photo:
+			// show the photo to the user
+			File mFile = new File(MediaUtils.getMediaStore() + File.separator + photoName);
+			
+			try {
+				if(FileUtils.isFileReadable(mFile.getCanonicalPath()) == true) {
+					// show the file
+					Intent mIntent = new Intent();
+					mIntent.setAction(android.content.Intent.ACTION_VIEW);
+					mIntent.setDataAndType(Uri.fromFile(mFile), "image/jpg");
+					startActivity(mIntent);
+				} else {
+					// report an error
+					Toast.makeText(getApplicationContext(), R.string.poi_into_toast_no_photo, Toast.LENGTH_LONG).show();
+				}
+			} catch (IOException e) {
+				// report an error
+				Toast.makeText(getApplicationContext(), R.string.poi_into_toast_no_photo, Toast.LENGTH_LONG).show();
+			}
+			break;
+		}
+	}
 
 }
