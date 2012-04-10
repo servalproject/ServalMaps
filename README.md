@@ -1,5 +1,7 @@
 # Serval Maps - Version 0.2 #
 
+The source code for the [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) application has been moved to the main [Serval Project](https://github.com/servalproject/) GitHub repository. Development from this date further will be committed to this repository and the [old repository](https://github.com/techxplorer/ServalMaps) will remain as a snapshot.
+
 This is version 0.2 of the Serval Maps application. The previous prototype version was undertaken as part of the requirements for this [honours thesis](http://bytechxplorer.com/studies/honours-thesis/).
 
 The purpose of the application is to provide a collaborative mapping application which is infrastructure independent. It uses the resilient AdHoc mesh network provided by the [Serval Project](http://www.servalproject.org/) to transfer information between instances of the application. 
@@ -9,10 +11,6 @@ Map data is sourced from the [OpenStreetMap](http://www.openstreetmap.org/) and 
 As development progresses more information will be made available on the [Thoughts by Techxplorer blog](http://techxplorer.com) and on the [Serval Project Wiki](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page).
 
 ## Change Log ##
-
-### Version 0.2a ###
-
-The source code for the [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) application has been moved to the main [Serval Project](https://github.com/servalproject/) GitHub repository. Development from this date further will be committed to this repository and the [old repository](https://github.com/techxplorer/ServalMaps) will remain as a snapshot.
 
 ### Version 0.2 ###
 
