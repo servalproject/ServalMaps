@@ -10,6 +10,10 @@ As development progresses more information will be made available on the [Though
 
 ## Change Log ##
 
+### Version 0.2a ###
+
+The source code for the [Serval Maps](http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page) application has been moved to the main [Serval Project](https://github.com/servalproject/) GitHub repository. Development from this date further will be committed to this repository and the [old repository](https://github.com/techxplorer/ServalMaps) will remain as a snapshot.
+
 ### Version 0.2 ###
 
 Version 0.2 is a complete rewrite from version 0.1. New features and functionality include:
