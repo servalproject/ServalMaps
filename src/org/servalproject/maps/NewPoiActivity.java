@@ -32,10 +32,12 @@ import org.servalproject.maps.utils.MediaUtils;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -130,6 +132,19 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		phoneNumber = mApplication.getPhoneNumber();
 		subscriberId = mApplication.getSid();
 		mApplication = null;
+		
+		// disable the manual entry of geo coordinates
+        SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean mPreference = mPreferences.getBoolean("preferences_map_new_poi_geocoords", false);
+         
+        View mLayout = (View) findViewById(R.id.new_poi_ui_geocord_layout);
+        
+		if(mPreference == false) {
+			mLayout.setVisibility(View.GONE);
+		} else {
+			mLayout.setVisibility(View.VISIBLE);
+		}
+
     }
     
     // keep track of the number of characters remaining in the description

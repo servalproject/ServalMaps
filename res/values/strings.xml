@@ -108,22 +108,31 @@
     <string name="preferences_map_follow_summary">Keep the map centred on your location</string>
     <string name="preferences_map_update_interval_title">Map Update Interval</string>
     <string name="preferences_map_update_interval_summary">Define how often the map will update</string>
-    <string name="preferences_map_max_poi_age_title">Maximum POI Age</string>
-    <string name="preferences_map_max_poi_age_summary">Hide POI markers when older than this setting</string>
-    <string name="preferences_map_max_location_age_title">Maximum Location Age</string>
-    <string name="preferences_map_max_location_age_summary">Hide Location markers when older than this setting</string>
-    <string name="preferences_map_output_json_title">Output JSON Data</string>
-    <string name="preferences_map_output_json_summary">Output location data as a JSON file periodically</string>
-    <string name="preferences_map_output_json_interval_title">JSON Update Interval</string>
-    <string name="preferences_map_output_json_interval_summary">Update JSON file with a new location every &#8230;</string>
+   
     <string name="preferences_map_show_track_title">Show My Track</string>
     <string name="preferences_map_show_track_summary">Show my GPS trace as a track on the map</string>
+    
+    <string name="preferences_map_location_title">Location Marker Settings</string>
+    <string name="preferences_map_max_location_age_title">Maximum Location Age</string>
+    <string name="preferences_map_max_location_age_summary">Hide Location markers when older than this setting</string>
+    
+    <string name="preferences_map_poi_title">POI Marker Settings</string>
+    <string name="preferences_map_max_poi_age_title">Maximum POI Age</string>
+    <string name="preferences_map_max_poi_age_summary">Hide POI markers when older than this setting</string>
+    <string name="preferences_map_new_poi_geocoords_title">Geo-Coordinate Entry</string>
+    <string name="preferences_map_new_poi_geocoords_summary">Allow manual entry of geographic coordinates when adding a new POI</string>
     
     <string name="preferences_category_measurement_title">Measurement Settings</string>
     <string name="preferences_measurement_units_title">Measurement Units</string>
     <string name="preferences_measurement_units_summary">Units used to measure distances</string>
     <string name="preferences_measurement_algorithm_title">Measurement Algorithm</string>
     <string name="preferences_measurement_algorithm_summary">Algorithm used to measure distances</string>
+    
+    <string name="preferences_category_output_title">Data Output Settings</string>
+    <string name="preferences_map_output_json_title">Output JSON Data</string>
+    <string name="preferences_map_output_json_summary">Output location data as a JSON file periodically</string>
+    <string name="preferences_map_output_json_interval_title">JSON Update Interval</string>
+    <string name="preferences_map_output_json_interval_summary">Update JSON file with a new location every &#8230;</string>
         
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>

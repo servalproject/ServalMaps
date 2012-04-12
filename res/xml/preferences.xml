@@ -38,6 +38,29 @@
             android:entries="@array/preferences_map_update_intervals"
             android:entryValues="@array/preferences_map_update_intervals_values"
             />
+        <CheckBoxPreference
+            android:key="preferences_map_show_track"
+            android:title="@string/preferences_map_show_track_title"
+            android:summary="@string/preferences_map_show_track_summary"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <!-- location preference category -->
+    <PreferenceCategory 
+        android:key="preferences_category_map_location"
+        android:title="@string/preferences_map_location_title">
+         <ListPreference 
+            android:key="preferences_map_max_location_age"
+            android:title="@string/preferences_map_max_location_age_title"
+            android:summary="@string/preferences_map_max_location_age_summary"
+            android:defaultValue="43200"
+            android:entries="@array/preferences_map_max_location_age_intervals"
+            android:entryValues="@array/preferences_map_max_location_age_values"
+            />
+    </PreferenceCategory>
+    <!-- POI preference category -->
+    <PreferenceCategory 
+        android:key="preferences_category_map_poi"
+        android:title="@string/preferences_map_poi_title">
         <ListPreference 
             android:key="preferences_map_max_poi_age"
             android:title="@string/preferences_map_max_poi_age_title"
@@ -46,33 +69,11 @@
             android:entries="@array/preferences_map_max_poi_age_intervals"
             android:entryValues="@array/preferences_map_max_poi_age_values"
             />
-        <ListPreference 
-            android:key="preferences_map_max_location_age"
-            android:title="@string/preferences_map_max_location_age_title"
-            android:summary="@string/preferences_map_max_location_age_summary"
-            android:defaultValue="43200"
-            android:entries="@array/preferences_map_max_location_age_intervals"
-            android:entryValues="@array/preferences_map_max_location_age_values"
-            />
         <CheckBoxPreference
-            android:key="preferences_map_show_track"
-            android:title="@string/preferences_map_show_track_title"
-            android:summary="@string/preferences_map_show_track_summary"
+            android:key="preferences_map_new_poi_geocoords"
+            android:title="@string/preferences_map_new_poi_geocoords_title"
+            android:summary="@string/preferences_map_new_poi_geocoords_summary"
             android:defaultValue="false"/>
-        <CheckBoxPreference
-            android:key="preferences_map_output_json"
-            android:title="@string/preferences_map_output_json_title"
-            android:summary="@string/preferences_map_output_json_summary"
-            android:defaultValue="false"/>
-        <ListPreference 
-            android:key="preferences_map_output_json_interval"
-            android:title="@string/preferences_map_output_json_interval_title"
-            android:summary="@string/preferences_map_output_json_interval_summary"
-            android:dependency="preferences_map_output_json"
-            android:defaultValue="300000"
-            android:entries="@array/preferences_map_output_json_intervals"
-            android:entryValues="@array/preferences_map_output_json_intervals_values"
-            />
     </PreferenceCategory>
     <!-- measurement preferences -->
     <PreferenceCategory 
@@ -93,6 +94,25 @@
             android:defaultValue="1"
             android:entries="@array/preferences_measurement_algorithm_intervals"
             android:entryValues="@array/preferences_measurement_algorithm_intervals_values"
+            />
+    </PreferenceCategory>
+    <!-- output options -->
+    <PreferenceCategory 
+        android:key="preferences_category_output"
+        android:title="@string/preferences_category_output_title">
+            <CheckBoxPreference
+            android:key="preferences_map_output_json"
+            android:title="@string/preferences_map_output_json_title"
+            android:summary="@string/preferences_map_output_json_summary"
+            android:defaultValue="false"/>
+        <ListPreference 
+            android:key="preferences_map_output_json_interval"
+            android:title="@string/preferences_map_output_json_interval_title"
+            android:summary="@string/preferences_map_output_json_interval_summary"
+            android:dependency="preferences_map_output_json"
+            android:defaultValue="300000"
+            android:entries="@array/preferences_map_output_json_intervals"
+            android:entryValues="@array/preferences_map_output_json_intervals_values"
             />
     </PreferenceCategory>
     <!-- developer preferences -->
