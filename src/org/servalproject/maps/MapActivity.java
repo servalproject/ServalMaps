@@ -321,19 +321,16 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		switch(item.getItemId()){
 		case R.id.menu_map_activity_preferences:
 			// show the preferences activity
-			Log.v(TAG, "show the preferences activity");
 			mIntent = new Intent(this, org.servalproject.maps.SettingsActivity.class);
 			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_add_poi:
 			// show the add POI activity
-			Log.v(TAG, "show the add poi activity");
 			mIntent = new Intent(this, org.servalproject.maps.NewPoiActivity.class);
 			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_centre_map:
 			// recentre the map on the current location
-			Log.v(TAG, "recentre the map");
 			Location mLocation = LocationCollector.getLocation();
 			if(mLocation != null) {
 				GeoPoint mGeoPoint = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
@@ -344,14 +341,17 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			return true;
 		case R.id.menu_map_activity_poi_list:
 			// show the list of poi
-			Log.v(TAG, "show the list of pois");
 			mIntent = new Intent(this, org.servalproject.maps.PoiListActivity.class);
 			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_help_about:
 			// show the help text
-			Log.v(TAG, "show the help activity");
 			mIntent = new Intent(this, org.servalproject.maps.AboutActivity.class);
+			startActivity(mIntent);
+			return true;
+		case R.id.menu_map_activity_export:
+			// show the export activity
+			mIntent = new Intent(this, org.servalproject.maps.ExportActivity.class);
 			startActivity(mIntent);
 			return true;
 		case R.id.menu_map_activity_close:

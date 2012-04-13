@@ -81,6 +81,15 @@
     <string name="poi_list_ui_toast_missing_data">Unable to lookup POI information at this time</string>
     <string name="poi_list_ui_tiast_missing_poi_id">Unable to lookup POI id at this time</string>
     
+    <!-- Export Activity -->
+	<string name="export_ui_lbl_heading">Export Data</string>
+	<string name="export_ui_lbl_format">Select Data Format</string>
+	<string name="export_ui_lbl_data">Select Data to Export</string>
+	<string name="export_ui_btn_export">Start Export</string>
+	
+	<string name="export_ui_progress_location">Exporting Location Records&#8230;</string>
+	<string name="export_ui_progress_poi">Exporting POI Records&#8230;</string>
+
     <!-- About Activity -->
     <string name="about_ui_lbl">About Serval Maps</string>
     <string name="about_ui_txt">Serval Maps Copyright &#xA9; 2012 Serval Project. \n\nThis program comes with ABSOLUTELY NO WARRANTY; for details see <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>. This is free software, and you are welcome to redistribute it under certain conditions; for details see <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>.\n\nServal Maps is an application that supports collaborative mapping activities using a <a href="http://servalproject.org">Serval Project</a> mesh network. \n\nMap rendering is achieved using the <a href="http://mapsforge.org">mapsforge-map rendering</a> library using data sourced from <a href="http://www.openstreetmap.org">OpenStreetMap</a>.\n\nMap data &#xA9; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>. More information about OpenStreetMap licensing is <a href="http://www.openstreetmap.org/copyright">available here</a>.\n\nMore information about Serval Maps is available in the <a href="http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page">Serval Project Wiki</a>.</string>
@@ -91,6 +100,7 @@
     <string name="menu_map_activity_centre_map">Centre Map</string>
     <string name="menu_map_activity_close">Close</string>
     <string name="menu_map_activity_poi_list">List POIs</string>
+    <string name="menu_map_activity_export">Export Data</string>
     <string name="menu_map_activity_help_about">About</string>
     
     <!--  POI List Menu UI -->
@@ -137,6 +147,7 @@
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
+    <string name="system_path_export_data">/servalproject/maps/export-data</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>

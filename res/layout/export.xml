@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/export_ui_lbl_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/export_ui_lbl_heading"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+     <TextView
+         android:id="@+id/export_ui_lbl_format"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/export_ui_lbl_format"/>
+
+     <Spinner
+         android:id="@+id/export_ui_spinner_format"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" 
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:prompt="@string/export_ui_lbl_format"/>
+     
+     <TextView
+         android:id="@+id/export_ui_lbl_data"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/export_ui_lbl_data"/>
+
+     <Spinner
+         android:id="@+id/export_ui_spinner_data"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" 
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:prompt="@string/export_ui_lbl_data"/>
+     
+     <Button
+         android:id="@+id/export_ui_btn_export"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:text="@string/export_ui_btn_export" />
+     
+     <TextView
+         android:id="@+id/export_ui_lbl_progress"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:visibility="invisible"/>
+
+     <ProgressBar
+         android:id="@+id/export_ui_progress_bar"
+         style="?android:attr/progressBarStyleHorizontal"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:visibility="invisible" />
+
+</LinearLayout>

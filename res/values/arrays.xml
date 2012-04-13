@@ -110,4 +110,17 @@
         <item>1</item>
         <item>0</item>
     </string-array>
+    <!-- export format -->
+    <string-array
+        name="export_ui_formats_intervals">
+        <item>Serval Maps Binary File</item>
+        <item>CSV Text File</item>
+    </string-array>
+    <!-- data to export -->
+    <string-array
+        name="export_ui_data_intervals">
+        <item>All Data</item>
+        <item>All Location Records</item>
+        <item>All POIs</item>
+    </string-array>
 </resources>
