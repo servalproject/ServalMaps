@@ -19,6 +19,14 @@
  */
 package org.servalproject.maps.protobuf;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.servalproject.maps.provider.LocationsContract;
+import org.servalproject.maps.provider.PointsOfInterestContract;
+
+import android.database.Cursor;
+
 /**
  * declare various constants related to the processing of binary files
  */
@@ -33,5 +41,64 @@ public class BinaryFileContract {
 	 * the file extension for the POI binary file
 	 */
 	public static final String POI_EXT = ".smapp";
-
+	
+	/**
+	 * write a binary location record to an output stream
+	 * 
+	 * @param cursor the cursor containing the record to write
+	 * @param output the output stream
+	 * @throws IOException if the write operation fails
+	 */
+	public static void writeLocationRecord(Cursor cursor, OutputStream output) throws IOException {
+		
+		org.servalproject.maps.protobuf.LocationMessage.Message.Builder mMessageBuilder = LocationMessage.Message.newBuilder();
+		
+		// populate the message
+		mMessageBuilder.setPhoneNumber(cursor.getString(cursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
+		mMessageBuilder.setSubsciberId(cursor.getString(cursor.getColumnIndex(LocationsContract.Table.SUBSCRIBER_ID)));
+		mMessageBuilder.setLatitude(cursor.getDouble(cursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
+		mMessageBuilder.setLongitude(cursor.getDouble(cursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
+		mMessageBuilder.setTimestamp(cursor.getLong(cursor.getColumnIndex(LocationsContract.Table.TIMESTAMP)));
+		mMessageBuilder.setTimeZone(cursor.getString(cursor.getColumnIndex(LocationsContract.Table.TIMEZONE)));
+		
+		// write the message
+		mMessageBuilder.build().writeDelimitedTo(output);
+		
+		// play nice and tidy up
+		mMessageBuilder = null;
+	}
+	
+	/**
+	 * write a binary point of interest record to an output stream
+	 * 
+	 * @param cursor the cursor containing the record to write
+	 * @param output the output stream
+	 * @throws IOException if the write operation fails
+	 */
+	public static void writePointOfInterestRecord(Cursor cursor, OutputStream output) throws IOException {
+		
+		org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
+		
+		// populate the message
+		mMessageBuilder.setPhoneNumber(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.PHONE_NUMBER)));
+		mMessageBuilder.setSubsciberId(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.SUBSCRIBER_ID)));
+		mMessageBuilder.setLatitude(cursor.getDouble(cursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE)));
+		mMessageBuilder.setLongitude(cursor.getDouble(cursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)));
+		mMessageBuilder.setTimestamp(cursor.getLong(cursor.getColumnIndex(PointsOfInterestContract.Table.TIMESTAMP)));
+		mMessageBuilder.setTimeZone(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)));
+		mMessageBuilder.setTitle(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.TITLE)));
+		mMessageBuilder.setDescription(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
+		mMessageBuilder.setCategory(cursor.getLong(cursor.getColumnIndex(PointsOfInterestContract.Table.CATEGORY)));
+		
+		// check to see if this POI has a photo associated with it
+		String mPhotoName = cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
+		
+		// check to see if a photo is associated with this poi
+		if(mPhotoName != null) {
+			mMessageBuilder.setPhoto(mPhotoName);
+		}
+		
+		// write the message
+		mMessageBuilder.build().writeDelimitedTo(output);
+	}
 }

@@ -27,20 +27,21 @@ import java.io.OutputStream;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.protobuf.BinaryFileContract;
-import org.servalproject.maps.protobuf.LocationMessage;
-import org.servalproject.maps.protobuf.PointOfInterestMessage;
 import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.provider.PointsOfInterestContract;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -60,9 +61,15 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 	 */
 	private ProgressBar progressBar;
 	private TextView    progressLabel;
-	private Context     context;
+	private Activity    context;
 	
-	public BinaryAsyncTask(Context context, ProgressBar progressBar, TextView progressLabel) {
+	private boolean updateUI = true;
+	private boolean updateForLocation = false;
+	private boolean updateForPoi = false;
+	
+	private Integer recordCount = -1;
+	
+	public BinaryAsyncTask(Activity context, ProgressBar progressBar, TextView progressLabel) {
 		
 		// check the parameters
 		if(context == null || progressBar == null || progressLabel == null) {
@@ -89,8 +96,12 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 			Log.v(TAG, "onPreExecute called");
 		}
 		
+		progressLabel.setText("");
 		progressLabel.setVisibility(View.VISIBLE);
 		progressBar.setVisibility(View.VISIBLE);
+
+        Button mButton = (Button) context.findViewById(R.id.export_ui_btn_export);
+        mButton.setEnabled(false);
 	}
 	
 	/*
@@ -108,6 +119,20 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 		super.onProgressUpdate(progress[0]);
 		
 		progressBar.setProgress(progress[0]);
+		
+		if(updateUI) {
+			if(updateForLocation) {
+				progressLabel.setText(R.string.export_ui_progress_location);
+				updateForLocation = false;
+				updateUI = false;
+			}
+			
+			if(updateForPoi) {
+				progressLabel.setText(R.string.export_ui_progress_poi);
+				updateForPoi = false;
+				updateUI = false;
+			}
+		}
     }
 	
 	/*
@@ -125,6 +150,27 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 		progressBar.setVisibility(View.INVISIBLE);
 		progressBar.setProgress(0);
 		progressLabel.setVisibility(View.INVISIBLE);
+		
+		// alert user to finalised export
+        Button mButton = (Button) context.findViewById(R.id.export_ui_btn_export);
+        mButton.setEnabled(true);
+        
+        String mMessage = String.format(
+        		context.getString(R.string.export_ui_finished_msg),
+        		recordCount,
+        		context.getString(R.string.system_path_export_data));
+        
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+        mBuilder.setMessage(mMessage)
+               .setCancelable(false)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                	   dialog.cancel();
+                   }
+               });
+        AlertDialog mAlert = mBuilder.create();
+        mAlert.show();
+		
 	}
   
 	/*
@@ -138,7 +184,7 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 			Log.v(TAG, "doInBackground called: " + taskType[0]);
 		}
 		
-		Integer recordCount = -1;
+		recordCount = -1;
 		
 		// determine which export task to undertake
 		if(taskType[0].equals("All Data") == true) {
@@ -174,6 +220,10 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 		
 		// reset the progress bar
 		progressBar.setProgress(0);
+		Integer mRecordCount = 0;
+		
+		updateUI = true;
+		updateForLocation = true;
 		
 		// get all of the location data
 		ContentResolver mContentResolver = context.getApplicationContext().getContentResolver();
@@ -190,7 +240,7 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 		if(mCursor.getCount() > 0) {
 			
 			progressBar.setMax(mCursor.getCount());
-			progressLabel.setText(R.string.export_ui_progress_location);
+			mRecordCount = mCursor.getCount();
 			
 			// get the export directory 
 			// get the path for the output files
@@ -200,45 +250,48 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 			if(FileUtils.isDirectoryWritable(mOutputPath) == false) {
 				Log.e(TAG, "unable to access the required output directory");
 				mCursor.close();
-				return -1;
+				return 0;
 			}
 			
 			// build the output file name
 			String mFileName = "/serval-maps-export-" + TimeUtils.getToday() + BinaryFileContract.LOCATION_EXT;
 			
+			// write the data to the file
+			OutputStream mOutput = null;
+			
 			try {
-				OutputStream mOutput = new BufferedOutputStream(new FileOutputStream(mOutputPath + mFileName, false));
-				
-				org.servalproject.maps.protobuf.LocationMessage.Message.Builder mMessageBuilder = LocationMessage.Message.newBuilder();
+				mOutput = new BufferedOutputStream(new FileOutputStream(mOutputPath + mFileName, false));
 				
 				while(mCursor.moveToNext()) {
 					
-					mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
-					mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.SUBSCRIBER_ID)));
-					mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
-					mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
-					mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP)));
-					mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.TIMEZONE)));
-					
-					mMessageBuilder.build().writeDelimitedTo(mOutput);
+					BinaryFileContract.writeLocationRecord(mCursor, mOutput);
 					
 					publishProgress(mCursor.getPosition());
+					
+					// check to see if we need to cancel this task
+					if(isCancelled() == true) {
+						break;
+					}
 				}
-				
-				// play nice and tidy up
-				mOutput.close();
-				mCursor.close();
 				
 			} catch (FileNotFoundException e) {
 				Log.e(TAG, "unable to open the output file", e);
-				mCursor.close();
-				return -1;
 			} catch (IOException e) {
 				Log.e(TAG, "unable to write the message at '" + mCursor.getPosition() + "' in the cursor", e);
+			} finally {
+				// play nice and tidy up
+				try {
+					if(mOutput != null) {
+						mOutput.close();
+					}
+				} catch (IOException e) {
+					Log.e(TAG, "unable to close the output file", e);
+				}
+				mCursor.close();
 			}
 		}
 		
-		return -1;
+		return mRecordCount;
 	}
 	
 	// private method to undetake a POI export
@@ -246,6 +299,10 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 		
 		// reset the progress bar
 		progressBar.setProgress(0);
+		Integer mRecordCount = 0;
+		
+		updateUI = true;
+		updateForPoi = true;
 		
 		if(V_LOG) {
 			Log.v(TAG, "doPoiExport called: ");
@@ -266,7 +323,7 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 		if(mCursor.getCount() > 0) {
 			
 			progressBar.setMax(mCursor.getCount());
-			progressLabel.setText(R.string.export_ui_progress_location);
+			mRecordCount = mCursor.getCount();
 			
 			// get the export directory 
 			// get the path for the output files
@@ -276,54 +333,46 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 			if(FileUtils.isDirectoryWritable(mOutputPath) == false) {
 				Log.e(TAG, "unable to access the required output directory");
 				mCursor.close();
-				return -1;
+				return 0;
 			}
 			
 			// build the output file name
 			String mFileName = "/serval-maps-export-" + TimeUtils.getToday() + BinaryFileContract.POI_EXT;
 			
+			OutputStream mOutput = null;
+			
 			try {
-				OutputStream mOutput = new BufferedOutputStream(new FileOutputStream(mOutputPath + mFileName, false));
-				
-				org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
+				mOutput = new BufferedOutputStream(new FileOutputStream(mOutputPath + mFileName, false));
 				
 				while(mCursor.moveToNext()) {
 					
-					mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHONE_NUMBER)));
-					mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.SUBSCRIBER_ID)));
-					mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE)));
-					mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)));
-					mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMESTAMP)));
-					mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)));
-					mMessageBuilder.setTitle(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TITLE)));
-					mMessageBuilder.setDescription(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
-					mMessageBuilder.setCategory(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.CATEGORY)));
-					
-					String mPhotoName = mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
-					
-					// check to see if a photo is associated with this poi
-					if(mPhotoName != null) {
-						mMessageBuilder.setPhoto(mPhotoName);
-					}
-					
-					mMessageBuilder.build().writeDelimitedTo(mOutput);
+					BinaryFileContract.writePointOfInterestRecord(mCursor, mOutput);
 					
 					publishProgress(mCursor.getPosition());
+					
+					// check to see if we need to cancel this task
+					if(isCancelled() == true) {
+						break;
+					}
 				}
-				
-				// play nice and tidy up
-				mOutput.close();
-				mCursor.close();
 				
 			} catch (FileNotFoundException e) {
 				Log.e(TAG, "unable to open the output file", e);
-				mCursor.close();
-				return -1;
 			} catch (IOException e) {
 				Log.e(TAG, "unable to write the message at '" + mCursor.getPosition() + "' in the cursor", e);
+			} finally {
+				// play nice and tidy up
+				try {
+					if(mOutput != null) {
+						mOutput.close();
+					}
+				} catch (IOException e) {
+					Log.e(TAG, "unable to close the output file", e);
+				}
+				mCursor.close();
 			}
 		}
 		
-		return -1;
+		return mRecordCount;
 	}
 }

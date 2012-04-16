@@ -49,7 +49,7 @@ public class BinaryFileWriter {
 	 * private class level constants
 	 */
 	private static final String TAG = "BinaryFileWriter";
-	private static final boolean V_LOG = false;
+	//private static final boolean V_LOG = false;
 	
 	/**
 	 * write a location message to the file
@@ -85,25 +85,12 @@ public class BinaryFileWriter {
 		
 		// check on the content
 		if(mCursor.getCount() == 0) {
-			throw new IllegalArgumentException("the recordId does not match any records");
+			Log.e(TAG, "the supplied recordId does not match any records");
+			return;
 		}
 		
 		// build the message
 		mCursor.moveToFirst();
-		
-		org.servalproject.maps.protobuf.LocationMessage.Message.Builder mMessageBuilder = LocationMessage.Message.newBuilder();
-		
-		// populate the message
-		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
-		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.SUBSCRIBER_ID)));
-		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
-		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
-		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP)));
-		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.TIMEZONE)));
-		
-		if(V_LOG) {
-			Log.v(TAG, "location message: " + mMessageBuilder.build().toString());
-		}
 		
 		// determine the file name
 		String mFileName = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
@@ -112,25 +99,31 @@ public class BinaryFileWriter {
 		
 		mFileName = mFileName + "-" + TimeUtils.getTodayWithHour() + BinaryFileContract.LOCATION_EXT;
 		
-		// play nice and tidy up
-		mCursor.close();
-		
-		// open the file
+		FileOutputStream mOutput = null;
+
 		try {
-			FileOutputStream mOutput = new FileOutputStream(mOutputPath + mFileName, true);
-			mMessageBuilder.build().writeDelimitedTo(mOutput);
-			mOutput.close();
+			mOutput = new FileOutputStream(mOutputPath + mFileName, true);
+			
+			BinaryFileContract.writeLocationRecord(mCursor, mOutput);
 			
 			// add the file to rhizome
 			Rhizome.addFile(context, mOutputPath + mFileName);
 			
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, "unable to create the output file", e);
-			return;
 		} catch (IOException e) {
 			Log.e(TAG, "unable to write to the output file", e);
-			return;
-		}	
+		} finally {
+			// play nice and tidy up
+			try {
+				if(mOutput != null) {
+					mOutput.close();
+				}
+			} catch (IOException e) {
+				Log.e(TAG, "unable to close the output file", e);
+			}
+			mCursor.close();
+		}
 	}
 	
 	/**
@@ -167,29 +160,17 @@ public class BinaryFileWriter {
 		
 		// check on the content
 		if(mCursor.getCount() == 0) {
-			throw new IllegalArgumentException("the recordId does not match any records");
+			Log.e(TAG, "unable to access the required output directory");
+			return;
 		}
 		
 		// build the message
 		mCursor.moveToFirst();
 		
-		org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder mMessageBuilder = PointOfInterestMessage.Message.newBuilder();
-		
-		mMessageBuilder.setPhoneNumber(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHONE_NUMBER)));
-		mMessageBuilder.setSubsciberId(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.SUBSCRIBER_ID)));
-		mMessageBuilder.setLatitude(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE)));
-		mMessageBuilder.setLongitude(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)));
-		mMessageBuilder.setTimestamp(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMESTAMP)));
-		mMessageBuilder.setTimeZone(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)));
-		mMessageBuilder.setTitle(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TITLE)));
-		mMessageBuilder.setDescription(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
-		mMessageBuilder.setCategory(mCursor.getLong(mCursor.getColumnIndex(PointsOfInterestContract.Table.CATEGORY)));
-		
 		String mPhotoName = mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
 		
 		// check to see if a photo is associated with this poi
 		if(mPhotoName != null) {
-			mMessageBuilder.setPhoto(mPhotoName);
 			
 			// add the image to Rhizome
 			Rhizome.addFile(context, MediaUtils.getMediaStore() + File.separator + mPhotoName);
@@ -202,24 +183,30 @@ public class BinaryFileWriter {
 		
 		mFileName = mFileName + "-" + TimeUtils.getTodayWithHour() + BinaryFileContract.POI_EXT;
 		
-		// play nice and tidy up
-		mCursor.close();
-		
 		// open the file and write the data
+		FileOutputStream mOutput = null;
 		try {
-			FileOutputStream mOutput = new FileOutputStream(mOutputPath + mFileName, true);
-			mMessageBuilder.build().writeDelimitedTo(mOutput);
-			mOutput.close();
+			mOutput = new FileOutputStream(mOutputPath + mFileName, true);
+			
+			BinaryFileContract.writeLocationRecord(mCursor , mOutput);
 			
 			// add the file to rhizome
 			Rhizome.addFile(context, mOutputPath + mFileName);
 			
 		} catch (FileNotFoundException e) {
 			Log.e(TAG, "unable to create the output file", e);
-			return;
 		} catch (IOException e) {
 			Log.e(TAG, "unable to write to the output file", e);
-			return;
+		} finally {
+			// play nice and tidy up
+			try {
+				if(mOutput != null) {
+					mOutput.close();
+				}
+			} catch (IOException e) {
+				Log.e(TAG, "unable to close the output file", e);
+			}
+			mCursor.close();
 		}
 	}
 
