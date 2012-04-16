@@ -89,6 +89,8 @@
 	
 	<string name="export_ui_progress_location">Exporting Location Records&#8230;</string>
 	<string name="export_ui_progress_poi">Exporting POI Records&#8230;</string>
+	
+	<string name="export_ui_finished_msg">%1$d records exported to the "%2$s" directory in external storage</string>
 
     <!-- About Activity -->
     <string name="about_ui_lbl">About Serval Maps</string>

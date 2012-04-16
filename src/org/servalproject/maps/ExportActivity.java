@@ -21,8 +21,10 @@
 package org.servalproject.maps;
 
 import org.servalproject.maps.export.BinaryAsyncTask;
+import org.servalproject.maps.export.CsvAsyncTask;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,6 +55,9 @@ public class ExportActivity extends Activity implements OnClickListener, OnItemS
 	private String selectedData   = null;
 	private ProgressBar progressBar;
 	private TextView progressLabel;
+	
+	private BinaryAsyncTask binaryTask = null;
+	private CsvAsyncTask csvTask = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -115,10 +120,12 @@ public class ExportActivity extends Activity implements OnClickListener, OnItemS
 		case R.id.export_ui_btn_export:
 			// undertake the export
 			if(selectedFormat.equals("Serval Maps Binary File") == true) {
-				BinaryAsyncTask mTask = new BinaryAsyncTask(this, progressBar, progressLabel);
-				mTask.execute(selectedData);
+				binaryTask = new BinaryAsyncTask(this, progressBar, progressLabel);
+				binaryTask.execute(selectedData);
 			} else {
 				// export in csv format
+				csvTask = new CsvAsyncTask(this, progressBar, progressLabel);
+				csvTask.execute(selectedData);
 			}
 			Log.v(TAG, "selectedFormat: " + selectedFormat);
 			Log.v(TAG, "selectedData:   " + selectedData);
@@ -126,6 +133,27 @@ public class ExportActivity extends Activity implements OnClickListener, OnItemS
 		default:
 			Log.w(TAG, "unknown view called onClick method");
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	public void onDestroy() {
+		if(binaryTask != null) {
+			if(binaryTask.getStatus() != AsyncTask.Status.FINISHED) {
+				binaryTask.cancel(true);
+			}
+		}
+		
+		if(csvTask != null) {
+			if(csvTask.getStatus() != AsyncTask.Status.FINISHED) {
+				csvTask.cancel(true);
+			}
+		}
+		
+		super.onDestroy();
 	}
 
 	/*
