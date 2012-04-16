@@ -34,7 +34,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -43,60 +48,101 @@ import android.widget.Button;
  * activity to show the disclaimer, it is the start activity
  */
 public class DisclaimerActivity extends Activity implements OnClickListener {
-	
+
 	/*
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
-	//private final String  TAG = "DisclaimerActivity";
-	
+	private final String  TAG = "DisclaimerActivity";
+
 	private final int NO_FILES_DIALOG = 0;
 	private final int MANY_FILES_DIALOG = 1;
 	private final int NO_SERVAL_DIALOG = 2;
-	
+
 	/*
 	 * private class level variables
 	 */
 	private PhoneNumberReceiver phoneNumberReceiver = null;
-    private int mapFileCount = 0;
+	private int mapFileCount = 0;
 	private ArrayList<MapDataInfo> mapDataInfoList = null;
 	private CharSequence[] mFileNames = null;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.disclaimer);
-        
-        // capture the touch on the buttons
-        Button mButton = (Button) findViewById(R.id.disclaimer_ui_btn_continue);
-        mButton.setOnClickListener(this);
-        
-        // register the various receivers
-        registerReceivers();
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see android.view.View.OnClickListener#onClick(android.view.View)
-     */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.disclaimer);
+
+		// capture the touch on the buttons
+		Button mButton = (Button) findViewById(R.id.disclaimer_ui_btn_continue);
+		mButton.setOnClickListener(this);
+
+		// check on the state of the storage
+		String mStorageState = Environment.getExternalStorageState();
+
+		if(Environment.MEDIA_MOUNTED.equals(mStorageState) == false) {
+
+			// show a dialog and disable the button
+			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_storage)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			AlertDialog mAlert = mBuilder.create();
+			mAlert.show();
+
+			mButton.setEnabled(false);
+		} 
+
+		// check to see if the Serval Mesh software is installed
+		try {
+			getPackageManager().getApplicationInfo("org.servalproject", PackageManager.GET_META_DATA);
+		} catch (NameNotFoundException e) {
+			Log.e(TAG, "serval maps was not found", e);
+			
+			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval_mesh)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			AlertDialog mAlert = mBuilder.create();
+			mAlert.show();
+
+			mButton.setEnabled(false);
+			
+		}
+
+		// register the various receivers
+		registerReceivers();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(View v) {
-		
+
 		// check which button was touched
 		if(v.getId() == R.id.disclaimer_ui_btn_continue) {
-			
+
 			// check to see if we know the device phone number
 			ServalMaps mApplication = (ServalMaps) getApplication();
-			
+
 			if(mApplication.getPhoneNumber() == null) {
 				// show the appropriate dialog
 				showDialog(NO_SERVAL_DIALOG);
 			} else {
-				
+
 				// check for files and go to the map activity
 				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
 				startService(mIntent);
@@ -104,7 +150,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onPause()
@@ -115,7 +161,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		unRegisterReceivers();
 		super.onPause();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onResume()
@@ -126,50 +172,50 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		registerReceivers();
 		super.onResume();
 	}
-	
+
 	// private method to register the various broadcast receivers
 	private void registerReceivers() {
-		
+
 		// register the map data receiver
-        IntentFilter mBroadcastFilter = new IntentFilter();
-        mBroadcastFilter.addAction("org.servalproject.maps.MAP_DATA_LIST");
-        registerReceiver(MapDataReceiver, mBroadcastFilter);
-        
-        // register for the sticky broadcast from the main Serval Software
-        if(phoneNumberReceiver == null) {
-        	phoneNumberReceiver = new PhoneNumberReceiver(getApplication());
-        }
-        
-        mBroadcastFilter = new IntentFilter();
-        mBroadcastFilter.addAction("org.servalproject.SET_PRIMARY");
-        registerReceiver(phoneNumberReceiver, mBroadcastFilter);
+		IntentFilter mBroadcastFilter = new IntentFilter();
+		mBroadcastFilter.addAction("org.servalproject.maps.MAP_DATA_LIST");
+		registerReceiver(MapDataReceiver, mBroadcastFilter);
+
+		// register for the sticky broadcast from the main Serval Software
+		if(phoneNumberReceiver == null) {
+			phoneNumberReceiver = new PhoneNumberReceiver(getApplication());
+		}
+
+		mBroadcastFilter = new IntentFilter();
+		mBroadcastFilter.addAction("org.servalproject.SET_PRIMARY");
+		registerReceiver(phoneNumberReceiver, mBroadcastFilter);
 	}
-	
+
 	// private method to unregister the various broadcast receivers
 	private void unRegisterReceivers() {
-		
+
 		unregisterReceiver(MapDataReceiver);
-		
+
 		if(phoneNumberReceiver != null) {
 			unregisterReceiver(phoneNumberReceiver);
 		}
 	}
-	
+
 	/*
 	 * a broadcast receiver to get the information from the activity
 	 */
 	private BroadcastReceiver MapDataReceiver = new BroadcastReceiver() {
-		
+
 		// listen for the appropriate broadcast
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
+
 			// get the list of files
 			mapFileCount = intent.getIntExtra("count", 0);
 			if(mapFileCount > 0){
 				mapDataInfoList = intent.getParcelableArrayListExtra("files");
 			}
-			
+
 			// show the appropriate dialog
 			if(mapFileCount == 0) {
 				showDialog(NO_FILES_DIALOG);
@@ -183,7 +229,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			}
 		}
 	};
-	
+
 	/*
 	 * dialog related methods
 	 */
@@ -195,10 +241,10 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 */
 	@Override
 	protected Dialog onCreateDialog(int id) {
-	
+
 		AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
 		Dialog mDialog = null;
-			
+
 		switch(id) {
 		case NO_FILES_DIALOG:
 			// show an alert dialog
@@ -217,16 +263,16 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			mDialog = mBuilder.create();
 			break;
 		case MANY_FILES_DIALOG:
-			
+
 			mFileNames = new CharSequence[mapDataInfoList.size()];
 			File mFile = null;
-			
+
 			for(int i = 0; i < mapDataInfoList.size(); i++) {
 				MapDataInfo mInfo = mapDataInfoList.get(i);
 				mFile = new File(mInfo.getFileName());
 				mFileNames[i] = mFile.getName();
 			}
-			
+
 			mBuilder.setTitle(R.string.disclaimer_ui_dialog_many_files_title)
 			.setCancelable(false)
 			.setItems(mFileNames, new DialogInterface.OnClickListener() {
@@ -246,15 +292,15 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			});
 			mDialog = mBuilder.create();
 			break;
-			
+
 		default:
 			mDialog = null;
 		}
-	
+
 		// return the created dialog
 		return mDialog;	
 	}
-	
+
 	/*
 	 * prepare and show the map activity
 	 */
