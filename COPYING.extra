@@ -17,6 +17,17 @@ http://www.tutorial9.net/downloads/icon-pack-256x256-business-icons/
 The launcher and notification icons were created using the Android Asset Studio
 http://android-ui-utils.googlecode.com/hg/asset-studio/dist/index.html
 
-The Serval Maps application uses the mapsforge library which is licensed using:
-The GNU Lesser GPL:
+The Serval Maps application uses the mapsforge library:
+http://code.google.com/p/mapsforge/
+It is licensed using the GNU Lesser GPL:
 http://www.gnu.org/licenses/lgpl.html
+
+The CSV export functionality relies on the Apache Commons CSV library:
+http://commons.apache.org/csv/
+It is licensed using the Apache 2.0 License:
+http://www.apache.org/licenses/LICENSE-2.0
+
+The binary format used by Serval Maps uses the Google Protocol Buffer Library:
+http://code.google.com/p/protobuf/
+It is licensed using the New BSD License:
+http://www.opensource.org/licenses/bsd-license.php
