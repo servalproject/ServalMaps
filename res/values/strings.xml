@@ -102,15 +102,17 @@
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
     <string name="menu_map_activity_centre_map">Centre Map</string>
-    <string name="menu_map_activity_close">Close</string>
     <string name="menu_map_activity_poi_list">List POIs</string>
-    <string name="menu_map_activity_export">Export Data</string>
-    <string name="menu_map_activity_help_about">About</string>
     
     <!--  POI List Menu UI -->
     <string name="menu_poi_list_activity_sort_alpha">Sort by Title</string>
     <string name="menu_poi_list_activity_sort_time">Sort by Time</string>
     <string name="menu_poi_list_activity_close">Close</string>
+    
+    <!-- Common Menu UI -->
+    <string name="menu_close">Close</string>
+    <string name="menu_export">Export Data</string>
+    <string name="menu_help_about">About</string>
     
     <!-- Preferences -->
     <string name="preferences_category_developer_title">Developer Settings</string>

@@ -38,7 +38,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -52,7 +54,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
-	private final String  TAG = "DisclaimerActivity";
+	//private final String  TAG = "DisclaimerActivity";
 
 	private final int NO_FILES_DIALOG = 0;
 	private final int MANY_FILES_DIALOG = 1;
@@ -106,7 +108,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		try {
 			getPackageManager().getApplicationInfo("org.servalproject", PackageManager.GET_META_DATA);
 		} catch (NameNotFoundException e) {
-			Log.e(TAG, "serval maps was not found", e);
+			//Log.e(TAG, "serval maps was not found", e);
 			
 			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
 			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval_mesh)
@@ -151,7 +153,51 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
 				startService(mIntent);
 			}
-
+		}
+	}
+	
+	/*
+	 * create the menu
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// inflate the menu based on the XML
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.disclaimer_activity, menu);
+	    return true;
+	}
+	
+	/*
+	 * handle click events from the menu
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		Intent mIntent;
+		
+		switch(item.getItemId()){
+		case R.id.menu_disclaimer_activity_export:
+			// show the export activity
+			mIntent = new Intent(this, org.servalproject.maps.ExportActivity.class);
+			startActivity(mIntent);
+			return true;
+		case R.id.menu_disclaimer_activity_help_about:
+			// show the help text
+			mIntent = new Intent(this, org.servalproject.maps.AboutActivity.class);
+			startActivity(mIntent);
+			return true;
+		case R.id.menu_disclaimer_activity_close:
+			// close this activity
+			finish();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

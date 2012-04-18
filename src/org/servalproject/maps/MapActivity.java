@@ -349,11 +349,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			mIntent = new Intent(this, org.servalproject.maps.AboutActivity.class);
 			startActivity(mIntent);
 			return true;
-		case R.id.menu_map_activity_export:
-			// show the export activity
-			mIntent = new Intent(this, org.servalproject.maps.ExportActivity.class);
-			startActivity(mIntent);
-			return true;
 		case R.id.menu_map_activity_close:
 			// close this activity
 			finish();
