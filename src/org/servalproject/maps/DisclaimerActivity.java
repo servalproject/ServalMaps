@@ -34,7 +34,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -75,6 +74,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.disclaimer);
+		
+		// flag to indicate that all of the checks have completed successfully
+		boolean mContinue = true;
 
 		// capture the touch on the buttons
 		Button mButton = (Button) findViewById(R.id.disclaimer_ui_btn_continue);
@@ -96,8 +98,8 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			});
 			AlertDialog mAlert = mBuilder.create();
 			mAlert.show();
-
-			mButton.setEnabled(false);
+			
+			mContinue = false;
 		} 
 
 		// check to see if the Serval Mesh software is installed
@@ -117,12 +119,15 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			AlertDialog mAlert = mBuilder.create();
 			mAlert.show();
 
-			mButton.setEnabled(false);
-			
+			mContinue = false;
 		}
 
-		// register the various receivers
-		registerReceivers();
+		if(mContinue) {
+			// register the various receivers
+			registerReceivers();
+		} else {
+			mButton.setEnabled(false);
+		}
 	}
 
 	/*
@@ -138,11 +143,10 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			// check to see if we know the device phone number
 			ServalMaps mApplication = (ServalMaps) getApplication();
 
-			if(mApplication.getPhoneNumber() == null) {
+			if(mApplication.getPhoneNumber() == null || mApplication.getSid() == null) {
 				// show the appropriate dialog
 				showDialog(NO_SERVAL_DIALOG);
 			} else {
-
 				// check for files and go to the map activity
 				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
 				startService(mIntent);
@@ -250,12 +254,12 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			// show an alert dialog
 			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_files)
 			.setCancelable(false)
-			.setPositiveButton(R.string.misc_dialog_yes_button, new DialogInterface.OnClickListener() {
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					showMapActivity(null);
 				}
 			})
-			.setNegativeButton(R.string.misc_dialog_no_button, new DialogInterface.OnClickListener() {
+			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
 				}
@@ -285,7 +289,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		case NO_SERVAL_DIALOG:
 			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval)
 			.setCancelable(false)
-			.setPositiveButton(R.string.misc_dialog_ok_button, new DialogInterface.OnClickListener() {
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					return;
 				}

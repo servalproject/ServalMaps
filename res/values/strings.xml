@@ -171,10 +171,6 @@
     <string name="system_notification_content">Serval Maps is running and collecting location information</string>
 
     <!-- misc strings -->
-    <string name="misc_dialog_yes_button">Yes</string>
-    <string name="misc_dialog_no_button">No</string>
-    <string name="misc_dialog_ok_button">OK</string>
-    
     <string name="misc_not_available">Not Available</string>
     
     <string name="misc_age_calculation_seconds">%d seconds</string>
