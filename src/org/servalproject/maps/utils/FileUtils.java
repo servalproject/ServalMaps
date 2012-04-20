@@ -20,6 +20,7 @@
 package org.servalproject.maps.utils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -174,5 +175,80 @@ public class FileUtils {
 		mOutputChannel.close();	
 		
 		return mOutputFile.getCanonicalPath();
+	}
+	
+	/**
+	 * delete all files in a directory
+	 * 
+	 * @param path the path to the directory
+	 * @param extensions a list of extensions to match against
+	 * @throws IOException
+	 */
+	public static int deleteFilesInDir(String dirPath, String[] extensions) throws IOException {
+		
+		int count = 0;
+		
+		// check the parameters
+		if(TextUtils.isEmpty(dirPath) == true) {
+			throw new IllegalArgumentException("the dirPath paramter is required");
+		}
+		
+		if(isDirectoryWritable(dirPath) == false) {
+			throw new IOException("unable to access the required directory: " + dirPath);
+		}
+		
+		// get a list of filee
+		File mDir = new File(dirPath);
+		
+		File[] mFiles = mDir.listFiles(new CustomFileFilter(extensions));
+		
+		for(File mFile: mFiles) {
+			if(mFile.delete()) {
+				count++;
+			} else {
+				throw new IOException("unable to delete file: " + mFile.getCanonicalPath());
+			}
+		}
+
+		return count;
+		
+	}
+	
+	private static class CustomFileFilter implements FileFilter {
+		
+		private String[] extensions;
+		
+		public CustomFileFilter(String[] extensions) {
+			this.extensions = extensions;
+		}
+		
+		public boolean accept(File pathname) {
+
+			if (pathname.isDirectory()) {
+				return false;
+			}
+
+			if (pathname.canRead() == false) {
+				return false;
+			}
+
+			String name = pathname.getName().toLowerCase();
+			
+			if(extensions == null) {
+				if(!name.startsWith(".")) {
+					return true;
+				}
+			} else {
+				for(String mExtension: extensions) {
+					if(name.endsWith(mExtension)) {
+						return true;
+					}
+				}
+				
+				return false;
+			}
+			
+			return false;
+		}
 	}
 }

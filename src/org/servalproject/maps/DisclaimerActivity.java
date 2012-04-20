@@ -187,8 +187,13 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			mIntent = new Intent(this, org.servalproject.maps.ExportActivity.class);
 			startActivity(mIntent);
 			return true;
+		case R.id.menu_disclaimer_activity_delete:
+			// show the delete activity
+			mIntent = new Intent(this, org.servalproject.maps.DeleteActivity.class);
+			startActivity(mIntent);
+			return true;
 		case R.id.menu_disclaimer_activity_help_about:
-			// show the help text
+			// show the help activity
 			mIntent = new Intent(this, org.servalproject.maps.AboutActivity.class);
 			startActivity(mIntent);
 			return true;

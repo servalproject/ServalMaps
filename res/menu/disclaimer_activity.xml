@@ -6,6 +6,12 @@
           android:visible="true"
           android:icon="@drawable/ic_menu_save">
     </item>
+    <item android:id="@+id/menu_disclaimer_activity_delete"
+          android:enabled="true"
+          android:title="@string/menu_delete"
+          android:visible="true"
+          android:icon="@drawable/ic_menu_delete">
+    </item>
     <item android:id="@+id/menu_disclaimer_activity_help_about"
           android:enabled="true"
           android:title="@string/menu_help_about"

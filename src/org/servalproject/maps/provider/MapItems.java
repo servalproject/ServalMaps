@@ -237,9 +237,44 @@ public class MapItems extends ContentProvider {
 	
 
 	@Override
-	public synchronized int delete(Uri arg0, String arg1, String[] arg2) {
-		//TODO implement code when required
-		throw new UnsupportedOperationException("Not implemented yet");
+	public synchronized int delete(Uri uri, String selection, String[] selectionArgs) {
+		
+		// get a connection to the database
+		database = databaseHelper.getWritableDatabase();
+		int count;
+		
+		// determine what type of delete is required
+		switch(uriMatcher.match(uri)) {
+		case LOCATION_LIST_URI:
+			count = database.delete(LocationsContract.Table.TABLE_NAME, selection, selectionArgs);
+			break;
+		case LOCATION_ITEM_URI:
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = LocationsContract.Table._ID + " = ?";
+				selectionArgs = new String[0];
+				selectionArgs[0] = uri.getLastPathSegment();
+			}
+			count = database.delete(LocationsContract.Table.TABLE_NAME, selection, selectionArgs);
+			break;
+		case POI_LIST_URI:
+			count = database.delete(PointsOfInterestContract.Table.TABLE_NAME, selection, selectionArgs);
+			break;
+		case POI_ITEM_URI:
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = PointsOfInterestContract.Table._ID + " = ?";
+				selectionArgs = new String[0];
+				selectionArgs[0] = uri.getLastPathSegment();
+			}
+			count = database.delete(PointsOfInterestContract.Table.TABLE_NAME, selection, selectionArgs);
+			break;
+		default:
+			// unknown uri found
+			Log.e(TAG, "unknown URI detected on query: " + uri.toString());
+			throw new IllegalArgumentException("unknwon URI detected");
+		}
+		
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
 	}
 
 	@Override

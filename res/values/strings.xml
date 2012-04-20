@@ -98,6 +98,23 @@
     <string name="about_ui_lbl">About Serval Maps</string>
     <string name="about_ui_txt">Serval Maps Copyright &#xA9; 2012 Serval Project. \n\nThis program comes with ABSOLUTELY NO WARRANTY; for details see <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>. This is free software, and you are welcome to redistribute it under certain conditions; for details see <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3</a>.\n\nServal Maps is an application that supports collaborative mapping activities using a <a href="http://servalproject.org">Serval Project</a> mesh network. \n\nMap rendering is achieved using the <a href="http://mapsforge.org">mapsforge-map rendering</a> library using data sourced from <a href="http://www.openstreetmap.org">OpenStreetMap</a>.\n\nMap data &#xA9; <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA</a>. More information about OpenStreetMap licensing is <a href="http://www.openstreetmap.org/copyright">available here</a>.\n\nMore information about Serval Maps is available in the <a href="http://developer.servalproject.org/dokuwiki/doku.php?id=content:servalmaps:main_page">Serval Project Wiki</a>.</string>
     
+    <!-- Delete Activity -->
+    <string name="delete_ui_lbl_heading">Delete Data</string>
+    <string name="delete_ui_lbl_warning">Warning Sign</string>
+    <string name="delete_ui_lbl_description_top">Using the button below will cause the following data items to be deleted:</string>
+    <string name="delete_ui_lbl_description_bottom">Deleting files cannot be undone. Proceed with caution.</string>
+    <string name="delete_ui_btn_delete">Delete Data</string>
+    
+    <string name="delete_ui_lbl_location_records">Location Records</string>
+    <string name="delete_ui_lbl_poi_records">POI Records</string>
+    <string name="delete_ui_lbl_data_files">Binary Data Files</string>
+    <string name="delete_ui_lbl_photos">Photos associatd with POIs</string>
+    <string name="delete_ui_emo_smiley">Smiley Face</string>
+    
+    <string name="delete_ui_dialog_delete_confirm">This operation cannot be undone.\n\n Are you sure?</string>
+    <string name="delete_ui_dialog_delete_data_fail">Unable to delete all data files. Please delete them manually</string>
+    <string name="delete_ui_dialog_delete_rhizome_data">Unable to delete data files from Rhizome. Please delete them manually</string>
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
@@ -113,6 +130,7 @@
     <string name="menu_close">Close</string>
     <string name="menu_export">Export Data</string>
     <string name="menu_help_about">About</string>
+    <string name="menu_delete">Delete</string>
     
     <!-- Preferences -->
     <string name="preferences_category_developer_title">Developer Settings</string>

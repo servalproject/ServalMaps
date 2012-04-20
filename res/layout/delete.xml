@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/delete_ui_lbl_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/delete_ui_lbl_heading"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <ImageView
+        android:id="@+id/delete_ui_lbl_warning"
+        android:layout_width="64dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:contentDescription="@string/delete_ui_lbl_warning"
+        android:src="@drawable/warning_sign" />
+    
+     <TextView
+        android:id="@+id/delete_ui_lbl_description_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/delete_ui_lbl_description_top"/>
+
+     <TableLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+
+         <TableRow
+             android:id="@+id/tableRow1"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" >
+             
+             <ImageView
+		        android:id="@+id/delete_ui_lbl_emo_location_records"
+		        android:layout_width="14sp"
+		        android:layout_height="14sp"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:contentDescription="@string/delete_ui_emo_smiley"
+		        android:src="@drawable/emo_im_happy"
+		        android:visibility="invisible" />
+             
+             
+             <ProgressBar
+		         android:id="@+id/delete_ui_progress_location_records"
+		         style="?android:attr/progressBarStyleSmall"
+		         android:layout_width="14sp"
+		         android:layout_height="14sp"
+		         android:visibility="invisible" />
+             
+             <TextView
+		        android:id="@+id/delete_ui_lbl_location_records"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:text="@string/delete_ui_lbl_location_records"/>
+             
+         </TableRow>
+
+         <TableRow
+             android:id="@+id/tableRow2"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" >
+             
+             <ImageView
+		        android:id="@+id/delete_ui_lbl_emo_poi_records"
+		        android:layout_width="14sp"
+		        android:layout_height="14sp"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:contentDescription="@string/delete_ui_emo_smiley"
+		        android:src="@drawable/emo_im_happy"
+		        android:visibility="invisible"  />
+             
+             <ProgressBar
+		         android:id="@+id/delete_ui_progress_poi_records"
+		         style="?android:attr/progressBarStyleSmall"
+		         android:layout_width="14sp"
+		         android:layout_height="14sp"
+		         android:visibility="invisible"  />
+             
+             <TextView
+		        android:id="@+id/delete_ui_lbl_poi_records"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:text="@string/delete_ui_lbl_poi_records"/>
+         </TableRow>
+
+         <TableRow
+             android:id="@+id/tableRow3"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" >
+             
+             <ImageView
+		        android:id="@+id/delete_ui_lbl_emo_data_files"
+		        android:layout_width="14sp"
+		        android:layout_height="14sp"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:contentDescription="@string/delete_ui_emo_smiley"
+		        android:src="@drawable/emo_im_happy"
+		        android:visibility="invisible"  />
+             
+             <ProgressBar
+		         android:id="@+id/delete_ui_progress_data_files"
+		         style="?android:attr/progressBarStyleSmall"
+		         android:layout_width="14sp"
+		         android:layout_height="14sp" 
+		         android:visibility="invisible" />
+             
+             <TextView
+		        android:id="@+id/delete_ui_lbl_data_files"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:text="@string/delete_ui_lbl_data_files"/>
+         </TableRow>
+
+         <TableRow
+             android:id="@+id/tableRow4"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content" >
+             
+             <ImageView
+		        android:id="@+id/delete_ui_lbl_emo_photos"
+		        android:layout_width="14sp"
+		        android:layout_height="14sp"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:contentDescription="@string/delete_ui_emo_smiley"
+		        android:src="@drawable/emo_im_happy"
+		        android:visibility="invisible"/>
+             
+             <ProgressBar
+		         android:id="@+id/delete_ui_progress_photos"
+		         style="?android:attr/progressBarStyleSmall"
+		         android:layout_width="14sp"
+		         android:layout_height="14sp"
+		         android:visibility="invisible"/>
+                          
+             <TextView
+		        android:id="@+id/delete_ui_lbl_photos"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        android:text="@string/delete_ui_lbl_photos"/>
+         </TableRow>
+     </TableLayout>
+     
+     <TextView
+        android:id="@+id/delete_ui_lbl_description_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:text="@string/delete_ui_lbl_description_bottom"/>
+     
+     
+     <Button
+         android:id="@+id/delete_ui_btn_delete"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         android:text="@string/delete_ui_btn_delete" />
+
+</LinearLayout>

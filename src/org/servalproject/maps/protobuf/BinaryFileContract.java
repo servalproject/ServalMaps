@@ -43,6 +43,11 @@ public class BinaryFileContract {
 	public static final String POI_EXT = ".smapp";
 	
 	/**
+	 * an array containing the list of binary file extensions
+	 */
+	public static final String[] EXTENSIONS = {LOCATION_EXT, POI_EXT};
+	
+	/**
 	 * write a binary location record to an output stream
 	 * 
 	 * @param cursor the cursor containing the record to write
