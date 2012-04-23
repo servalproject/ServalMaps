@@ -113,7 +113,7 @@
     
     <string name="delete_ui_dialog_delete_confirm">This operation cannot be undone.\n\n Are you sure?</string>
     <string name="delete_ui_dialog_delete_data_fail">Unable to delete all data files. Please delete them manually</string>
-    <string name="delete_ui_dialog_delete_rhizome_data">Unable to delete data files from Rhizome. Please delete them manually</string>
+    <string name="delete_ui_dialog_delete_data_success">All files on this device successfully deleted.</string>
     
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
