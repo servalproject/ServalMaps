@@ -102,7 +102,7 @@
     <string name="delete_ui_lbl_heading">Delete Data</string>
     <string name="delete_ui_lbl_warning">Warning Sign</string>
     <string name="delete_ui_lbl_description_top">Using the button below will cause the following data items to be deleted:</string>
-    <string name="delete_ui_lbl_description_bottom">Deleting files cannot be undone. Proceed with caution.</string>
+    <string name="delete_ui_lbl_description_bottom">Deleting files cannot be undone. Proceed with caution.\n\nMap data files, and data transfered to other nodes on the mesh, will not be deleted.</string>
     <string name="delete_ui_btn_delete">Delete Data</string>
     
     <string name="delete_ui_lbl_location_records">Location Records</string>
@@ -130,7 +130,7 @@
     <string name="menu_close">Close</string>
     <string name="menu_export">Export Data</string>
     <string name="menu_help_about">About</string>
-    <string name="menu_delete">Delete</string>
+    <string name="menu_delete">Delete Data</string>
     
     <!-- Preferences -->
     <string name="preferences_category_developer_title">Developer Settings</string>

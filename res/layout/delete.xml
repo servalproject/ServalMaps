@@ -15,7 +15,7 @@
         android:text="@string/delete_ui_lbl_heading"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
-    <ImageView
+    <!-- <ImageView
         android:id="@+id/delete_ui_lbl_warning"
         android:layout_width="64dp"
         android:layout_height="56dp"
@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right"
         android:contentDescription="@string/delete_ui_lbl_warning"
-        android:src="@drawable/warning_sign" />
+        android:src="@drawable/warning_sign" /> -->
     
      <TextView
         android:id="@+id/delete_ui_lbl_description_top"
@@ -33,7 +33,10 @@
         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/delete_ui_lbl_description_top"/>
+        android:text="@string/delete_ui_lbl_description_top"
+        android:drawableLeft="@drawable/warning_sign"
+        android:contentDescription="@string/delete_ui_lbl_warning"
+        android:drawablePadding="@dimen/ui_elem_margin_right"/>
 
      <TableLayout
          android:layout_width="match_parent"
