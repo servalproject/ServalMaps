@@ -254,7 +254,7 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 			}
 			
 			// build the output file name
-			String mFileName = "/serval-maps-export-" + TimeUtils.getToday() + BinaryFileContract.LOCATION_EXT;
+			String mFileName = "serval-maps-export-" + TimeUtils.getToday() + BinaryFileContract.LOCATION_EXT;
 			
 			// write the data to the file
 			OutputStream mOutput = null;
@@ -337,7 +337,7 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 			}
 			
 			// build the output file name
-			String mFileName = "/serval-maps-export-" + TimeUtils.getToday() + BinaryFileContract.POI_EXT;
+			String mFileName = "serval-maps-export-" + TimeUtils.getToday() + BinaryFileContract.POI_EXT;
 			
 			OutputStream mOutput = null;
 			

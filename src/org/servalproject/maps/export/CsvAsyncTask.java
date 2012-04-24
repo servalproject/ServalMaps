@@ -34,7 +34,9 @@ import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -67,6 +69,8 @@ public class CsvAsyncTask extends AsyncTask<String, Integer, Integer> {
 	private boolean updateForPoi = false;
 	
 	private CSVFormat csvFormat;
+	
+	private Integer recordCount = -1;
 	
 	public CsvAsyncTask(Activity context, ProgressBar progressBar, TextView progressLabel) {
 		
@@ -156,6 +160,22 @@ public class CsvAsyncTask extends AsyncTask<String, Integer, Integer> {
 		
 		Button mButton = (Button) context.findViewById(R.id.export_ui_btn_export);
         mButton.setEnabled(true);
+        
+        String mMessage = String.format(
+        		context.getString(R.string.export_ui_finished_msg),
+        		recordCount,
+        		context.getString(R.string.system_path_export_data));
+        
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+        mBuilder.setMessage(mMessage)
+               .setCancelable(false)
+               .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                   public void onClick(DialogInterface dialog, int id) {
+                	   dialog.cancel();
+                   }
+               });
+        AlertDialog mAlert = mBuilder.create();
+        mAlert.show();
 	}
   
 	/*
@@ -169,8 +189,6 @@ public class CsvAsyncTask extends AsyncTask<String, Integer, Integer> {
 			Log.v(TAG, "doInBackground called: " + taskType[0]);
 		}
 		
-		Integer recordCount = -1;
-		
 		// determine which export task to undertake
 		if(taskType[0].equals("All Data") == true) {
 			recordCount = doAllExport();
@@ -179,7 +197,7 @@ public class CsvAsyncTask extends AsyncTask<String, Integer, Integer> {
 		} else {
 			recordCount = doPoiExport();
 		}
-
+		
 		return recordCount;
 	}
 	
@@ -239,7 +257,7 @@ public class CsvAsyncTask extends AsyncTask<String, Integer, Integer> {
 			}
 			
 			// build the output file name
-			String mFileName = "/serval-maps-export-locations-" + TimeUtils.getToday() + ".csv";
+			String mFileName = "serval-maps-export-locations-" + TimeUtils.getToday() + ".csv";
 			
 			// write the data to the file
 			BufferedWriter mOutput = null;
@@ -336,7 +354,7 @@ public class CsvAsyncTask extends AsyncTask<String, Integer, Integer> {
 			}
 			
 			// build the output file name
-			String mFileName = "/serval-maps-export-pois-" + TimeUtils.getToday() + ".csv";
+			String mFileName = "serval-maps-export-pois-" + TimeUtils.getToday() + ".csv";
 			
 			// write the data to the file
 			BufferedWriter mOutput = null;
