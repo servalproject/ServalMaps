@@ -20,6 +20,8 @@
 package org.servalproject.maps.rhizome;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.utils.FileUtils;
@@ -28,11 +30,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * used to add a file to the Rhizome repository
  */
 public class Rhizome {
+	
+	/*
+	 * class level constants
+	 */
+	private static final String TAG = "Rhizome";
 	
 	/**
 	 * add a file to the Rhizome repository
@@ -75,5 +85,46 @@ public class Rhizome {
 		Editor mEditor = mPreferences.edit();
 		mEditor.putLong(mVersionName, mVersion);
 		mEditor.commit();
+	}
+	
+	/**
+	 * check to see if a file is in Rhizome
+	 * 
+	 * @param fileNname the name of the file to look for
+	 * @return the full path to the file
+	 */
+	public static String checkForFile(Context context, String fileName) throws FileNotFoundException{
+		
+		// check on the parameters
+		if(context == null) {
+			throw new IllegalArgumentException("the context parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(fileName)) {
+			throw new IllegalArgumentException("the file name parameter is required");
+		}
+		
+		// get the rhizome path
+		String mRhizomePath = context.getString(R.string.system_path_rhizome_data);
+		try {
+			String mExternal = Environment.getExternalStorageDirectory().getCanonicalPath();
+			mRhizomePath = mExternal + mRhizomePath;
+		} catch (IOException e) {
+			Log.e(TAG, "unable to determine the full path to the Rhizome data store", e);
+			throw new FileNotFoundException("unable to determine the full path to the Rhizome data store");
+		}
+		
+		// check on the rhizome path
+		if(FileUtils.isDirectoryReadable(mRhizomePath) == false) {
+			Log.e(TAG, "unable to access the rhizome directory: " + mRhizomePath);
+			throw new FileNotFoundException("unable to access the rhizome directory: " + mRhizomePath);
+		}
+		
+		// check to see if the file is available
+		if(FileUtils.isFileReadable(mRhizomePath + fileName) == true) {
+			return mRhizomePath + fileName;
+		} else {
+			throw new FileNotFoundException("unable to find the specified file: " + mRhizomePath + fileName);
+		}
 	}
 }

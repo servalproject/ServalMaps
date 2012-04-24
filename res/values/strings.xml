@@ -171,7 +171,8 @@
     <!-- System wide strings -->
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
-    <string name="system_path_export_data">/servalproject/maps/export-data</string>
+    <string name="system_path_export_data">/servalproject/maps/export-data/</string>
+    <string name="system_path_rhizome_data">/serval/rhizome/bundles/</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>

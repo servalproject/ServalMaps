@@ -57,6 +57,27 @@ public class FileUtils {
 	}
 	
 	/**
+	 * tests to see if the given path is a directory and can be written to
+	 * 
+	 * @param path the full path to test
+	 * @return true if the path is a directory and be be written to
+	 */
+	public static boolean isDirectoryReadable(String path) {
+		
+		if(TextUtils.isEmpty(path) == true) {
+			throw new IllegalArgumentException("the path parameter is required");
+		}
+		
+		File mPath = new File(path);
+		
+		if(mPath.isDirectory() && mPath.canRead()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	/**
 	 * tests to see if the given path is a file and is readable
 	 * 
 	 * @param path the full path to test
