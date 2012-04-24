@@ -190,6 +190,10 @@
     <string name="system_notification_ticker_text">Serval Maps Running</string>
     <string name="system_notification_title">Serval Maps</string>
     <string name="system_notification_content">Serval Maps is running and collecting location information</string>
+    
+    <!-- battery strings -->
+    <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to concerve power.</string>
+    <string name="system_battery_status_ok">Your batter charge is OK. Serval Maps has restarted using GPS.</string>
 
     <!-- misc strings -->
     <string name="misc_not_available">Not Available</string>
