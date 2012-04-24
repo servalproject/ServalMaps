@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.provider.PointsOfInterestContract;
+import org.servalproject.maps.rhizome.Rhizome;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.GeoUtils;
 import org.servalproject.maps.utils.MediaUtils;
@@ -212,8 +213,18 @@ public class PoiInfoActivity extends Activity implements OnClickListener {
 					mIntent.setDataAndType(Uri.fromFile(mFile), "image/jpg");
 					startActivity(mIntent);
 				} else {
-					// report an error
-					Toast.makeText(getApplicationContext(), R.string.poi_into_toast_no_photo, Toast.LENGTH_LONG).show();
+					// see if the file is in Rhizome
+					if(Rhizome.checkForFile(this, photoName) != null) {
+						// copy the file to the media directory
+						mFile = new File(FileUtils.copyFileToDir(Rhizome.checkForFile(this, photoName), MediaUtils.getMediaStore()));
+						Intent mIntent = new Intent();
+						mIntent.setAction(android.content.Intent.ACTION_VIEW);
+						mIntent.setDataAndType(Uri.fromFile(mFile), "image/jpg");
+						startActivity(mIntent);
+					} else {
+						// report an error
+						Toast.makeText(getApplicationContext(), R.string.poi_into_toast_no_photo, Toast.LENGTH_LONG).show();
+					}
 				}
 			} catch (IOException e) {
 				// report an error
