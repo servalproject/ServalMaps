@@ -63,7 +63,7 @@ public class MediaUtils {
 		}
 
 		try {
-			return mediaStorageDir.getCanonicalPath();
+			return mediaStorageDir.getCanonicalPath() + File.separator;
 		} catch (IOException e) {
 			Log.e(TAG, "unable to determine media store path", e);
 			return null;
@@ -97,10 +97,10 @@ public class MediaUtils {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 		File mediaFile;
 		if (type == MEDIA_TYPE_IMAGE){
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+			mediaFile = new File(mediaStorageDir.getPath() +
 					"IMG_"+ timeStamp + ".jpg");
 		} else if(type == MEDIA_TYPE_VIDEO) {
-			mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+			mediaFile = new File(mediaStorageDir.getPath() +
 					"VID_"+ timeStamp + ".mp4");
 		} else {
 			return null;

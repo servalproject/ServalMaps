@@ -202,7 +202,7 @@ public class PoiInfoActivity extends Activity implements OnClickListener {
 		switch(v.getId()) {
 		case R.id.poi_info_ui_btn_photo:
 			// show the photo to the user
-			File mFile = new File(MediaUtils.getMediaStore() + File.separator + photoName);
+			File mFile = new File(MediaUtils.getMediaStore() + photoName);
 			
 			try {
 				if(FileUtils.isFileReadable(mFile.getCanonicalPath()) == true) {

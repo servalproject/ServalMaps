@@ -173,7 +173,7 @@ public class BinaryFileWriter {
 		if(mPhotoName != null) {
 			
 			// add the image to Rhizome
-			Rhizome.addFile(context, MediaUtils.getMediaStore() + File.separator + mPhotoName);
+			Rhizome.addFile(context, MediaUtils.getMediaStore() + mPhotoName);
 		}
 		
 		// determine the file name
