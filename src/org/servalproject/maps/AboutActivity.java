@@ -22,12 +22,20 @@ package org.servalproject.maps;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
  * activity to display information about the application
  */
-public class AboutActivity extends Activity {
+public class AboutActivity extends Activity implements OnClickListener {
+	
+	// private class level variables
+	private boolean licenses = false;
+	private TextView aboutText;
+	private Button licensesBtn;
 	
 	/*
 	 * (non-Javadoc)
@@ -39,9 +47,38 @@ public class AboutActivity extends Activity {
         setContentView(R.layout.about);
         
         // linkify the about text
-        TextView mAboutText = (TextView) findViewById(R.id.about_ui_txt);
-        mAboutText.setMovementMethod(LinkMovementMethod.getInstance());
+        aboutText = (TextView) findViewById(R.id.about_ui_txt);
+        aboutText.setMovementMethod(LinkMovementMethod.getInstance());
         
+        // associate click handlers with the buttons
+        Button mButton = (Button) findViewById(R.id.about_ui_btn_stats);
+        mButton.setOnClickListener(this);
+        
+        licensesBtn = (Button) findViewById(R.id.about_ui_btn_licenses);
+        licensesBtn.setOnClickListener(this);
     }
 
+    // respond to the touch events on the buttons
+	@Override
+	public void onClick(View v) {
+        
+		switch(v.getId()) {
+		case R.id.about_ui_btn_stats:
+			// show the stats activity
+			break;
+		case R.id.about_ui_btn_licenses:
+			// update the text
+			if(licenses) {
+				// show the about text
+				aboutText.setText(R.string.about_ui_txt);
+				licensesBtn.setText(R.string.about_ui_btn_licenses);
+				licenses = false;
+			} else {
+				// show the licenses text
+				aboutText.setText(R.string.about_ui_txt_licenses);
+				licensesBtn.setText(R.string.about_ui_btn_about);
+				licenses = true;
+			}
+		}
+	}
 }
