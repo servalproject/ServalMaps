@@ -20,27 +20,18 @@
 
 package org.servalproject.maps.delete;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.servalproject.maps.R;
-import org.servalproject.maps.ServalMaps;
 import org.servalproject.maps.protobuf.BinaryFileContract;
 import org.servalproject.maps.provider.LocationsContract;
-import org.servalproject.maps.provider.PointsOfInterestContract;
-import org.servalproject.maps.rhizome.Rhizome;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.MediaUtils;
-import org.servalproject.maps.utils.TimeUtils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -251,12 +242,13 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 		
 		try {
 			
-			// delete the files in Rhizome
-			if(deleteFromRhizome() == false) {
-				
-				return false;
-				
-			}
+// TODO reconsider how data is removed from rhizome			
+//			// delete the files in Rhizome
+//			if(deleteFromRhizome() == false) {
+//				
+//				return false;
+//				
+//			}
 			
 			String mExternal = Environment.getExternalStorageDirectory().getCanonicalPath() + "/";
 			
@@ -281,140 +273,6 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 		publishProgress(6);
 		
 		return true;
-	}
-	
-	// delete the files from Rhizome
-	private boolean deleteFromRhizome() {
-		
-		// use a flag for the status
-		boolean status = true;
-		
-		// get a temp directory to create the file
-		File mCacheDir = context.getCacheDir();
-		
-		Activity mActivity = (Activity) context;
-		
-		ServalMaps mApplication = (ServalMaps)  mActivity.getApplication();
-		
-		// create a temporary binary location file
-		String mFileName = mApplication.getPhoneNumber();
-		mFileName = mFileName.replace(" ", "");
-		mFileName = mFileName.replace("-", "");
-		
-		mFileName = mFileName + "-" + TimeUtils.getTodayWithHour() + BinaryFileContract.LOCATION_EXT;
-		
-		// create the empty file
-		try {
-			
-			// get the full path
-			File mFile = new File(mCacheDir.getCanonicalPath() + "/" + mFileName);
-						
-			// create the empty file
-			FileOutputStream mFileStream = new FileOutputStream(mFile);
-			mFileStream.close();
-			
-			// add the file to rhizome
-			Rhizome.addFile(context, mFile.getCanonicalPath());
-			
-			// delete the file
-			mFile.delete();
-			
-		} catch (FileNotFoundException e) {
-			Log.e(TAG, "unable to create temporary location binary file", e);
-			status = false;
-		} catch (IOException e) {
-			Log.e(TAG, "unable to create temporary location binary file", e);
-			status = false;
-		}
-		
-		// create a temporary binary poi file file
-		mFileName = mApplication.getPhoneNumber();
-		mFileName = mFileName.replace(" ", "");
-		mFileName = mFileName.replace("-", "");
-		
-		mFileName = mFileName + "-" + TimeUtils.getTodayWithHour() + BinaryFileContract.POI_EXT;
-		
-		// create the empty file
-		try {
-			
-			// get the full path
-			File mFile = new File(mCacheDir.getCanonicalPath() + "/" + mFileName);
-			
-			// create the empty file
-			FileOutputStream mFileStream = new FileOutputStream(mFile);
-			mFileStream.close();
-			
-			// add the file to rhizome
-			Rhizome.addFile(context, mFile.getCanonicalPath());
-			
-			// delete the file
-			mFile.delete();
-			
-		} catch (FileNotFoundException e) {
-			Log.e(TAG, "unable to create temporary poi binary file", e);
-			status = false;
-		} catch (IOException e) {
-			Log.e(TAG, "unable to create temporary poi binary file", e);
-			status = false;
-		}
-		
-		// get the list of photo files
-		ContentResolver mContentResolver = context.getContentResolver();
-		
-		String[] mProjection = new String[1];
-		mProjection[0] = PointsOfInterestContract.Table.PHOTO;
-		
-		String mSelection = PointsOfInterestContract.Table.PHOTO + " != null AND "
-				+ PointsOfInterestContract.Table.PHONE_NUMBER + " = ?";
-		
-		String[] mSelectionArgs = new String[1];
-		mSelectionArgs[0] = mApplication.getPhoneNumber();
-		
-		// get the content
-		Cursor mCursor = mContentResolver.query(
-				PointsOfInterestContract.CONTENT_URI,
-				mProjection,
-				mSelection, 
-				mSelectionArgs, 
-				null);
-		
-		if(mCursor != null) {
-			while(mCursor.moveToNext()) {
-				
-				// create the empty file
-				try {
-					
-					// get the full path
-					File mFile = new File(mCacheDir.getCanonicalPath() + "/" + mCursor.getString(
-							mCursor.getColumnIndex(
-									PointsOfInterestContract.Table.PHOTO)
-								)
-							);
-								
-					// create the empty file
-					FileOutputStream mFileStream = new FileOutputStream(mFile);
-					mFileStream.close();
-					
-					// add the file to rhizome
-					Rhizome.addFile(context, mFile.getCanonicalPath());
-					
-					// delete the file
-					mFile.delete();
-					
-				} catch (FileNotFoundException e) {
-					Log.e(TAG, "unable to create temporary location binary file", e);
-					status = false;
-				} catch (IOException e) {
-					Log.e(TAG, "unable to create temporary location binary file", e);
-					status = false;
-				}
-			}
-			
-			mCursor.close();
-		}
-
-		return status;
-
 	}
 	
 	//delete the photo files

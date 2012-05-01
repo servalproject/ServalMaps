@@ -221,7 +221,7 @@ public class FileUtils {
 		// get a list of filee
 		File mDir = new File(dirPath);
 		
-		File[] mFiles = mDir.listFiles(new CustomFileFilter(extensions));
+		File[] mFiles = mDir.listFiles(new ExtensionFileFilter(extensions));
 		
 		for(File mFile: mFiles) {
 			if(mFile.delete()) {
@@ -235,11 +235,12 @@ public class FileUtils {
 		
 	}
 	
-	private static class CustomFileFilter implements FileFilter {
+	// file filter using extensions
+	private static class ExtensionFileFilter implements FileFilter {
 		
 		private String[] extensions;
 		
-		public CustomFileFilter(String[] extensions) {
+		public ExtensionFileFilter(String[] extensions) {
 			this.extensions = extensions;
 		}
 		
