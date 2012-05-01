@@ -80,7 +80,7 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
 				Log.v(TAG, "received notification that battery is ok");
 			}
 			
-			// shutdown the service
+			// start the service
 			context.startService(new Intent(context, org.servalproject.maps.services.CoreService.class));
 			
 			// inform the user
