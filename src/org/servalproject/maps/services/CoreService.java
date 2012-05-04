@@ -37,6 +37,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -47,6 +48,12 @@ import android.util.Log;
  * undertaken even while activities are not present
  */
 public class CoreService extends Service {
+	
+	/*
+	 * public class level constants
+	 */
+	public static final String PREFERENCES_NAME = "core-service";
+	public static final String PREFERENCES_VALUE = "uptime";
 
 	// class level constants
 	private final int STATUS_NOTIFICATION = 0;
@@ -71,6 +78,8 @@ public class CoreService extends Service {
 	private RhizomeBroadcastReceiver rhizomeBroadcastReceiver = null;
 	
 	private ExecutorService executor = null;
+	
+	private Long uptimeStart;
 
 	/*
 	 * called when the service is created
@@ -230,6 +239,8 @@ public class CoreService extends Service {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		
+		uptimeStart = System.currentTimeMillis();
 
 		if(V_LOG) {
 			Log.v(TAG, "Service Started");
@@ -328,6 +339,16 @@ public class CoreService extends Service {
 			executor.shutdown();
 		}
 		
+		// update the uptime count
+		long mUptime = System.currentTimeMillis() - uptimeStart;
+		
+		SharedPreferences mPreferences = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+		mUptime = mUptime + mPreferences.getLong(PREFERENCES_VALUE, 0);
+		
+		Editor mEditor = mPreferences.edit();
+		mEditor.putLong(PREFERENCES_VALUE, mUptime);
+		mEditor.commit();
+				
 		super.onDestroy();
 
 		if(V_LOG) {

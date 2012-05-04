@@ -20,6 +20,7 @@
 package org.servalproject.maps;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
@@ -65,6 +66,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 		switch(v.getId()) {
 		case R.id.about_ui_btn_stats:
 			// show the stats activity
+			startActivity(new Intent(this, org.servalproject.maps.StatsActivity.class));
 			break;
 		case R.id.about_ui_btn_licenses:
 			// update the text

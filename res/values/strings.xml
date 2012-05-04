@@ -120,6 +120,23 @@
     <string name="delete_ui_dialog_delete_data_fail">Unable to delete all data files. Please delete them manually</string>
     <string name="delete_ui_dialog_delete_data_success">All files on this device successfully deleted.</string>
     
+    <!-- Stats Activity -->
+    <string name="stats_ui_lbl">Statistics</string>
+    <string name="stats_ui_txt">Various statistics related to Serval Maps</string>
+    <string name="stats_ui_lbl_locations">Location records:</string>
+    <string name="stats_ui_lbl_pois">POI records:</string>
+    <string name="stats_ui_lbl_photos">Total photos:</string>
+    <string name="stats_ui_lbl_photos_by_you">Photos taken by you:</string>
+    <string name="stats_ui_lbl_uptime">Core service uptime:</string>
+    
+    <string name="stats_ui_btn_send">Send to Serval</string>
+    
+    <string name="stats_ui_dialog_zip_and_send">Are you sure you want to anonymously send this data and your Serval Maps preferences to the Serval Maps developers?</string>
+    <string name="stats_ui_dialog_zip_fail">The creation of the data to send failed. No data has been sent.</string>
+    <string name="stats_ui_dialog_upload_fail">The upload of the data has failed.</string>
+    <string name="stats_ui_dialog_upload_success">Thank you for uploading your anonymous usage statistics, a copy of the data is stored in the %1$s directory in external storage.</string>
+    <string name="stats_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
@@ -199,6 +216,9 @@
     <!-- battery strings -->
     <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to concerve power.</string>
     <string name="system_battery_status_ok">Your batter charge is OK. Serval Maps has restarted using GPS.</string>
+    
+    <!-- file upload strings -->
+    <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
 
     <!-- misc strings -->
     <string name="misc_not_available">Not Available</string>

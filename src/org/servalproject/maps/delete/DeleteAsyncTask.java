@@ -253,13 +253,14 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 			String mExternal = Environment.getExternalStorageDirectory().getCanonicalPath() + "/";
 			
 			// build a list of extensions
-			String[] mExtensions = new String[BinaryFileContract.EXTENSIONS.length + 1];
+			String[] mExtensions = new String[BinaryFileContract.EXTENSIONS.length + 2];
 			
 			for(int i = 0; i < BinaryFileContract.EXTENSIONS.length; i++) {
 				mExtensions[i] = BinaryFileContract.EXTENSIONS[i];
 			}
 			
 			mExtensions[mExtensions.length -1] = ".json";
+			mExtensions[mExtensions.length -2] = ".zip";
 			
 			FileUtils.deleteFilesInDir(mExternal + context.getString(R.string.system_path_binary_data), mExtensions);
 			

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/stats_ui_lbl"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/stats_ui_lbl"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+    
+    <TextView
+        android:id="@+id/stats_ui_txt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/stats_ui_txt" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/stats_ui_lbl_locations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:text="@string/stats_ui_lbl_locations" />
+
+            <TextView
+                android:id="@+id/stats_ui_txt_locations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+            
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/stats_ui_lbl_pois"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_ui_lbl_pois"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+
+            <TextView
+                android:id="@+id/stats_ui_txt_pois"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+            
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/stats_ui_lbl_photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_ui_lbl_photos"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+
+            <TextView
+                android:id="@+id/stats_ui_txt_photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+            
+        </TableRow>
+        
+        <TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/stats_ui_lbl_photos_by_you"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_ui_lbl_photos_by_you"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+
+            <TextView
+                android:id="@+id/stats_ui_txt_photos_by_you"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+            
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            
+            <TextView
+                android:id="@+id/stats_ui_lbl_uptime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_ui_lbl_uptime"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+
+            <TextView
+                android:id="@+id/stats_ui_txt_uptime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+            
+        </TableRow>
+    </TableLayout>
+    
+    <Button
+         android:id="@+id/stats_ui_btn_send"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+         android:text="@string/stats_ui_btn_send" />
+
+</LinearLayout>

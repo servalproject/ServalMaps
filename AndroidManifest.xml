@@ -46,6 +46,8 @@
     <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/>
     <uses-permission android:name="org.servalproject.rhizome.RECIEVE_FILE"/>
     <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -80,6 +82,7 @@
         <activity android:name="AboutActivity"></activity>
         <activity android:name="ExportActivity"></activity>
         <activity android:name="DeleteActivity"></activity>
+        <activity android:name="StatsActivity"></activity>
     </application>
 
 </manifest>

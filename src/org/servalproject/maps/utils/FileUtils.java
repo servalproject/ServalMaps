@@ -273,4 +273,25 @@ public class FileUtils {
 			return false;
 		}
 	}
+	
+	/**
+	 * get the extension component of a file name
+	 * 
+	 * @param fileName the name of the file
+	 * @return the extension of the file, or null
+	 */
+	public static String getExtension(String fileName) {
+		
+		if(fileName == null) {
+			return null;
+		}
+		
+		int mLocation =  fileName.lastIndexOf(".");
+		
+		if(mLocation == -1) {
+			return null;
+		} else {
+			return fileName.substring(mLocation + 1);
+		}
+	}
 }

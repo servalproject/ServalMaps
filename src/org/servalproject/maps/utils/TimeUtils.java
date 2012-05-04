@@ -53,8 +53,6 @@ public class TimeUtils {
 			throw new IllegalArgumentException("the context parameter is required");
 		}
 		
-		String mReturn = null;
-		
 		// get the current time
 		long mCurrentTime = System.currentTimeMillis();
 		
@@ -68,27 +66,29 @@ public class TimeUtils {
 		// calculate the different
 		long mTimeDifference = mCurrentTime - mToCalendar.getTimeInMillis();
 		
-		// convert the different into human readable representation
-		int mTime = (int) mTimeDifference / 60000;
+		return getMillisHumanReadable(mTimeDifference, context);
 		
-		if(mTime < 1) {
-			// less than one minute
-			mTime = (int) (mTimeDifference % 60);
-			mReturn = String.format(context.getString(R.string.misc_age_calculation_seconds), mTime);
-		} else if(mTime > 60) { 
-			// more than an hour
-    		mTime = (int) (mTimeDifference / 3600);
-    		
-    		if(mTime > 24) { // more than 24 hours
-    			mReturn = String.format(context.getString(R.string.misc_age_calculation_more_than_a_day), mTime);
-    		} else {
-    			mReturn = String.format(context.getString(R.string.misc_age_calculation_hours), mTime);
-    		}
-    	} else { // minutes
-    		mReturn = String.format(context.getString(R.string.misc_age_calculation_minutes), mTime);
-    	}
-		
-		return mReturn;
+//		// convert the different into human readable representation
+//		int mTime = (int) mTimeDifference / 60000;
+//		
+//		if(mTime < 1) {
+//			// less than one minute
+//			mTime = (int) (mTimeDifference % 60);
+//			mReturn = String.format(context.getString(R.string.misc_age_calculation_seconds), mTime);
+//		} else if(mTime > 60) { 
+//			// more than an hour
+//    		mTime = (int) (mTimeDifference / 3600);
+//    		
+//    		if(mTime > 24) { // more than 24 hours
+//    			mReturn = String.format(context.getString(R.string.misc_age_calculation_more_than_a_day), mTime);
+//    		} else {
+//    			mReturn = String.format(context.getString(R.string.misc_age_calculation_hours), mTime);
+//    		}
+//    	} else { // minutes
+//    		mReturn = String.format(context.getString(R.string.misc_age_calculation_minutes), mTime);
+//    	}
+//		
+//		return mReturn;
 	}
 	
 	/**
@@ -163,5 +163,51 @@ public class TimeUtils {
 		
 		return mFormat.format(mCalendar.getTime());
 	}
+	
+	/**
+	 * return today's date including time as a string
+	 */
+	public static String getTodayWithTime() {
+		
+		// get a calendar instance to help with the formating of the date
+		Calendar mCalendar = Calendar.getInstance();
+		mCalendar.setTimeInMillis(System.currentTimeMillis());
+		
+		SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		return mFormat.format(mCalendar.getTime());
+	}
 
+	/**
+	 * convert a time interval in milliseconds into a human readable string
+	 * 
+	 * @param milliseconds the time interval to convert
+	 * @param context a context object used to retrieve strings from R
+	 * 
+	 * @return a human readable string
+	 */
+	public static String getMillisHumanReadable(long milliseconds, Context context) {
+		
+		int mTime = (int) milliseconds / 60000;
+		String mReturn;
+		
+		if(mTime < 1) {
+			// less than one minute
+			mTime = (int) (mTime % 60);
+			mReturn = String.format(context.getString(R.string.misc_age_calculation_seconds), mTime);
+		} else if(mTime > 60) { 
+			// more than an hour
+    		mTime = (int) (mTime / 3600);
+    		
+    		if(mTime > 24) { // more than 24 hours
+    			mReturn = String.format(context.getString(R.string.misc_age_calculation_more_than_a_day), mTime);
+    		} else {
+    			mReturn = String.format(context.getString(R.string.misc_age_calculation_hours), mTime);
+    		}
+    	} else { // minutes
+    		mReturn = String.format(context.getString(R.string.misc_age_calculation_minutes), mTime);
+    	}
+		
+		return mReturn;
+	}
 }
