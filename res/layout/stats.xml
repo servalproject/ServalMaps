@@ -148,14 +148,47 @@
         		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
             
         </TableRow>
+        
+        <TableRow
+            android:id="@+id/tableRow6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            
+                <Button
+			         android:id="@+id/stats_ui_btn_send"
+			         android:layout_width="fill_parent"
+			         android:layout_height="wrap_content"
+			         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+			         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+			         android:text="@string/stats_ui_btn_send" />
+                
+                    <LinearLayout
+				        android:layout_width="match_parent"
+				        android:layout_height="wrap_content"
+				        android:orientation="vertical" >
+				        
+                    	<ProgressBar
+	                        android:id="@+id/stats_ui_progress_bar"
+	                        android:layout_width="wrap_content"
+	                        android:layout_height="wrap_content" 
+	                        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+				        	android:layout_marginLeft="@dimen/ui_elem_margin_left"
+				        	android:layout_marginRight="@dimen/ui_elem_margin_right"
+				        	android:visibility="invisible"
+	                        />
+				        
+                        <TextView
+			                android:id="@+id/stats_ui_txt_progress"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+			        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+			        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+			        		android:visibility="invisible"/>
+				        
+				    </LinearLayout>
+        </TableRow>
     </TableLayout>
-    
-    <Button
-         android:id="@+id/stats_ui_btn_send"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-         android:layout_marginLeft="@dimen/ui_elem_margin_left"
-         android:text="@string/stats_ui_btn_send" />
+
 
 </LinearLayout>

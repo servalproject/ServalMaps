@@ -137,6 +137,9 @@
     <string name="stats_ui_dialog_upload_success">Thank you for uploading your anonymous usage statistics, a copy of the data is stored in the %1$s directory in external storage.</string>
     <string name="stats_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
     
+    <string name="stats_ui_progress_collecting">Collecting Statistics&#8230;</string>
+    <string name="stats_ui_progress_uploading">Uploading Statistics&#8230;</string>
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
@@ -218,7 +221,10 @@
     <string name="system_battery_status_ok">Your batter charge is OK. Serval Maps has restarted using GPS.</string>
     
     <!-- file upload strings -->
+    <!--
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
+    -->
+    <string name="system_url_file_upload">http://192.168.1.50/~techxplorer/upload.php</string>
 
     <!-- misc strings -->
     <string name="misc_not_available">Not Available</string>

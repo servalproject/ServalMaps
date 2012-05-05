@@ -19,20 +19,10 @@
  */
 package org.servalproject.maps;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
 import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.provider.PointsOfInterestContract;
 import org.servalproject.maps.services.CoreService;
-import org.servalproject.maps.utils.FileUtils;
+import org.servalproject.maps.stats.StatsAsyncTask;
 import org.servalproject.maps.utils.HttpUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
@@ -44,12 +34,11 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -66,6 +55,13 @@ public class StatsActivity extends Activity implements OnClickListener {
 	 * private class level variables
 	 */
 	private String[] dataElems = new String[5];
+
+	private String[] dataLabels = {
+			"Location records:", 
+			"POI records:", 
+			"Total photos:", 
+			"Photos taken by you:", 
+			"Core service uptime:"};
 	
 	/*
 	 * (non-Javadoc)
@@ -194,6 +190,9 @@ public class StatsActivity extends Activity implements OnClickListener {
 	// zip up the files and send them
 	private void zipAndSendFiles() {
 		
+		// disable the button
+		
+		
 		// check and see if a network connection is available
 		if(HttpUtils.isOnline(this) == false) {
 			// no network connection is available
@@ -210,178 +209,15 @@ public class StatsActivity extends Activity implements OnClickListener {
 			mBuilder.create().show();
 			
 			return;
-			
 		}
 		
-		File mZipFile;
-		
-		// create the zip file
-		try {
-			
-			File[] mFiles = new File[2];
-			
-			mFiles[0] = createStatsFile();
-			
-			mFiles[1] = createPrefsFile();
-			
-			mZipFile = createZipFile(mFiles);
-			
-			// copy the zip file to the export directory for transparency
-			String mExportPath = Environment.getExternalStorageDirectory().getPath();
-			mExportPath += getString(R.string.system_path_export_data);
-			
-			FileUtils.copyFileToDir(mZipFile.getCanonicalPath(), mExportPath);
-			
-		} catch(IOException e) {
-			
-			Log.e(TAG, "unable to create zip file", e);
-			
-			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-			
-			mBuilder.setMessage(R.string.stats_ui_dialog_zip_fail)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			mBuilder.create().show();
-			
-			return;
-		}
-		
-		// upload the zip file
-		
-		try {
-			String mResponse = HttpUtils.doHttpUpload(mZipFile, getString(R.string.system_url_file_upload));
-			
-			if(mResponse.contains("error") == false) {
-				
-				AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-				
-				String mMessage = String.format(getString(R.string.stats_ui_dialog_upload_success), getString(R.string.system_path_export_data));
-				
-				mBuilder.setMessage(mMessage)
-				.setCancelable(false)
-				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-				mBuilder.create().show();
-				
-			}
-		}catch (IOException e) {
-			
-			Log.e(TAG, "unable to upload the zip file", e);
-			
-			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-			
-			mBuilder.setMessage(R.string.stats_ui_dialog_upload_fail)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			mBuilder.create().show();
-			
-			return;
-			
-		}
-		
-		
-	}
-	
-	private File createStatsFile() throws IOException {
-		
-		// get a temp directory to create the file
-		File mCacheDir = getCacheDir();
-		
-		// get the output file
-		File mOutputFile = new File(mCacheDir.getCanonicalPath() + "/stats.txt");
-		
-		PrintWriter mPrinter = new PrintWriter(new FileWriter(mOutputFile, false));
-		
-		mPrinter.println("Data Collected: " + TimeUtils.getTodayWithTime());
-		
-		mPrinter.println("Location records: " + dataElems[0]);
-		mPrinter.println("POI records: " + dataElems[1]);
-		mPrinter.println("Total photos: " + dataElems[2]);
-		mPrinter.println("Photos taken by you: " + dataElems[3]);
-		mPrinter.println("Core service uptime: " + dataElems[4]);
-		
-		mPrinter.close();
-		
-		Log.d(TAG, mOutputFile.getCanonicalPath());
-
-		// return the file handle
-		return mOutputFile;		
-	}
-	
-	private File createPrefsFile() throws IOException {
-		
-		// get a temp directory to create the file
-		File mCacheDir = getCacheDir();
-		
-		// get the output file
-		File mOutputFile = new File(mCacheDir.getCanonicalPath() + "/prefs.txt");
-		
-		// get a handle on the important shared preferences
-		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		Map<String, ?> mPrefMap = mPreferences.getAll();
-		
-		// open the file
-		PrintWriter mPrinter = new PrintWriter(new FileWriter(mOutputFile, false));
-		
-		for (Map.Entry<String, ?> mEntry: mPrefMap.entrySet()) {
-			mPrinter.println(mEntry.getKey() + ":" + mEntry.getValue().toString());
-		}
-		
-		mPrinter.close();
-		
-		Log.d(TAG, mOutputFile.getCanonicalPath());
-
-		// return the file handle
-		return mOutputFile;	
-		
-	}
-
-	private File createZipFile(File[] fileList) throws IOException {
-		
-		// get a temp directory to create the file
-		File mCacheDir = getCacheDir();
-		
-		// get the output file
-		File mOutputFile = new File(mCacheDir.getCanonicalPath() + "/statistics.zip");
-		ZipOutputStream mOutputStream = new ZipOutputStream(new FileOutputStream(mOutputFile));
-		
-		for(File mFile : fileList) {
-			// add the file to the zip file
-			addFileToZip(mOutputStream, mFile);
-		}
-		
-		mOutputStream.close();
-		
-		return mOutputFile;
-	}
-	
-	private void addFileToZip(ZipOutputStream outputStream, File inputFile) throws IOException {
-		
-		int mLength;
-		byte[] mBuffer = new byte[1024];
-		
-		// add the file
-		outputStream.putNextEntry(new ZipEntry(inputFile.getName()));
-		
-		FileInputStream mInputStream = new FileInputStream(inputFile);
-		
-		 while((mLength = mInputStream.read(mBuffer)) > 0)
-         {
-			 outputStream.write(mBuffer, 0, mLength);
-         }
-		 
-		 outputStream.closeEntry();
-		 mInputStream.close();
+		// undertake the task
+		StatsAsyncTask task = new StatsAsyncTask(
+				(ProgressBar) findViewById(R.id.stats_ui_progress_bar),
+				(TextView) findViewById(R.id.stats_ui_txt_progress), 
+				dataElems, 
+				dataLabels, 
+				this);
+		task.execute();
 	}
 }
