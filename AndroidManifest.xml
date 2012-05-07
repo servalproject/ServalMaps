@@ -37,8 +37,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
     <uses-feature android:required="true" android:name="android.hardware.wifi"/>
-    <permission android:label="@string/system_permission_provider_read_map_items_label" android:protectionLevel="dangerous" android:description="@string/system_permission_provider_read_map_items_description" android:name="org.servalproject.maps.provider.READ_ITEMS"></permission>
-    <permission android:label="@string/system_permission_provider_write_map_items_label" android:protectionLevel="dangerous" android:description="@string/system_permission_provider_write_map_items_description" android:name="org.servalproject.maps.provider.WRITE_ITEMS"></permission>
+    <permission android:label="@string/system_permission_provider_read_map_items_label" android:protectionLevel="signature" android:description="@string/system_permission_provider_read_map_items_description" android:name="org.servalproject.maps.provider.READ_ITEMS"></permission>
+    <permission android:label="@string/system_permission_provider_write_map_items_label" android:protectionLevel="signature" android:description="@string/system_permission_provider_write_map_items_description" android:name="org.servalproject.maps.provider.WRITE_ITEMS"></permission>
     <uses-permission android:name="org.servalproject.maps.provider.READ_ITEMS"/>
     <uses-permission android:name="org.servalproject.maps.provider.WRITE_ITEMS"/>
     <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
