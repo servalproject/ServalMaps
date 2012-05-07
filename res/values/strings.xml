@@ -217,14 +217,14 @@
     <string name="system_notification_content">Serval Maps is running and collecting location information</string>
     
     <!-- battery strings -->
-    <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to concerve power.</string>
-    <string name="system_battery_status_ok">Your batter charge is OK. Serval Maps has restarted using GPS.</string>
+    <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to conserve power.</string>
+    <string name="system_battery_status_ok">Your battery charge is OK. Serval Maps has restarted using GPS.</string>
     
     <!-- file upload strings -->
     <!--
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
     -->
-    <string name="system_url_file_upload">http://192.168.1.50/~techxplorer/upload.php</string>
+    <string name="system_url_file_upload">http://techxplorer.homelinux.com:8888/~techxplorer/upload.php</string>
 
     <!-- misc strings -->
     <string name="misc_not_available">Not Available</string>
