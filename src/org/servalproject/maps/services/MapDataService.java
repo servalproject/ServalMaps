@@ -20,13 +20,12 @@
 
 package org.servalproject.maps.services;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.parcelables.MapDataInfo;
+import org.servalproject.maps.utils.FileUtils;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -43,6 +42,8 @@ public class MapDataService extends IntentService {
 	 */
 	//private final boolean V_LOG = true;
 	private final String TAG = "MapDataService";
+	
+	private final String[] EXTENSIONS = {".map"}; 
 
 	/**
 	 * constructor for this class
@@ -67,11 +68,16 @@ public class MapDataService extends IntentService {
 		Intent mBroadcastIntent = new Intent("org.servalproject.maps.MAP_DATA_LIST");
 		
 		// check to see if the path is available
-		if(testPath(mMapDataPath) == false) {
+		if(FileUtils.isDirectoryReadable(mMapDataPath) == false) {
 			Log.e(TAG, "unable to access the map data directory");
 		} else {
 			// get the list of map data files
-			mMapDataFiles = getFileList(mMapDataPath);
+			try {
+				mMapDataFiles = FileUtils.listFilesInDir(mMapDataPath, EXTENSIONS);
+			} catch (IOException e) {
+				Log.e(TAG, "unable to get a list of files", e);
+				mMapDataFiles = new String[0];
+			}
 		}
 		
 		// populate the intent the intent
@@ -87,70 +93,9 @@ public class MapDataService extends IntentService {
 			}
 			
 			mBroadcastIntent.putParcelableArrayListExtra("files", mMapDataInfoList);
-			//mBroadcastIntent.putExtra("files", mMapDataInfoList.toArray());
 		}
 		
 		// send the broadcast intent
 		this.sendBroadcast(mBroadcastIntent, "org.servalproject.maps.MAP_DATA");
-	}
-	
-	// private method to check on the status of the path that we expect
-	private boolean testPath(String path) {
-		
-		File mPath = new File(path);
-		
-		if(mPath.isDirectory() && mPath.canWrite()) {
-			return true;
-		} else {
-			return mPath.mkdirs();
-		}
-	}
-
-	// private method to get the list of map data files
-	private String[] getFileList(String path) {
-		
-		String[] mFileList = new String[0];
-		
-		File mMapDataDir = new File(path);
-		
-		File[] mFiles = mMapDataDir.listFiles(new MapFileFilter());
-		
-		if(mFiles.length > 0) {
-			mFileList = new String[mFiles.length];
-
-			for(int i = 0; i < mFiles.length; i++) {
-				try {
-					mFileList[i] = mFiles[i].getCanonicalPath();
-				} catch (IOException e) {
-					Log.e(TAG, "Unable to canonical path for the map files", e);
-					return new String[0];
-				}
-			}
-		}
-		
-		return mFileList;
-	}
-	
-	// private class to filter a list of files
-	// define the file filter class
-	private class MapFileFilter implements FileFilter {
-		public boolean accept(File pathname) {
-
-			if (pathname.isDirectory()) {
-				return false;
-			}
-
-			if (pathname.canRead() == false) {
-				return false;
-			}
-
-			String name = pathname.getName().toLowerCase();
-
-			if(name.endsWith(".map") && !name.startsWith(".")) {
-				return true;
-			} else {
-				return false;
-			}
-		}
 	}
 }

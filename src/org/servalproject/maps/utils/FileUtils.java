@@ -235,6 +235,45 @@ public class FileUtils {
 		
 	}
 	
+	/**
+	 * get a list of files in a directory
+	 * 
+	 * @param dirPath the directory to search for files
+	 * @param extensions a list of extensions to filter the list of files, if null all files are returns
+	 * @return an array of file names or null if no files match
+	 * @throws IOException
+	 */
+	
+	public static String[] listFilesInDir(String dirPath, String[] extensions) throws IOException {
+		
+		String[] mFileList = null;
+		
+		// check the parameters
+		if(TextUtils.isEmpty(dirPath) == true) {
+			throw new IllegalArgumentException("the dirPath paramter is required");
+		}
+		
+		if(isDirectoryWritable(dirPath) == false) {
+			throw new IOException("unable to access the required directory: " + dirPath);
+		}
+		
+		// get a list of filee
+		File mDir = new File(dirPath);
+		
+		File[] mFiles = mDir.listFiles(new ExtensionFileFilter(extensions));
+		
+		if(mFiles != null) {
+			
+			mFileList = new String[mFiles.length];
+			
+			for(int i = 0; i < mFiles.length; i++) {
+				mFileList[i] = mFiles[i].getName();
+			}
+		}
+		
+		return mFileList;
+	}
+	
 	// file filter using extensions
 	private static class ExtensionFileFilter implements FileFilter {
 		
