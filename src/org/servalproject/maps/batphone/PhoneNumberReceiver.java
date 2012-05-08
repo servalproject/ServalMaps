@@ -68,6 +68,8 @@ public class PhoneNumberReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
+		Log.d(TAG, "receiver called");
+		
 		// store the phone number and sid for later
 		if(intent.getStringExtra("did") != null) {
 			application.setPhoneNumber(intent.getStringExtra("did"));

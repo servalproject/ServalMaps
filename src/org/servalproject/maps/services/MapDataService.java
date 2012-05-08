@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.servalproject.maps.R;
+import org.servalproject.maps.mapsforge.MapUtils;
 import org.servalproject.maps.parcelables.MapDataInfo;
 import org.servalproject.maps.utils.FileUtils;
 
@@ -40,7 +41,7 @@ public class MapDataService extends IntentService {
 	/*
 	 * private constants
 	 */
-	//private final boolean V_LOG = true;
+	private final boolean V_LOG = true;
 	private final String TAG = "MapDataService";
 	
 	private final String[] EXTENSIONS = {".map"}; 
@@ -89,7 +90,19 @@ public class MapDataService extends IntentService {
 			
 			for(String mMapDataFile : mMapDataFiles) {
 				MapDataInfo mMapDataInfo = new MapDataInfo(mMapDataFile);
+				
+				// add the metadata
+				try {
+					mMapDataInfo.setMetadata(MapUtils.getMetadata(mMapDataPath + mMapDataFile));
+				} catch (IOException e) {
+					Log.e(TAG, "unable to get the metadata for file '" + mMapDataFile + "'", e);
+				}
+				
 				mMapDataInfoList.add(mMapDataInfo);
+				
+				if(V_LOG) {
+					Log.v(TAG, mMapDataInfo.toString());
+				}
 			}
 			
 			mBroadcastIntent.putParcelableArrayListExtra("files", mMapDataInfoList);

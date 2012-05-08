@@ -26,6 +26,8 @@
  */
 package org.servalproject.maps.parcelables;
 
+import java.util.HashMap;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -42,6 +44,11 @@ public class MapDataInfo implements Parcelable {
 	
 	// class level variables
 	private String fileName;
+	private String createDate;
+	private double minLongitude;
+	private double minLatitude;
+	private double maxLongitude;
+	private double maxLatitude;
 	
 	/**
 	 * constructor for this class
@@ -68,6 +75,60 @@ public class MapDataInfo implements Parcelable {
 		return fileName;
 	}
 	
+	/**
+	 * set the metadata for this file
+	 * @param data the metadata hashmap
+	 */
+	public void setMetadata(HashMap<String, String> data) {
+		
+		this.createDate = data.get("date");
+		this.minLongitude = Double.parseDouble(data.get("min-longitude"));
+		this.minLatitude = Double.parseDouble(data.get("min-latitude"));
+		this.maxLongitude = Double.parseDouble(data.get("max-longitude"));
+		this.maxLatitude = Double.parseDouble(data.get("max-latitude"));
+		
+	}
+	
+	/**
+	 * get the create date
+	 * @return the date that the map file was created
+	 */
+	public String getCreateDate() {
+		return createDate;
+	}
+	
+	/**
+	 * get minimum longitude
+	 * @return the minimum longitude of the bounding box of the data in this map data file
+	 */
+	public double getMinLongitude() {
+		return minLongitude;
+	}
+	
+	/**
+	 * get minimum latitude
+	 * @return the minimum latitude of the bounding box of the data in this map data file
+	 */
+	public double getMinLatitude() {
+		return minLatitude;
+	}
+	
+	/**
+	 * get maximum longitude
+	 * @return the maximum longitude of the bounding box of the data in this map data file
+	 */
+	public double getMaxLongitude() {
+		return maxLongitude;
+	}
+	
+	/**
+	 * get maximum latitude
+	 * @return the maximum latitude of the bounding box of the data in this map data file
+	 */
+	public double getMaxLatitude() {
+		return maxLatitude;
+	}
+	
 	/* 
 	 * parcelable specific methods
 	 */
@@ -88,6 +149,11 @@ public class MapDataInfo implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(fileName);
+		dest.writeString(createDate);
+		dest.writeDouble(minLongitude);
+		dest.writeDouble(minLatitude);
+		dest.writeDouble(maxLongitude);
+		dest.writeDouble(maxLatitude);
 	}
 	
 	/*
@@ -108,5 +174,25 @@ public class MapDataInfo implements Parcelable {
      */
     private MapDataInfo(Parcel in) {
     	fileName = in.readString();
+    	createDate = in.readString();
+    	minLongitude = in.readDouble();
+    	minLatitude = in.readDouble();
+    	maxLongitude = in.readDouble();
+    	maxLatitude = in.readDouble();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+    	
+    	StringBuilder mBuilder = new StringBuilder();
+    	mBuilder.append("File: " + fileName + "\n");
+    	mBuilder.append("Created: " + createDate + "\n");
+    	mBuilder.append("Min lat/lng: " + Double.toString(minLatitude) + "," + Double.toString(minLatitude) + "\n");
+    	mBuilder.append("Max lat/lng: " + Double.toString(maxLatitude) + "," + Double.toString(maxLatitude) + "\n");
+    	
+    	return mBuilder.toString();
     }
 }
