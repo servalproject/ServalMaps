@@ -58,7 +58,7 @@ public class Rhizome {
 		}
 		
 		if(FileUtils.isFileReadable(filePath) == false) {
-			throw new IllegalArgumentException("unable to access the specified file");
+			throw new IllegalArgumentException("unable to access the specified file '" + filePath + "'");
 		}
 		
 		// get access to the preferences
