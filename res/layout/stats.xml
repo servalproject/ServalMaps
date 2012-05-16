@@ -28,6 +28,30 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+        
+         <TableRow
+            android:id="@+id/tableRow0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/stats_ui_lbl_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+                android:text="@string/stats_ui_lbl_version" />
+
+            <TextView
+                android:id="@+id/stats_ui_txt_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+            
+        </TableRow>
 
         <TableRow
             android:id="@+id/tableRow1"

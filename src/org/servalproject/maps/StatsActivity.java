@@ -32,6 +32,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -54,9 +57,10 @@ public class StatsActivity extends Activity implements OnClickListener {
 	/*
 	 * private class level variables
 	 */
-	private String[] dataElems = new String[5];
+	private String[] dataElems = new String[6];
 
 	private String[] dataLabels = {
+			"Version number:",
 			"Location records:", 
 			"POI records:", 
 			"Total photos:", 
@@ -84,10 +88,21 @@ public class StatsActivity extends Activity implements OnClickListener {
         
         Cursor mCursor = mContentResolver.query(LocationsContract.CONTENT_URI, mProjection, null, null, null);
         
-        TextView mTextView = (TextView) findViewById(R.id.stats_ui_txt_locations);
+        TextView mTextView = (TextView) findViewById(R.id.stats_ui_txt_version);
+        
+        try {
+        	PackageInfo mPackageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_META_DATA);
+        	mTextView.setText(mPackageInfo.versionName);
+        	dataElems[0] = mPackageInfo.versionName;
+        } catch (NameNotFoundException e) {
+        	Log.e(TAG, "unable to determine version information", e);
+        	mTextView.setText(String.format(getString(R.string.about_ui_lbl_version), getString(R.string.misc_not_available)));
+        }	
+        		
+        mTextView = (TextView) findViewById(R.id.stats_ui_txt_locations);
         mTextView.setText(Integer.toString(mCursor.getCount()));
         
-        dataElems[0] = Integer.toString(mCursor.getCount());
+        dataElems[1] = Integer.toString(mCursor.getCount());
         
         mCursor.close();
         
@@ -100,7 +115,7 @@ public class StatsActivity extends Activity implements OnClickListener {
         mTextView = (TextView) findViewById(R.id.stats_ui_txt_pois);
         mTextView.setText(Integer.toString(mCursor.getCount()));
         
-        dataElems[1] = Integer.toString(mCursor.getCount());
+        dataElems[2] = Integer.toString(mCursor.getCount());
         
         mCursor.close();
         
@@ -113,7 +128,7 @@ public class StatsActivity extends Activity implements OnClickListener {
         mTextView = (TextView) findViewById(R.id.stats_ui_txt_photos);
         mTextView.setText(Integer.toString(mCursor.getCount()));
         
-        dataElems[2] = Integer.toString(mCursor.getCount());
+        dataElems[3] = Integer.toString(mCursor.getCount());
         
         mCursor.close();
         
@@ -131,13 +146,13 @@ public class StatsActivity extends Activity implements OnClickListener {
 	        mCursor = mContentResolver.query(PointsOfInterestContract.CONTENT_URI, mProjection, mSelection, mSelectionArgs, null);
 	        mTextView.setText(Integer.toString(mCursor.getCount()));
 	        
-	        dataElems[3] = Integer.toString(mCursor.getCount());
+	        dataElems[4] = Integer.toString(mCursor.getCount());
 	        
 	        mCursor.close();
         } else {
         	mTextView.setText(R.string.misc_not_available);
         	
-        	dataElems[3] = getString(R.string.misc_not_available);
+        	dataElems[4] = getString(R.string.misc_not_available);
         }
         
         // uptime
@@ -149,10 +164,10 @@ public class StatsActivity extends Activity implements OnClickListener {
         if(mUptime > 0) {
         	mTextView.setText(TimeUtils.getMillisHumanReadable(mUptime, this));
         	
-        	dataElems[4] = TimeUtils.getMillisHumanReadable(mUptime, this);
+        	dataElems[5] = TimeUtils.getMillisHumanReadable(mUptime, this);
         } else {
         	mTextView.setText(String.format(getString(R.string.misc_age_calculation_seconds), 0));
-        	dataElems[4] = "0";
+        	dataElems[5] = "0";
         }
         
         // add a click listener to the button
