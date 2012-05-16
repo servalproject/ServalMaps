@@ -64,7 +64,7 @@ public class StatsActivity extends Activity implements OnClickListener {
 			"Location records:", 
 			"POI records:", 
 			"Total photos:", 
-			"Photos taken by you:", 
+			"Photos taken by user:", 
 			"Core service uptime:"};
 	
 	/*
@@ -141,7 +141,7 @@ public class StatsActivity extends Activity implements OnClickListener {
         
         if(mSelectionArgs[0] != null) {
         
-	        mSelection = PointsOfInterestContract.Table.PHOTO + " = ?";
+	        mSelection = PointsOfInterestContract.Table.PHONE_NUMBER + " = ? AND " + PointsOfInterestContract.Table.PHOTO + " IS NOT NULL";
 	        
 	        mCursor = mContentResolver.query(PointsOfInterestContract.CONTENT_URI, mProjection, mSelection, mSelectionArgs, null);
 	        mTextView.setText(Integer.toString(mCursor.getCount()));
@@ -164,7 +164,7 @@ public class StatsActivity extends Activity implements OnClickListener {
         if(mUptime > 0) {
         	mTextView.setText(TimeUtils.getMillisHumanReadable(mUptime, this));
         	
-        	dataElems[5] = TimeUtils.getMillisHumanReadable(mUptime, this);
+        	dataElems[5] = Long.toString(mUptime);
         } else {
         	mTextView.setText(String.format(getString(R.string.misc_age_calculation_seconds), 0));
         	dataElems[5] = "0";
@@ -204,10 +204,7 @@ public class StatsActivity extends Activity implements OnClickListener {
 	
 	// zip up the files and send them
 	private void zipAndSendFiles() {
-		
-		// disable the button
-		
-		
+
 		// check and see if a network connection is available
 		if(HttpUtils.isOnline(this) == false) {
 			// no network connection is available
