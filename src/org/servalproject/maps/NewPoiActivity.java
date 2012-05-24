@@ -303,9 +303,17 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	        	}
 	        } else if (resultCode == RESULT_CANCELED) {
 	            // User cancelled the image capture
+	        	photoFileUri = null;
 	        } else {
 	            // Image capture failed, advise user
 	        	Toast.makeText(this, R.string.new_poi_toast_no_photo, Toast.LENGTH_SHORT).show();
+	        	photoFileUri = null;
+	        }
+	        
+	        // check to see if we need to update the text of the photo
+	        if(photoFileUri != null) {
+	        	Button mButton = (Button) findViewById(R.id.new_poi_ui_btn_photo);
+	        	mButton.setText(getString(R.string.new_poi_ui_btn_photo_replace));
 	        }
 	    }
 	}
