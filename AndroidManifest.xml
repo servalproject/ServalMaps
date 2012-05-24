@@ -26,28 +26,52 @@
     android:versionName="0.3" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
+
+    <!-- uses features -->
+    <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
+    <uses-feature android:required="true" android:name="android.hardware.wifi"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+
+    <!-- uses permissions -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    
+    <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/>
+    <uses-permission android:name="org.servalproject.rhizome.RECIEVE_FILE"/>
+    
     <uses-permission android:name="org.servalproject.maps.MAP_DATA"/>
+    <uses-permission android:name="org.servalproject.maps.provider.READ_ITEMS"/>
+    <uses-permission android:name="org.servalproject.maps.provider.WRITE_ITEMS"/>
+    
+    <!-- custom permissions -->
     <permission 
         android:description="@string/system_permission_map_data_description" 
         android:protectionLevel="normal" 
         android:name="org.servalproject.maps.MAP_DATA" 
         android:label="@string/system_permission_map_data_label">
     </permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
-    <uses-feature android:required="true" android:name="android.hardware.wifi"/>
-    <permission android:label="@string/system_permission_provider_read_map_items_label" android:protectionLevel="signature" android:description="@string/system_permission_provider_read_map_items_description" android:name="org.servalproject.maps.provider.READ_ITEMS"></permission>
-    <permission android:label="@string/system_permission_provider_write_map_items_label" android:protectionLevel="signature" android:description="@string/system_permission_provider_write_map_items_description" android:name="org.servalproject.maps.provider.WRITE_ITEMS"></permission>
-    <uses-permission android:name="org.servalproject.maps.provider.READ_ITEMS"/>
-    <uses-permission android:name="org.servalproject.maps.provider.WRITE_ITEMS"/>
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/>
-    <uses-permission android:name="org.servalproject.rhizome.RECIEVE_FILE"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <permission 
+        android:label="@string/system_permission_provider_read_map_items_label" 
+        android:protectionLevel="signature" 
+        android:description="@string/system_permission_provider_read_map_items_description" 
+        android:name="org.servalproject.maps.provider.READ_ITEMS">
+    </permission>
+    <permission 
+        android:label="@string/system_permission_provider_write_map_items_label" 
+        android:protectionLevel="signature" 
+        android:description="@string/system_permission_provider_write_map_items_description" 
+        android:name="org.servalproject.maps.provider.WRITE_ITEMS">
+    </permission>
+    <permission 
+        android:name="org.servalprokect.maps.provider.READ_POI_ITEMS" 
+        android:label="@string/system_permission_provider_read_poi_items_label" 
+        android:description="@string/system_permission_provider_read_poi_items_description" 
+        android:protectionLevel="normal">
+    </permission>
 
     <application
         android:icon="@drawable/ic_launcher"
@@ -64,25 +88,41 @@
             </intent-filter>
         </activity>
         <activity android:name=".MapActivity"></activity>
+        <activity android:name=".PeerInfoActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".NewPoiActivity"></activity>
+        <activity android:name=".PoiInfoActivity"></activity>
+        <activity android:name=".PoiListActivity"></activity>
+        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".ExportActivity"></activity>
+        <activity android:name=".DeleteActivity"></activity>
+        <activity android:name=".StatsActivity"></activity>
+        
         <!-- services -->
         <service 
             android:name=".services.MapDataService"
-            android:permission="org.servalproject.maps.MAP_DATA" android:exported="true">
+            android:permission="org.servalproject.maps.MAP_DATA" 
+            android:exported="true">
             <intent-filter>
                 <action android:name="org.servalproject.maps.MAP_DATA" />
             </intent-filter>
         </service>
         <service android:name=".services.CoreService"></service>
-        <provider android:authorities="org.servalproject.maps.provider.items" android:enabled="true" android:name=".provider.MapItems" android:writePermission="org.servalproject.maps.provider.WRITE_ITEMS" android:exported="true" android:description="@string/system_provider_map_items_description" android:label="@string/system_provider_map_items_label" android:readPermission="org.servalproject.maps.provider.READ_ITEMS"></provider>
-        <activity android:name=".PeerInfoActivity"></activity>
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name="NewPoiActivity"></activity>
-        <activity android:name="PoiInfoActivity"></activity>
-        <activity android:name="PoiListActivity"></activity>
-        <activity android:name="AboutActivity"></activity>
-        <activity android:name="ExportActivity"></activity>
-        <activity android:name="DeleteActivity"></activity>
-        <activity android:name="StatsActivity"></activity>
+        
+        <!-- provider -->
+        <provider 
+            android:authorities="org.servalproject.maps.provider.items" 
+            android:enabled="true" 
+            android:name=".provider.MapItems" 
+            android:writePermission="org.servalproject.maps.provider.WRITE_ITEMS" 
+            android:exported="true" 
+            android:description="@string/system_provider_map_items_description" 
+            android:label="@string/system_provider_map_items_label" 
+            android:readPermission="org.servalproject.maps.provider.READ_ITEMS">
+            <path-permission 
+                android:pathPattern="org.servalproject.maps.provider.items/poi/*" 
+                android:readPermission="org.servalprokect.maps.provider.READ_POI_ITEMS"/>
+        </provider>
     </application>
 
 </manifest>

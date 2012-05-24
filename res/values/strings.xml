@@ -205,6 +205,10 @@
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>
     <string name="system_permission_map_data_description">Request and receive information about the available map data files</string>
+    
+    <string name="system_permission_provider_read_poi_items_label">Read information about Points of Interest</string>
+    <string name="system_permission_provider_read_poi_items_description">Read information about the Points of Interest that can be displayed on the map</string>
+    
     <string name="system_permission_provider_read_map_items_label">Read information about items on a map</string>
     <string name="system_permission_provider_read_map_items_description">Read information about the location markers and POI markers on a map</string>
     <string name="system_permission_provider_write_map_items_label">Write information about items onto a map</string>

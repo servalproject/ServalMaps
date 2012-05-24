@@ -105,7 +105,7 @@ public class MapItems extends ContentProvider {
 			if(TextUtils.isEmpty(selection) == true) {
 				selection = LocationsContract.Table._ID + " = " + uri.getLastPathSegment();
 			} else {
-				selection += "AND " + LocationsContract.Table._ID + " = " + uri.getLastPathSegment();
+				selection += " AND " + LocationsContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
 			mMatchedUri = LOCATION_ITEM_URI;
 			break;
@@ -125,7 +125,7 @@ public class MapItems extends ContentProvider {
 			if(TextUtils.isEmpty(selection) == true) {
 				selection = PointsOfInterestContract.Table._ID + " = " + uri.getLastPathSegment();
 			} else {
-				selection += "AND " + PointsOfInterestContract.Table._ID + " = " + uri.getLastPathSegment();
+				selection += " AND " + PointsOfInterestContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
 			mMatchedUri = POI_ITEM_URI;
 			break;
@@ -236,6 +236,10 @@ public class MapItems extends ContentProvider {
 	}
 	
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
+	 */
 	@Override
 	public synchronized int delete(Uri uri, String selection, String[] selectionArgs) {
 		
@@ -277,6 +281,10 @@ public class MapItems extends ContentProvider {
 		return count;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.content.ContentProvider#update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
+	 */
 	@Override
 	public synchronized int update(Uri arg0, ContentValues arg1, String arg2, String[] arg3) {
 		//TODO implement code when required
