@@ -57,7 +57,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "NewPoiActivity";
 	
 	private final int MAX_DESCRIPTION_CHARACTERS = 250;

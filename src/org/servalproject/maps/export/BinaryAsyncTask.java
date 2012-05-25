@@ -53,7 +53,7 @@ public class BinaryAsyncTask extends AsyncTask<String, Integer, Integer> {
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "BinaryExportTask";
 	
 	/*

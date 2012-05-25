@@ -41,7 +41,7 @@ public class NewPoiOverlay extends Overlay {
 	/*
 	 *  private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private String TAG = "NewPoiOverlay";
 	
 	private final long VIBRATE_DURATION = 300; // 300 milliseconds

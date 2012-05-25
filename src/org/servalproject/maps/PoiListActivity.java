@@ -46,7 +46,7 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "PoiListActivity";
 	
 	private final String PREFERENCE_NAME = "preferences_poi_list_sort";

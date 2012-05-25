@@ -36,7 +36,7 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String TAG = "BatteryLevelReceiver";
 	
 	/*

@@ -39,7 +39,7 @@ public class JsonLocationWriter implements Runnable {
 	
 	// declare class level constants
 	private final String TAG = "JsonLocationWriter";
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	
 	// declare class level variables
 	private volatile long updateDelay;

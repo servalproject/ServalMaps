@@ -48,7 +48,7 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "DeleteTask";
 	
 	/*

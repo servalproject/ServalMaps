@@ -35,7 +35,7 @@ public class OverlayList extends ArrayItemizedOverlay {
 	
 	// declare class level constants
 	private final String TAG = "OverlayList";
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	
 	// declare class level variables
 	private Context context;

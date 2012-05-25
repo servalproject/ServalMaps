@@ -40,7 +40,7 @@ public class PointsOfInterestWorker implements Runnable {
 	 * private class level constants
 	 */
 	private final String TAG = "PointsOfInterestWorker";
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	
 	private final long sleepTime = 300;
 	
