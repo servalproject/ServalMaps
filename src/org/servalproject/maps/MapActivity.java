@@ -65,7 +65,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "MapActivity";
 	
 	/*

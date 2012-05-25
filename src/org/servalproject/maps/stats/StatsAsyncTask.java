@@ -63,7 +63,7 @@ public class StatsAsyncTask extends AsyncTask<Void, Integer, Integer> {
 	private final int UPLOAD_FAILED = 101;
 	private final int UPLOAD_SUCCESS = 102;
 	
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "StatsTask";
 	
 	/*
@@ -257,7 +257,9 @@ public class StatsAsyncTask extends AsyncTask<Void, Integer, Integer> {
 		
 		mPrinter.close();
 		
-		Log.d(TAG, mOutputFile.getCanonicalPath());
+		if(V_LOG) {
+			Log.v(TAG, mOutputFile.getCanonicalPath());
+		}
 
 		// return the file handle
 		return mOutputFile;		
@@ -287,7 +289,9 @@ public class StatsAsyncTask extends AsyncTask<Void, Integer, Integer> {
 		
 		mPrinter.close();
 		
-		Log.d(TAG, mOutputFile.getCanonicalPath());
+		if(V_LOG) {
+			Log.v(TAG, mOutputFile.getCanonicalPath());
+		}
 
 		// return the file handle
 		return mOutputFile;	

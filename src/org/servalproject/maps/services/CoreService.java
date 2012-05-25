@@ -60,7 +60,7 @@ public class CoreService extends Service {
 
 	private final String JSON_UPDATE_DELAY_DEFAULT = "60000";
 
-	private final boolean V_LOG = true;
+	private final boolean V_LOG = false;
 	private final String  TAG = "CoreService";
 
 	private final int THREAD_POOL_SIZE = 2;

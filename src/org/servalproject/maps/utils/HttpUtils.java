@@ -174,7 +174,7 @@ public class HttpUtils {
 	        	mResponse.append(mLine).append('\n');
 	        }
 	
-	        Log.d(TAG, mResponse.toString());
+	        //Log.d(TAG, mResponse.toString());
 	        
 	        return mResponse.toString();
 	        
