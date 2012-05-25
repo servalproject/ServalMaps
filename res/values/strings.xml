@@ -102,9 +102,15 @@
     
     <string name="about_ui_btn_stats">Statistics</string>
     <string name="about_ui_btn_licenses">Licenses</string>
+    <string name="about_ui_btn_contact">Contact</string>
     <string name="about_ui_btn_about">About</string>
     
+    <string name="about_ui_intent_chooser">Send feedback email&#8230;</string>
+    <string name="about_email_subject">Feedback on Serval Maps</string>
+    
     <string name="about_ui_lbl_version">Serval Maps Version: %1$s</string>
+    
+    <string name="about_ui_dialog_no_email">A default email client could not be found, please send any feedback you may have to %1$s</string>
     
     <!-- Delete Activity -->
     <string name="delete_ui_lbl_heading">Delete Data</string>
@@ -230,6 +236,9 @@
     
     <!-- file upload strings -->
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
+    
+    <!-- contact strings -->
+    <string name="system_contact_email">maps@servalproject.org</string>
 
     <!-- misc strings -->
     <string name="misc_not_available">Not Available</string>

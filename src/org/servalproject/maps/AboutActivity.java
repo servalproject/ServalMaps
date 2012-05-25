@@ -19,11 +19,16 @@
  */
 package org.servalproject.maps;
 
+import java.util.List;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -60,6 +65,9 @@ public class AboutActivity extends Activity implements OnClickListener {
         
         // associate click handlers with the buttons
         Button mButton = (Button) findViewById(R.id.about_ui_btn_stats);
+        mButton.setOnClickListener(this);
+        
+        mButton = (Button) findViewById(R.id.about_ui_btn_contact);
         mButton.setOnClickListener(this);
         
         licensesBtn = (Button) findViewById(R.id.about_ui_btn_licenses);
@@ -99,6 +107,42 @@ public class AboutActivity extends Activity implements OnClickListener {
 				licensesBtn.setText(R.string.about_ui_btn_about);
 				licenses = true;
 			}
+		case R.id.about_ui_btn_contact:
+			
+			// check to see if we can potentially send an email
+			Intent mIntent = new Intent(android.content.Intent.ACTION_SEND);
+			PackageManager mPackageManager = getPackageManager();
+			
+			List<ResolveInfo> mInfoList = mPackageManager.queryIntentActivities(mIntent, PackageManager.MATCH_DEFAULT_ONLY);
+			
+			if(mInfoList.size() > 0) {
+				// an email client is likely to be installed
+				// send a contact email
+				mIntent.setType("plain/text");
+				mIntent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{getString(R.string.system_contact_email)});
+				mIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.about_email_subject));
+				
+				startActivity(Intent.createChooser(mIntent, getString(R.string.about_ui_intent_chooser)));
+			} else {
+				// no email client is installed
+				// show a dialog 
+				
+				String mMessage = String.format(getString(R.string.about_ui_dialog_no_email), getString(R.string.system_contact_email));
+				
+				AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+				mBuilder.setMessage(mMessage)
+				.setCancelable(false)
+				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				AlertDialog mAlert = mBuilder.create();
+				mAlert.show();
+			}
+			break;
+		default:
+			Log.w(TAG, "an unknown view fired the onClick event");
 		}
 	}
 }
