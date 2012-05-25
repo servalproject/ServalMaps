@@ -1,68 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/smapsLayoutmatch"
     android:orientation="vertical" 
     android:id="@+id/poi_list_ui_entry">
 
     <TextView
         android:id="@+id/poi_list_ui_entry_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/smapsHeader" />
     
      <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        style="@style/smapsLayout" >
 
         <TableRow
             android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
             
             <TextView
 		        android:id="@+id/poi_list_ui_entry_age_lbl"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped" 
 		        android:text="@string/poi_info_ui_lbl_age"/>
 		    
 		    <TextView
 		        android:id="@+id/poi_list_ui_entry_age"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+		        style="@style/smapsTextwrapped" />
 		    
         </TableRow>
         
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 		    
             <TextView
 		        android:id="@+id/poi_list_ui_lbl_distance"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped" 
 		        android:text="@string/poi_info_ui_lbl_distance" />
 		
 		    <TextView
 		        android:id="@+id/poi_list_ui_txt_distance"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped" 
 		        android:text="" />
     
         </TableRow>
@@ -70,8 +45,7 @@
    
    <View 
       android:id="@+id/Separator"
-	  android:layout_width="match_parent"
-	  android:layout_height="wrap_content"
+	  style="@style/smapsLayout"
 	  android:background="?android:attr/listDivider" />
 
 </LinearLayout>

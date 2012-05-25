@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright (C) 2012 The Serval Project
+ *
+ * This file is part of the Serval Maps Software
+ *
+ * Serval Maps Software is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This source code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this source code; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,14 +27,8 @@
     
     <TextView
         android:id="@+id/delete_ui_lbl_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/delete_ui_lbl_heading"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/smapsHeader"
+        android:text="@string/delete_ui_lbl_heading" />
     
     <!-- <ImageView
         android:id="@+id/delete_ui_lbl_warning"
@@ -28,35 +43,22 @@
     
      <TextView
         android:id="@+id/delete_ui_lbl_description_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/delete_ui_lbl_description_top"
-        android:drawableLeft="@drawable/warning_sign"
-        android:contentDescription="@string/delete_ui_lbl_warning"
-        android:drawablePadding="@dimen/ui_elem_margin_right"/>
+        style="@style/smapsTextalign"
+        android:text="@string/delete_ui_lbl_description_top" />
 
      <TableLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content" >
+         style="@style/smapsLayout" >
 
          <TableRow
              android:id="@+id/tableRow1"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content" >
+             style="@style/smapsWrap" >
              
              <ImageView
 		        android:id="@+id/delete_ui_lbl_emo_location_records"
-		        android:layout_width="14sp"
-		        android:layout_height="14sp"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
-		        android:contentDescription="@string/delete_ui_emo_smiley"
 		        android:src="@drawable/emo_im_happy"
-		        android:visibility="invisible" />
+		        style="@style/smapsImages"
+		        android:contentDescription="@string/delete_ui_emo_smiley"
+        		android:visibility="invisible" />
              
              
              <ProgressBar
@@ -68,11 +70,7 @@
              
              <TextView
 		        android:id="@+id/delete_ui_lbl_location_records"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped"
 		        android:text="@string/delete_ui_lbl_location_records"/>
              
          </TableRow>
@@ -84,11 +82,7 @@
              
              <ImageView
 		        android:id="@+id/delete_ui_lbl_emo_poi_records"
-		        android:layout_width="14sp"
-		        android:layout_height="14sp"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsImages"
 		        android:contentDescription="@string/delete_ui_emo_smiley"
 		        android:src="@drawable/emo_im_happy"
 		        android:visibility="invisible"  />
@@ -102,11 +96,7 @@
              
              <TextView
 		        android:id="@+id/delete_ui_lbl_poi_records"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped"
 		        android:text="@string/delete_ui_lbl_poi_records"/>
          </TableRow>
 
@@ -117,11 +107,7 @@
              
              <ImageView
 		        android:id="@+id/delete_ui_lbl_emo_data_files"
-		        android:layout_width="14sp"
-		        android:layout_height="14sp"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsImages"
 		        android:contentDescription="@string/delete_ui_emo_smiley"
 		        android:src="@drawable/emo_im_happy"
 		        android:visibility="invisible"  />
@@ -135,11 +121,7 @@
              
              <TextView
 		        android:id="@+id/delete_ui_lbl_data_files"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped"
 		        android:text="@string/delete_ui_lbl_data_files"/>
          </TableRow>
 
@@ -150,11 +132,7 @@
              
              <ImageView
 		        android:id="@+id/delete_ui_lbl_emo_photos"
-		        android:layout_width="14sp"
-		        android:layout_height="14sp"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsImages"
 		        android:contentDescription="@string/delete_ui_emo_smiley"
 		        android:src="@drawable/emo_im_happy"
 		        android:visibility="invisible"/>
@@ -168,32 +146,19 @@
                           
              <TextView
 		        android:id="@+id/delete_ui_lbl_photos"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-		        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-		        android:layout_marginRight="@dimen/ui_elem_margin_right"
+		        style="@style/smapsTextwrapped"
 		        android:text="@string/delete_ui_lbl_photos"/>
          </TableRow>
      </TableLayout>
      
      <TextView
         android:id="@+id/delete_ui_lbl_description_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/delete_ui_lbl_description_bottom"/>
-     
+        style="@style/smapsTextwrapped"
+        android:text="@string/delete_ui_lbl_description_bottom"/>    
      
      <Button
          android:id="@+id/delete_ui_btn_delete"
-         android:layout_width="fill_parent"
-         android:layout_height="wrap_content"
-         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-         android:layout_marginLeft="@dimen/ui_elem_margin_left"
-         android:layout_marginRight="@dimen/ui_elem_margin_right"
+         style="@style/smapsButton"
          android:text="@string/delete_ui_btn_delete" />
 
 </LinearLayout>

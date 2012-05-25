@@ -21,46 +21,30 @@
  */
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/smapsLayoutmatch"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/peer_info_ui_lbl_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/peer_info_ui_lbl_heading"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/smapsHeader"
+        android:text="@string/peer_info_ui_lbl_heading" />
 
     <TableLayout
         android:id="@+id/tableLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        style="@style/smapsLayout" >
 
         <TableRow
             android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_phone_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/peer_info_ui_lbl_phone_number" />
 
             <TextView
                 android:id="@+id/peer_info_ui_txt_phone_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
+                style="@style/smapsTextwrapped"
                 android:layout_marginRight="@dimen/ui_elem_margin_right"
                 android:text="" />
 
@@ -68,100 +52,64 @@
 
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_latitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/peer_info_ui_lbl_latitude" />
 
             <TextView
                 android:id="@+id/peer_info_ui_txt_latitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="" />
 
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_longitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/peer_info_ui_lbl_longitude" />
 
             <TextView
                 android:id="@+id/peer_info_ui_txt_longitude"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="" />
 
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_age"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/peer_info_ui_lbl_age" />
 
             <TextView
                 android:id="@+id/peer_info_ui_txt_age"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="" />
 
         </TableRow>
         
          <TableRow
             android:id="@+id/tableRow5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/peer_info_ui_lbl_distance" />
 
             <TextView
                 android:id="@+id/peer_info_ui_txt_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="" />
 
         </TableRow>
@@ -169,27 +117,16 @@
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        style="@style/smapsLayout" >
 
         <Button
             android:id="@+id/peer_info_ui_btn_call"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-            android:layout_marginLeft="@dimen/ui_elem_margin_left"
-            android:layout_marginRight="@dimen/ui_elem_margin_right"
-            android:layout_weight="1.0"
+            style="@style/smapsButton"
             android:text="@string/peer_info_ui_btn_call" />
 
         <Button
             android:id="@+id/peer_info_ui_btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-            android:layout_marginLeft="@dimen/ui_elem_margin_left"
-            android:layout_marginRight="@dimen/ui_elem_margin_right"
-            android:layout_weight="1.0"
+            style="@style/smapsButton"
             android:text="@string/peer_info_ui_btn_back" />
 
     </LinearLayout>
