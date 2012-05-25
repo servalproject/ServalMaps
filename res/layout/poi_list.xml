@@ -6,19 +6,12 @@
     
     <TextView
         android:id="@+id/poi_list_ui_lbl_heading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/poi_list_ui_lbl_heading"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/smapsHeader"
+        android:text="@string/poi_list_ui_lbl_heading" />
     
     <ListView
         android:id="@android:id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        style="@style/smapsLayoutfillall"/>
     
     
 

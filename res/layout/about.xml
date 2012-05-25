@@ -27,67 +27,43 @@
 
     <TextView
         android:id="@+id/about_ui_lbl"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        style="@style/smapsHeader"
         android:gravity="center_vertical|center_horizontal"
-        android:text="@string/about_ui_lbl"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="@string/about_ui_lbl" />
     
     <TextView
         android:id="@+id/about_ui_lbl_version"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom" />
+        style="@style/smapsText" />
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_weight="1.0" >
+        style="@style/smapsScroll" >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
-
+            style="@style/smapsLayout" >
+            
             <TextView
                 android:id="@+id/about_ui_txt"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/ui_elem_margin_left"
-                android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsText"
                 android:text="@string/about_ui_txt" />
+            
         </LinearLayout>
+        
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/about_ui_btn_stats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-            android:layout_marginLeft="@dimen/ui_elem_margin_left"
-            android:layout_marginRight="@dimen/ui_elem_margin_right"
-            android:layout_weight="1.0"
-            android:text="@string/about_ui_btn_stats" />
-
-        <Button
-            android:id="@+id/about_ui_btn_licenses"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-            android:layout_marginLeft="@dimen/ui_elem_margin_left"
-            android:layout_marginRight="@dimen/ui_elem_margin_right"
-            android:layout_weight="1.0"
-            android:text="@string/about_ui_btn_licenses" />
-    </LinearLayout>
+	<LinearLayout
+	    style="@style/smapsLayout" >
+        
+		<Button
+		    style="@style/smapsButton"
+		    android:id="@+id/about_ui_btn_stats"
+		    android:text="@string/about_ui_btn_stats" /> 
+		    
+		<Button
+		    style="@style/smapsButton"
+		    android:id="@+id/about_ui_btn_licenses"
+		    android:text="@string/about_ui_btn_licenses" />
+		
+	</LinearLayout>
 
 </LinearLayout>

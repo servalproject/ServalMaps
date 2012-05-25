@@ -27,31 +27,17 @@
 
     <TextView
         android:id="@+id/disclaimer_ui_lbl_app_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:text="@string/app_name"
-        android:gravity="center_vertical|center_horizontal"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        style="@style/smapsHeader"
+        android:text="@string/app_name" />
 
     <TextView
         android:id="@+id/disclaimer_ui_lbl_about"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        style="@style/smapsTextfill"
         android:text="@string/disclaimer_ui_lbl_about" />
 
     <Button
         android:id="@+id/disclaimer_ui_btn_continue"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        style="@style/smapsButtonexport"
         android:text="@string/disclaimer_ui_btn_continue" />
 
 </LinearLayout>

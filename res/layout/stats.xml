@@ -6,14 +6,8 @@
     
     <TextView
         android:id="@+id/stats_ui_lbl"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/stats_ui_lbl"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        style="@style/smapsHeader"
+        android:text="@string/stats_ui_lbl" />
     
     <TextView
         android:id="@+id/stats_ui_txt"
@@ -31,184 +25,114 @@
         
          <TableRow
             android:id="@+id/tableRow0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/stats_ui_lbl_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/stats_ui_lbl_version" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
             
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/stats_ui_lbl_locations"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"
+                style="@style/smapsTextwrapped"
                 android:text="@string/stats_ui_lbl_locations" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_locations"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
             
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
             
             <TextView
                 android:id="@+id/stats_ui_lbl_pois"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/stats_ui_lbl_pois"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
 
             <TextView
                 android:id="@+id/stats_ui_txt_pois"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
             
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
             
             <TextView
                 android:id="@+id/stats_ui_lbl_photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/stats_ui_lbl_photos"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
 
             <TextView
                 android:id="@+id/stats_ui_txt_photos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
             
         </TableRow>
         
         <TableRow
             android:id="@+id/tableRow4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
             
             <TextView
                 android:id="@+id/stats_ui_lbl_photos_by_you"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/stats_ui_lbl_photos_by_you"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
 
             <TextView
                 android:id="@+id/stats_ui_txt_photos_by_you"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
             
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
             
             <TextView
                 android:id="@+id/stats_ui_lbl_uptime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/stats_ui_lbl_uptime"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
 
             <TextView
                 android:id="@+id/stats_ui_txt_uptime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-        		android:layout_marginRight="@dimen/ui_elem_margin_right"/>
+                style="@style/smapsTextwrapped"/>
             
         </TableRow>
         
         <TableRow
             android:id="@+id/tableRow6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            style="@style/smapsWrap" >
             
                 <Button
 			         android:id="@+id/stats_ui_btn_send"
-			         android:layout_width="fill_parent"
-			         android:layout_height="wrap_content"
-			         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-			         android:layout_marginLeft="@dimen/ui_elem_margin_left"
+			         style="@style/smapsButton"
 			         android:text="@string/stats_ui_btn_send" />
                 
                     <LinearLayout
-				        android:layout_width="match_parent"
-				        android:layout_height="wrap_content"
+				        style="@style/smapsLayout"
 				        android:orientation="vertical" >
 				        
                     	<ProgressBar
 	                        android:id="@+id/stats_ui_progress_bar"
-	                        android:layout_width="wrap_content"
-	                        android:layout_height="wrap_content" 
-	                        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-				        	android:layout_marginLeft="@dimen/ui_elem_margin_left"
-				        	android:layout_marginRight="@dimen/ui_elem_margin_right"
-				        	android:visibility="invisible"
-	                        />
+				        	style="@style/smapsExporttext" />
 				        
                         <TextView
 			                android:id="@+id/stats_ui_txt_progress"
-			                android:layout_width="wrap_content"
-			                android:layout_height="wrap_content"
-			                android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-			        		android:layout_marginLeft="@dimen/ui_elem_margin_left"
-			        		android:layout_marginRight="@dimen/ui_elem_margin_right"
-			        		android:visibility="invisible"/>
+			        		style="@style/smapsExporttext"/>
 				        
 				    </LinearLayout>
         </TableRow>
