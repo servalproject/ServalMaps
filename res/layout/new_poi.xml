@@ -59,26 +59,43 @@
          android:id="@+id/new_poi_ui_geocord_layout"
     	 style="@style/smapsLayout"
     	 android:orientation="vertical" >
-     <TextView
-         android:id="@+id/new_poi_ui_lbl_latitude"
-         style="@style/smapsExport"
-         android:text="@string/new_poi_ui_lbl_latitude"/>
-
-    <EditText
-        android:id="@+id/new_poi_ui_txt_latitude"
-        style="@style/smapsSpinner"
-        android:inputType="numberDecimal|numberSigned" />
+            
+	     <TextView
+	         android:id="@+id/new_poi_ui_lbl_latitude"
+	         style="@style/smapsExport"
+	         android:text="@string/new_poi_ui_lbl_latitude"/>
+	
+	    <EditText
+	        android:id="@+id/new_poi_ui_txt_latitude"
+	        style="@style/smapsSpinner"
+	        android:inputType="numberDecimal|numberSigned" />
+	    
+	    <TextView
+	         android:id="@+id/new_poi_ui_lbl_longitude"
+	         style="@style/smapsExport"
+	         android:text="@string/new_poi_ui_lbl_longitude"/>
+	
+	    <EditText
+	        android:id="@+id/new_poi_ui_txt_longitude"
+	        style="@style/smapsSpinner"
+	        android:inputType="numberDecimal|numberSigned" />
+    </LinearLayout>
     
     <TextView
-         android:id="@+id/new_poi_ui_lbl_longitude"
-         style="@style/smapsExport"
-         android:text="@string/new_poi_ui_lbl_longitude"/>
+       android:id="@+id/new_poi_ui_lbl_tags"
+       style="@style/smapsExport"
+       android:text="@string/new_poi_ui_lbl_tags"/>
 
-    <EditText
-        android:id="@+id/new_poi_ui_txt_longitude"
-        style="@style/smapsSpinner"
-        android:inputType="numberDecimal|numberSigned" />
-    </LinearLayout>
+	<EditText
+	    android:id="@+id/new_poi_ui_txt_tags"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+	    android:layout_marginLeft="@dimen/ui_elem_margin_left"
+	    android:layout_marginRight="@dimen/ui_elem_margin_right"
+	    android:inputType="textNoSuggestions" >
+
+	</EditText>
     
     <Button
          android:id="@+id/new_poi_ui_btn_photo"

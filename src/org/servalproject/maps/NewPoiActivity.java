@@ -40,6 +40,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -120,6 +122,10 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         mTextView = (TextView) findViewById(R.id.new_poi_ui_txt_longitude);
         mTextView.setText(Double.toString(longitude));
         
+        // filter out characters from the tags
+        mTextView = (TextView) findViewById(R.id.new_poi_ui_txt_tags);
+        mTextView.setFilters(new InputFilter[]{tagFilter});
+        
         // listen for button presses
         Button mButton = (Button) findViewById(R.id.new_poi_ui_btn_save);
         mButton.setOnClickListener(this);
@@ -171,6 +177,22 @@ public class NewPoiActivity extends Activity implements OnClickListener{
     	
     };
 
+    // filter the input of tags
+    
+    // filter out characters that do not belong in tags
+    // TODO update with advanced filter pending outcomes of research
+    InputFilter tagFilter = new InputFilter() { 
+    	public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) { 
+    		for (int i = start; i < end; i++) { 
+    			if (!Character.isLetterOrDigit(source.charAt(i))) { // filter for letters and digits
+    				if(!Character.isWhitespace(source.charAt(i))) { // filter for white space
+    					return "";
+    				}
+    			} 
+    		} 
+    		return null; 
+    	} 
+    }; 
     /*
      * (non-Javadoc)
      * @see android.view.View.OnClickListener#onClick(android.view.View)
@@ -258,8 +280,12 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 				return;
 			}
 			
+			// get the tags
+			mView = (TextView) findViewById(R.id.new_poi_ui_txt_tags);
+			String mTags = mView.getText().toString();
+			
 			// add the new POI
-			if(addNewPoi(mTitle, mDescription) == true) {
+			if(addNewPoi(mTitle, mDescription, mTags) == true) {
 				finish();
 			}
 			break;
@@ -319,7 +345,7 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	}
 	
 	// add the new POI to the database
-	private boolean addNewPoi(String title, String description) {
+	private boolean addNewPoi(String title, String description, String tags) {
 		
 		// add the new POI to the database
 		ContentValues mValues = new ContentValues();
@@ -340,6 +366,11 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		mValues.put(PointsOfInterestContract.Table.TIMEZONE, TimeZone.getDefault().getID());
 		mValues.put(PointsOfInterestContract.Table.TITLE, title);
 		mValues.put(PointsOfInterestContract.Table.DESCRIPTION, description);
+		
+		// add the tags if required
+		if(tags != null && TextUtils.isEmpty(tags) == false) {
+			mValues.put(PointsOfInterestContract.Table.TAGS, tags);
+		}
 		
 		// check to see if a photo is available
 		if(photoFileUri != null) {
@@ -382,6 +413,4 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		
 		return true;
 	}
-
-	
 }
