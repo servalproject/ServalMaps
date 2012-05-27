@@ -102,6 +102,10 @@ public class PoiInfoActivity extends Activity implements OnClickListener {
 						mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TIMEZONE)),
 						getApplicationContext()));
 			
+			// show the tag list
+			mView = (TextView) findViewById(R.id.poi_info_ui_txt_tags);
+			mView.setText(mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.TAGS)));
+			
 			// check to see if we need to show the view photo button
 			photoName = mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO));
 			Button mButton = (Button) findViewById(R.id.poi_info_ui_btn_photo);

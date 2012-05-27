@@ -26,6 +26,15 @@
          android:id="@+id/poi_info_ui_txt_description"
          style="@style/smapsTextwrapped"
          android:minLines="3"/>
+     
+     <TextView
+         android:id="@+id/poi_info_ui_lbl_tags"
+         style="@style/smapsExport"
+         android:text="@string/poi_info_ui_lbl_tags"/>
+
+     <TextView
+         android:id="@+id/poi_info_ui_txt_tags"
+         style="@style/smapsTextwrapped"/>
 
      <TableLayout
          style="@style/smapsLayout" >
