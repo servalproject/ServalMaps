@@ -28,8 +28,6 @@ import org.servalproject.maps.utils.FileUtils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,6 +42,11 @@ public class Rhizome {
 	 */
 	private static final String TAG = "Rhizome";
 	
+	private static File getManifestPath(String path){
+		File file = new File(path);
+		File manifest = new File(file.getParent(), ".manifest-"+file.getName());
+		return manifest;
+	}
 	/**
 	 * add a file to the Rhizome repository
 	 * 
@@ -61,30 +64,20 @@ public class Rhizome {
 			throw new IllegalArgumentException("unable to access the specified file '" + filePath + "'");
 		}
 		
-		// get access to the preferences
-		SharedPreferences mPreferences = context.getSharedPreferences("rhizome", Context.MODE_PRIVATE);
-		
-		String mVersionName = new File(filePath).getName() + "-version";
-		
-		Long mVersion = mPreferences.getLong(mVersionName, 0);
-		
-		// increment the version
-		mVersion++;
-		
-		// get the name identifier
-		String mName = context.getString(R.string.app_name);
-		
 		// build the intent
 		Intent mIntent = new Intent("org.servalproject.rhizome.ADD_FILE");
+		
 		mIntent.putExtra("path", filePath);
-		mIntent.putExtra("version", mVersion);
-		mIntent.putExtra("author", mName);
+		
+		File manifest = getManifestPath(filePath);
+		if (manifest.exists()){
+			// pass in the previous manifest, so rhizome can update it
+			mIntent.putExtra("previous_manifest", manifest.getAbsolutePath());
+		}
+		// ask rhizome to save the new manifest here
+		mIntent.putExtra("save_manifest", manifest.getAbsolutePath());
 		context.getApplicationContext().startService(mIntent);
 		
-		// update version
-		Editor mEditor = mPreferences.edit();
-		mEditor.putLong(mVersionName, mVersion);
-		mEditor.commit();
 	}
 	
 	/**

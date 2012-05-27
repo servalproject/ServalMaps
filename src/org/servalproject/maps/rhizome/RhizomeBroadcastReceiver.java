@@ -22,7 +22,10 @@ package org.servalproject.maps.rhizome;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.ServalMaps;
@@ -35,7 +38,7 @@ import org.servalproject.maps.utils.MediaUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -53,112 +56,94 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 	/*
 	 * private class level variables
 	 */
-	ExecutorService executor;
+	private static final int THREAD_POOL_SIZE = 2;
 	
-	/**
-	 * constructor a new instance of this receiver providing it an executor service
-	 * used to manage the data import threads
-	 * 
-	 * @param executor used to manage the execution of data import threads
-	 * @throws IllegalArgumentException if executor is null
-	 */
-	public RhizomeBroadcastReceiver(ExecutorService executor) {
-		
-		if(executor == null) {
-			throw new IllegalArgumentException("the executor parameter is required");
-		}
-		
-		this.executor = executor;
-		
-	}
-
+	// keep a static weak reference to a thread pool
+	// this should allow it to shutdown when there are no files being processed
+	private static WeakReference<ExecutorService> executorRef;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
 	 */
+	
+	private void queue(Runnable r){
+		ExecutorService executor = null;
+		if (executorRef!=null){
+			executor = executorRef.get();
+		}
+		
+		if (executor == null){
+			executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+			executorRef = new WeakReference<ExecutorService>(executor);
+		}
+		
+		executor.submit(r);
+	}
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		Bundle mBundle = intent.getExtras();
-		
-		if(intent.getAction().equals("org.servalproject.rhizome.RECIEVE_FILE") == false) {
-			Log.e(TAG, "called with an intent with an unexepcted intent action");
-			return;
-		}
-		
-		// see if the file is one we want to work with
-		String mFilePath = mBundle.getString("path");
-		
-		if(mFilePath == null) {
-			Log.e(TAG, "called with an intent missing the 'path' extra");
-		}
-		
-		// check to see if the file path is to our own file
-		ServalMaps mServalMaps = (ServalMaps) context.getApplicationContext();
-		String mFileName = new File(mFilePath).getName();
-		String[] mFileParts = mFileName.split("-");
-		
-		String mPhoneNumber = mServalMaps.getPhoneNumber();
-		mPhoneNumber = mPhoneNumber.replace(" ", "");
-		mPhoneNumber = mPhoneNumber.replace("-", "");
-		
-		if(mFileParts[0].equals(mServalMaps.getPhoneNumber()) == true) { 
-			// this doesn't look like one of our own binary files
-			return;
-		}
-		
-		// is it one of our images?
-		if(mFileName.startsWith(MediaUtils.PHOTO_FILE_PREFIX) && mFileName.endsWith(".jpg")) {
-			// this is a serval maps photo
-			try {
-				FileUtils.copyFileToDir(mFilePath, MediaUtils.getMediaStore());
-				Log.d(TAG, MediaUtils.getMediaStore());
-			} catch (IOException e) {
-				Log.e(TAG, "unable to copy file", e);
-				return;
-			}
-		}
-		
-		// get the binary data directory
-		String mDataPath = Environment.getExternalStorageDirectory().getPath();
-		mDataPath += context.getString(R.string.system_path_binary_data);
-		
-		if(mFilePath.endsWith(BinaryFileContract.LOCATION_EXT) == true) {
-			// this is a binary location file
+		try{
 			
-			// copy and process the file
-			try {
-				
-				String mDataFile = FileUtils.copyFileToDirWithTmpName(mFilePath, mDataPath);				
-				LocationReadWorker mWorker = new LocationReadWorker(context, mDataFile);
-				executor.submit(mWorker);
-
-			} catch (IOException e) {
-				Log.e(TAG, "unable to copy file", e);
-				return;
-			}
-
-		} else if(mFilePath.endsWith(BinaryFileContract.POI_EXT) == true) {
-			// this is a binary POI file
-			
-			// copy and process the file
-			try {
-				
-				String mDataFile = FileUtils.copyFileToDirWithTmpName(mFilePath, mDataPath);
-				PointsOfInterestWorker mWorker = new PointsOfInterestWorker(context, mDataFile);
-				executor.submit(mWorker);
-
-			} catch (IOException e) {
-				Log.e(TAG, "unable to copy file", e);
-				return;
-			}
-		}
+			if(!intent.getAction().equals("org.servalproject.rhizome.RECIEVE_FILE"))
+				throw new IllegalArgumentException("called with an intent with an unexepcted intent action");
 		
-		if(V_LOG) {
-			Log.v(TAG, "received intent with action: " + intent.getAction());
-			Log.v(TAG, "file name: " + mBundle.getString("path"));
-			Log.v(TAG, "version: " + Long.toString(mBundle.getLong("version")));
-			Log.v(TAG, "name: " + mBundle.getString("name"));
+			// see if the file is one we want to work with
+			String mFileName = intent.getStringExtra("name");
+			Uri uri = intent.getData();
+			
+			if(mFileName == null)
+				throw new IllegalArgumentException("called with an intent missing the 'name' extra");
+		
+			// skip files that we sent
+			ServalMaps mServalMaps = (ServalMaps) context.getApplicationContext();
+			String[] mFileParts = mFileName.split("-");
+		
+			String mPhoneNumber = mServalMaps.getPhoneNumber();
+			mPhoneNumber = mPhoneNumber.replace(" ", "");
+			mPhoneNumber = mPhoneNumber.replace("-", "");
+			
+			if(mFileParts[0].equals(mServalMaps.getPhoneNumber())) { 
+				// this doesn't look like one of our own binary files
+				return;
+			}
+		
+			// is it one of our images?
+			if(mFileName.startsWith(MediaUtils.PHOTO_FILE_PREFIX) && mFileName.endsWith(".jpg")) {
+				// this is a serval maps photo
+				try {
+					File dest = new File(MediaUtils.getMediaStore(), mFileName);
+					Log.v(TAG, "Extracting image to "+dest.getAbsolutePath());
+					InputStream in = context.getContentResolver().openInputStream(uri);
+					FileUtils.copyFileToDir(in, dest);
+				} catch (IOException e) {
+					Log.e(TAG, "unable to copy file", e);
+				}
+				return;
+			}
+		
+			// get the binary data directory
+			String mDataPath = Environment.getExternalStorageDirectory().getPath();
+			mDataPath += context.getString(R.string.system_path_binary_data);
+			
+			if(mFileName.endsWith(BinaryFileContract.LOCATION_EXT)) {
+				// this is a binary location file
+				// process the file
+				Log.v(TAG, "Queing location reader for "+mFileName);
+				queue(new LocationReadWorker(context, uri));
+				return;
+			}
+			
+			if(mFileName.endsWith(BinaryFileContract.POI_EXT) == true) {
+				// this is a binary POI file
+				// process the file
+				Log.v(TAG, "Queing POI reader for "+mFileName);
+				queue(new PointsOfInterestWorker(context, uri));
+				return;
+			}
+		}catch(Exception e){
+			Log.e(TAG, e.getMessage(), e);
 		}
 	}
 }

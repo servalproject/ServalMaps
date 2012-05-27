@@ -22,8 +22,11 @@ package org.servalproject.maps.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
 import org.servalproject.maps.protobuf.BinaryFileContract;
@@ -98,6 +101,23 @@ public class FileUtils {
 		}
 	}
 	
+	public static void copyFileToDir(InputStream in, File destination) throws IOException {
+		try{
+			OutputStream out = new FileOutputStream(destination);
+			try{
+				byte buff[] = new byte[1024];
+				int read=0;
+				while((read = in.read(buff)) >=0){
+					out.write(buff, 0, read);
+				}
+			}finally{
+				out.close();
+			}
+		}finally{
+			in.close();
+		}
+	}
+	
 	/**
 	 * copies a file into a directory
 	 * 
@@ -107,43 +127,10 @@ public class FileUtils {
 	 * @throws IOException 
 	 */
 	public static String copyFileToDir(String filePath, String dirPath) throws IOException {
-		
-		// check the parameters
-		if(TextUtils.isEmpty(filePath) == true) {
-			throw new IllegalArgumentException("the filePath parameter is required");
-		}
-		
-		if(TextUtils.isEmpty(dirPath) == true) {
-			throw new IllegalArgumentException("the dirPath paramter is required");
-		}
-		
-		if(isFileReadable(filePath) == false) {
-			throw new IOException("unable to access the source file");
-		}
-		
-		if(isDirectoryWritable(dirPath) == false) {
-			throw new IOException("unable to access the destination directory");
-		}
-		
-		String mFileName = new File(filePath).getName();
-		
-		if(dirPath.endsWith(File.separator) == false) {
-			dirPath = dirPath + File.separator;
-		}
-		
-		// copy the file
-		// based on code found at the URL below and considered to be in the public domain
-		// http://stackoverflow.com/questions/1146153/copying-files-from-one-directory-to-another-in-java#answer-1146195
-		FileChannel mInputChannel = new FileInputStream(filePath).getChannel();
-		FileChannel mOutputChannel = new FileOutputStream(dirPath + mFileName).getChannel();
-		
-		mOutputChannel.transferFrom(mInputChannel, 0, mInputChannel.size());
-		
-		// play nice and tidy up
-		mInputChannel.close();
-		mOutputChannel.close();	
-		
-		return dirPath + mFileName;
+		File srcFile = new File(filePath);
+		File dstFile = new File(dirPath, srcFile.getName());
+		copyFileToDir(new FileInputStream(srcFile), dstFile);
+		return dstFile.getAbsolutePath();
 	}
 	
 	/**
@@ -333,4 +320,5 @@ public class FileUtils {
 			return fileName.substring(mLocation + 1);
 		}
 	}
+
 }

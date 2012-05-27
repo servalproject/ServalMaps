@@ -123,6 +123,13 @@
                 android:pathPattern="org.servalproject.maps.provider.items/poi/*" 
                 android:readPermission="org.servalprokect.maps.provider.READ_POI_ITEMS"/>
         </provider>
+        
+        <receiver android:name=".rhizome.RhizomeBroadcastReceiver">
+            <intent-filter>
+                <action android:name="org.servalproject.rhizome.RECIEVE_FILE"/>
+                <data android:scheme="content"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

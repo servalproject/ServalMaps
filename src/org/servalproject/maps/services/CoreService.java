@@ -63,8 +63,6 @@ public class CoreService extends Service {
 	private final boolean V_LOG = false;
 	private final String  TAG = "CoreService";
 
-	private final int THREAD_POOL_SIZE = 2;
-
 	// class level variables
 	private LocationCollector locationCollector;
 	private LocationManager locationManager;
@@ -75,10 +73,6 @@ public class CoreService extends Service {
 
 	private SharedPreferences preferences = null;
 
-	private RhizomeBroadcastReceiver rhizomeBroadcastReceiver = null;
-	
-	private ExecutorService executor = null;
-	
 	private Long uptimeStart;
 
 	/*
@@ -142,16 +136,6 @@ public class CoreService extends Service {
 			Log.v(TAG, "Service Created");
 		}
 		
-		// create the executor service with the required thread pool
-		executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-
-		// register for the Rhizome related broadcasts
-		rhizomeBroadcastReceiver = new RhizomeBroadcastReceiver(executor);
-
-		IntentFilter mBroadcastFilter = new IntentFilter();
-		mBroadcastFilter.addAction("org.servalproject.rhizome.RECIEVE_FILE");
-		registerReceiver(rhizomeBroadcastReceiver, mBroadcastFilter);
-
 	}
 
 	// listen for changes to the shared preferences
@@ -333,12 +317,6 @@ public class CoreService extends Service {
 			}
 		}
 
-		unregisterReceiver(rhizomeBroadcastReceiver);
-		
-		if(executor != null) {
-			executor.shutdown();
-		}
-		
 		// update the uptime count
 		long mUptime = System.currentTimeMillis() - uptimeStart;
 		
@@ -348,7 +326,7 @@ public class CoreService extends Service {
 		Editor mEditor = mPreferences.edit();
 		mEditor.putLong(PREFERENCES_VALUE, mUptime);
 		mEditor.commit();
-				
+		
 		super.onDestroy();
 
 		if(V_LOG) {
