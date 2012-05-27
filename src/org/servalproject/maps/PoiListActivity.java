@@ -75,12 +75,13 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
         setContentView(R.layout.poi_list);
         
         // define the list of columns
-		columnNames = new String[5];
+		columnNames = new String[6];
 		columnNames[0] = PointsOfInterestContract.Table.TITLE;
 		columnNames[1] = PointsOfInterestContract.Table.TIMESTAMP;
 		columnNames[2] = PointsOfInterestContract.Table.TIMEZONE;
 		columnNames[3] = PointsOfInterestContract.Table.LATITUDE;
 		columnNames[4] = PointsOfInterestContract.Table.LONGITUDE;
+		columnNames[5] = PointsOfInterestContract.Table.TAGS;
 		
 		// get the desired maximum age of the poi information
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -116,12 +117,13 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		// define the map between columns and layout elements
 		// ensure that this is the same size as the list of columns
-		int[] mLayoutElements = new int[5];
+		int[] mLayoutElements = new int[6];
 		mLayoutElements[0] = R.id.poi_list_ui_entry_title;
 		mLayoutElements[1] = R.id.poi_list_ui_entry_age;
 		mLayoutElements[2] = PoiListAdapter.PLACE_HOLDER;
 		mLayoutElements[3] = R.id.poi_list_ui_txt_distance;
 		mLayoutElements[4] = PoiListAdapter.PLACE_HOLDER;
+		mLayoutElements[5] = R.id.poi_list_ui_txt_tags;
 		
 		return new PoiListAdapter(
 			this,

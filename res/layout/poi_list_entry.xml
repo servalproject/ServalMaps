@@ -41,6 +41,23 @@
 		        android:text="" />
     
         </TableRow>
+        
+        <TableRow
+            android:id="@+id/tableRow3"
+            style="@style/smapsWrap" >
+		    
+            <TextView
+		        android:id="@+id/poi_list_ui_lbl_tags"
+		        style="@style/smapsTextwrapped" 
+		        android:text="@string/poi_info_ui_lbl_tags" />
+		
+		    <TextView
+		        android:id="@+id/poi_list_ui_txt_tags"
+		        style="@style/smapsTextwrapped" 
+		        android:text="" />
+    
+        </TableRow>
+        
    </TableLayout>
    
    <View 
