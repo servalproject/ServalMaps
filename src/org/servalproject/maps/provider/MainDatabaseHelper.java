@@ -48,7 +48,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ PointsOfInterestContract.Table.TITLE + " TEXT, "
 			+ PointsOfInterestContract.Table.DESCRIPTION + " TEXT, "
 			+ PointsOfInterestContract.Table.CATEGORY + " INTEGER DEFAULT " + PointsOfInterestContract.DEFAULT_CATEGORY + ", "
-			+ PointsOfInterestContract.Table.PHOTO + " TEXT)";
+			+ PointsOfInterestContract.Table.PHOTO + " TEXT, "
+			+ PointsOfInterestContract.Table.TAGS + " TEXT)";
 	
 	private final String LOCATIONS_INDEX = "CREATE INDEX locations_timestamp_desc ON "
 			+ LocationsContract.CONTENT_URI_PATH + " ("
@@ -74,6 +75,10 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ TagsContract.Table.TABLE_NAME + " ("
 			+ TagsContract.Table.TAG + " ASC, "
 			+ TagsContract.Table.POI_RECORD_ID + " ASC)";
+	
+	private final String ALTER_TABLE_POI_TAGS = "ALTER TABLE " +
+			PointsOfInterestContract.Table.TABLE_NAME + " ADD " 
+			+ PointsOfInterestContract.Table.TAGS + " TEXT";
 	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps.db";
@@ -118,6 +123,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL(TAGS_CREATE);
 			db.execSQL(TAGS_INDEX_1);
 			db.execSQL(TAGS_INDEX_2);
+			db.execSQL(ALTER_TABLE_POI_TAGS);
 		}
 	}
 }
