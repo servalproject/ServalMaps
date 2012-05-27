@@ -44,10 +44,13 @@ public class MapItems extends ContentProvider {
 	
 	private final int LOCATION_LIST_URI = 0;
 	private final int LOCATION_ITEM_URI = 1;
-	private final int LOCATION_LATEST_LIST_URI = 3;
+	private final int LOCATION_LATEST_LIST_URI = 2;
 	
-	private final int POI_LIST_URI = 4;
-	private final int POI_ITEM_URI = 5;
+	private final int POI_LIST_URI = 10;
+	private final int POI_ITEM_URI = 11;
+	
+	private final int TAG_LIST_URI = 20;
+	private final int TAG_ITEM_URI = 21;
 	
 	private final String TAG = "MapItems";
 	//private final boolean V_LOG = true;
@@ -73,6 +76,9 @@ public class MapItems extends ContentProvider {
 		
 		uriMatcher.addURI(MapItems.AUTHORITY, PointsOfInterestContract.CONTENT_URI_PATH, POI_LIST_URI);
 		uriMatcher.addURI(MapItems.AUTHORITY, PointsOfInterestContract.CONTENT_URI_PATH + "/#", POI_ITEM_URI);
+		
+		uriMatcher.addURI(MapItems.AUTHORITY, TagsContract.CONTENT_URI_PATH, TAG_LIST_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, TagsContract.CONTENT_URI_PATH + "/#", TAG_ITEM_URI);
 		
 		// create the database connection
 		databaseHelper = new MainDatabaseHelper(getContext());
@@ -129,6 +135,22 @@ public class MapItems extends ContentProvider {
 			}
 			mMatchedUri = POI_ITEM_URI;
 			break;
+		case TAG_LIST_URI:
+			//uri matches all of the table
+			if(TextUtils.isEmpty(sortOrder) == true) {
+				sortOrder = TagsContract.Table.TAG + " ASC";
+			}
+			mMatchedUri = TAG_LIST_URI;
+			break;
+		case TAG_ITEM_URI:
+			// uri matches one record
+			if(TextUtils.isEmpty(selection) == true) {
+				selection = TagsContract.Table._ID + " = " + uri.getLastPathSegment();
+			} else {
+				selection += " AND " + TagsContract.Table._ID + " = " + uri.getLastPathSegment();
+			}
+			mMatchedUri = POI_ITEM_URI;
+			break;
 		default:
 			// unknown uri found
 			Log.e(TAG, "unknown URI detected on query: " + uri.toString());
@@ -153,14 +175,13 @@ public class MapItems extends ContentProvider {
 			
 		} else if (mMatchedUri == LOCATION_LIST_URI || mMatchedUri == LOCATION_ITEM_URI){
 			// execute the query as provided
-			mResults = database.query(LocationsContract.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
+			mResults = database.query(LocationsContract.Table.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 		} else if(mMatchedUri == POI_LIST_URI || mMatchedUri == POI_ITEM_URI) {
 			// execute the query as provided
-			mResults = database.query(PointsOfInterestContract.CONTENT_URI_PATH, projection, selection, selectionArgs, null, null, sortOrder);
+			mResults = database.query(PointsOfInterestContract.Table.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+		} else if(mMatchedUri == TAG_LIST_URI || mMatchedUri == TAG_ITEM_URI) {
+			mResults = database.query(TagsContract.Table.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 		}
-		
-		// play nice and tidy up
-		//database.close();
 				
 		// return the results
 		return mResults;
@@ -205,6 +226,11 @@ public class MapItems extends ContentProvider {
 		
 		mResults = ContentUris.withAppendedId(mContentUri, mId);
 		getContext().getContentResolver().notifyChange(mResults, null);
+		
+		// check to see if we need to update the tag index
+		if(uriMatcher.match(uri) == POI_LIST_URI && values.containsKey(PointsOfInterestContract.Table.TAGS)) {
+			updateTagIndexOnInsert(mId, values.getAsString(PointsOfInterestContract.Table.TAGS));
+		}
 		
 		return mResults;
 	}
@@ -262,6 +288,12 @@ public class MapItems extends ContentProvider {
 			break;
 		case POI_LIST_URI:
 			count = database.delete(PointsOfInterestContract.Table.TABLE_NAME, selection, selectionArgs);
+			
+			if(selection == null && selectionArgs == null) {
+				updateTagIndexOnDelete(null);
+			} else {
+				Log.w(TAG, "POI records were deleted with an unsupported selection criteria, the tag index may now be out of sync");
+			}
 			break;
 		case POI_ITEM_URI:
 			if(TextUtils.isEmpty(selection) == true) {
@@ -270,6 +302,7 @@ public class MapItems extends ContentProvider {
 				selectionArgs[0] = uri.getLastPathSegment();
 			}
 			count = database.delete(PointsOfInterestContract.Table.TABLE_NAME, selection, selectionArgs);
+			updateTagIndexOnDelete(selectionArgs[0]);
 			break;
 		default:
 			// unknown uri found
@@ -290,5 +323,61 @@ public class MapItems extends ContentProvider {
 		//TODO implement code when required
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
-
+	
+	/*
+	 * private method to update the tag index on an insert
+	 */
+	private void updateTagIndexOnInsert(long id, String tagList) {
+		//TODO execute this on a separate thread so that the poi inserts return sooner
+		
+		// check to make sure there are tags to process
+		if(TextUtils.isEmpty(tagList) == true) {
+			return;
+		}
+		
+		// get a list of individual tags
+		String[] mTags = tagList.split(TagsContract.TAG_DELIMITER);
+		
+		// get a connection to the database
+		SQLiteDatabase mDatabase = databaseHelper.getWritableDatabase();
+		
+		ContentValues mValues;
+		
+		// write the tags to the database
+		for(String mTag: mTags) {
+			mValues = new ContentValues();
+			
+			mValues.put(TagsContract.Table.POI_RECORD_ID, id);
+			mValues.put(TagsContract.Table.TAG, mTag);
+			
+			mDatabase.insertOrThrow(TagsContract.Table.TABLE_NAME, null, mValues);
+		}
+		
+		// play nice and tidy up
+		mDatabase.close();
+	}
+	
+	/*
+	 * private method to update the tag index on a delete
+	 */
+	private void updateTagIndexOnDelete(String id) {
+		
+		//TODO execute on a new thread so deletes return faster
+		
+		// build the selection
+		String mSelection = null;
+		String[] mSelectionArgs = null;
+		
+		if(id != null) {
+			mSelection = TagsContract.Table.POI_RECORD_ID + " = ? ";
+			mSelectionArgs = new String[]{id};
+		}
+		
+		SQLiteDatabase mDatabase = databaseHelper.getWritableDatabase();
+		
+		mDatabase.delete(PointsOfInterestContract.Table.TABLE_NAME, mSelection, mSelectionArgs);
+		
+		// play nice and tidy up
+		mDatabase.close();
+	}
 }

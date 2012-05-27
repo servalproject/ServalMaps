@@ -60,9 +60,24 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ PointsOfInterestContract.Table.PHONE_NUMBER + " ASC, "
 			+ PointsOfInterestContract.Table.TIMESTAMP + " DESC)";
 	
+	private final String TAGS_CREATE = "CREATE TABLE " +
+			TagsContract.Table.TABLE_NAME + " ("
+			+ TagsContract.Table._ID + " INTEGER PRIMARY KEY, "
+			+ TagsContract.Table.POI_RECORD_ID + " INTEGER, "
+			+ TagsContract.Table.TAG + " TEXT)";
+	
+	private final String TAGS_INDEX_1 = "CREATE INDEX tag_poi ON "
+			+ TagsContract.Table.TABLE_NAME + " ("
+			+ TagsContract.Table.POI_RECORD_ID + " ASC)";
+	
+	private final String TAGS_INDEX_2 = "CREATE INDEX tag_tag_poi ON "
+			+ TagsContract.Table.TABLE_NAME + " ("
+			+ TagsContract.Table.TAG + " ASC, "
+			+ TagsContract.Table.POI_RECORD_ID + " ASC)";
+	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps.db";
-	public static final int DB_VERSION = 1;
+	public static final int DB_VERSION = 2;
 	
 	/**
 	 * Constructs a new MainDatabaseHelper object
@@ -73,7 +88,11 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 		// context, database name, factory, db version
 		super(context, DB_NAME, null, DB_VERSION);
 	}
-			
+		
+	/*
+	 * (non-Javadoc)
+	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
+	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// create the database tables
@@ -82,11 +101,23 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 		
 		db.execSQL(LOCATIONS_INDEX);
 		db.execSQL(POI_INDEX);
+		
+		db.execSQL(TAGS_CREATE);
+		db.execSQL(TAGS_INDEX_1);
+		db.execSQL(TAGS_INDEX_2);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+	 */
 	@Override
-	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		
+		if(oldVersion == 1) {
+			db.execSQL(TAGS_CREATE);
+			db.execSQL(TAGS_INDEX_1);
+			db.execSQL(TAGS_INDEX_2);
+		}
 	}
-
 }

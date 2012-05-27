@@ -30,7 +30,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * define the contract for the location data stored in the provider
+ * define the contract for the points of interest data stored in the provider
  */
 public class PointsOfInterestContract {
 		
@@ -123,6 +123,11 @@ public class PointsOfInterestContract {
 		 * photo associated with this POI
 		 */
 		public static final String PHOTO = "photo";
+		
+		/**
+		 * a list of tags associated with this POI
+		 */
+		public static final String TAGS = "tags";
 		
 		/**
 		 * a list of all of the columns
