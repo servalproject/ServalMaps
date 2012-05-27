@@ -57,8 +57,7 @@ public class MapUtils {
 			throw new IllegalArgumentException("the filePath parameter is required");
 		}
 		
-		if(FileUtils.isFileReadable(filePath) == false) {
-			Log.e(TAG, "unable to access the specified file");
+		if(!FileUtils.isFileReadable(filePath)) {
 			throw new IOException("unable to access the specified file");
 		}
 		
@@ -67,45 +66,42 @@ public class MapUtils {
 		MapDatabase mMapDatabase = new MapDatabase();
 		
 		// open the database file
-		if(mMapDatabase.openFile(new File(filePath)) == FileOpenResult.SUCCESS) {
+		FileOpenResult ret = mMapDatabase.openFile(new File(filePath));
+		if(ret != FileOpenResult.SUCCESS)
+			throw new IllegalArgumentException("Unable to open file "+filePath+" ("+ret+")");
 			
-			// get the metadata
-			MapFileInfo mMapFileInfo = mMapDatabase.getMapFileInfo();
-			mMapDatabase.closeFile();
-			
-			// populate the hashmap
-			mMetadata.put("date", TimeUtils.formatDate(mMapFileInfo.mapDate, TimeZone.getDefault().getID()));
-			
-			mMetadata.put("min-latitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.minLatitudeE6)
-					)
-				);
-			
-			mMetadata.put("min-longitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.minLongitudeE6)
-					)
-				);
-			
-			mMetadata.put("max-latitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.maxLatitudeE6)
-					)
-				);
-			
-			mMetadata.put("max-longitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.maxLongitudeE6)
-					)
-				);
-
-			
-			return mMetadata;
-			
-		}
+		// get the metadata
+		MapFileInfo mMapFileInfo = mMapDatabase.getMapFileInfo();
+		mMapDatabase.closeFile();
 		
-		return null;	
+		// populate the hashmap
+		mMetadata.put("date", TimeUtils.formatDate(mMapFileInfo.mapDate, TimeZone.getDefault().getID()));
+		
+		mMetadata.put("min-latitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.minLatitudeE6)
+				)
+			);
+		
+		mMetadata.put("min-longitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.minLongitudeE6)
+				)
+			);
+		
+		mMetadata.put("max-latitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.maxLatitudeE6)
+				)
+			);
+		
+		mMetadata.put("max-longitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.maxLongitudeE6)
+				)
+			);
+		
+		return mMetadata;
 	}
 	
 	/**

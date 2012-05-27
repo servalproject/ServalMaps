@@ -133,7 +133,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(FileUtils.isFileReadable(mMapFileName) == false) {
 				String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
 				mMapDataPath += getString(R.string.system_path_map_data);
-				mapView.setMapFile(new File(mMapDataPath + mMapFileName));
+				mMapFileName = mMapDataPath + mMapFileName;
+				if (FileUtils.isFileReadable(mMapFileName))
+					mapView.setMapFile(new File(mMapFileName));
 			} else {
 				mapView.setMapFile(new File(mMapFileName));
 			}

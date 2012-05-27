@@ -81,9 +81,6 @@ public class MapDataService extends IntentService {
 			}
 		}
 		
-		// populate the intent the intent
-		mBroadcastIntent.putExtra("count", mMapDataFiles.length);
-		
 		if(mMapDataFiles.length > 0) {
 			// build a list of parcelables
 			ArrayList<MapDataInfo> mMapDataInfoList = new ArrayList<MapDataInfo>();
@@ -94,11 +91,10 @@ public class MapDataService extends IntentService {
 				// add the metadata
 				try {
 					mMapDataInfo.setMetadata(MapUtils.getMetadata(mMapDataPath + mMapDataFile));
-				} catch (IOException e) {
-					Log.e(TAG, "unable to get the metadata for file '" + mMapDataFile + "'", e);
+					mMapDataInfoList.add(mMapDataInfo);
+				} catch (Exception e) {
+					Log.e(TAG, "unable to get the metadata for file '" + mMapDataPath+mMapDataFile + "'", e);
 				}
-				
-				mMapDataInfoList.add(mMapDataInfo);
 				
 				if(V_LOG) {
 					Log.v(TAG, mMapDataInfo.toString());
@@ -106,7 +102,12 @@ public class MapDataService extends IntentService {
 			}
 			
 			mBroadcastIntent.putParcelableArrayListExtra("files", mMapDataInfoList);
-		}
+			// populate the intent the intent
+			mBroadcastIntent.putExtra("count", mMapDataInfoList.size());
+		}else
+			mBroadcastIntent.putExtra("count", 0);
+		
+		
 		
 		// send the broadcast intent
 		this.sendBroadcast(mBroadcastIntent, "org.servalproject.maps.MAP_DATA");
