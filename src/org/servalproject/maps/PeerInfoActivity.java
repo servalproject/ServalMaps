@@ -19,8 +19,6 @@
  */
 package org.servalproject.maps;
 
-import java.text.DecimalFormat;
-
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.utils.GeoUtils;
@@ -29,12 +27,10 @@ import org.servalproject.maps.utils.TimeUtils;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
@@ -107,75 +103,21 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			// calculate the distance between user and POI if possible
 			Location mLocation = LocationCollector.getLocation();
 			
+			mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
+			
 			// calculate the location
 			if(mLocation != null) {
-			
-				// get the preferences for the distance calculation
-				SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 				
-				String mPreference = mPreferences.getString("preferences_measurement_units", null);
-				
-				int mUnits = GeoUtils.METRE_UNITS;
-				
-				if(mPreference != null) {
-					mUnits = Integer.parseInt(mPreference);
-				}
-				
-				mPreference = mPreferences.getString("preferences_measurement_algorithm", null);
-				
-				int mAlgorithm = GeoUtils.HAVERSINE_FORMULA;
-				
-				if(mPreference != null) {
-					mAlgorithm = Integer.parseInt(mPreference);
-				}
-				
-				double mDistance = GeoUtils.calculateDistance(
+				// calculate the distance using the default preferences
+				String mDistanceAsString = GeoUtils.calculateDistanceWithDefaults(
 						mLocation.getLatitude(), 
 						mLocation.getLongitude(),
 						mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)),
 						mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)),
-						mAlgorithm,
-						mUnits);
+						this);
 				
-				//debug code
-				Log.d(TAG, "distance: " + mDistance);
-				
-				String mDistanceAsString = null;
-				
-				mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
-				
-				if(mDistance != Double.NaN) {
-					
-					// round to two decimal places
-					DecimalFormat mFormat = new DecimalFormat("#.##");
-					
-					switch(mUnits){
-					case GeoUtils.METRE_UNITS:
-						// use metres string
-						if(mDistance > 1) {
-							mDistanceAsString = String.format(getString(R.string.misc_disance_kms), mFormat.format(mDistance));
-						} else {
-							mDistance = mDistance * 1000;
-							mDistanceAsString = String.format(getString(R.string.misc_disance_metres), mFormat.format(mDistance));
-						}
-						break;
-					case GeoUtils.MILE_UNITS:
-						// use mile units
-						mDistanceAsString = String.format(getString(R.string.misc_disance_miles), mFormat.format(mDistance));
-						break;
-					case GeoUtils.NAUTICAL_MILE_UNITS:
-						// use nautical mile units
-						mDistanceAsString = String.format(getString(R.string.misc_disance_nautical_miles), mFormat.format(mDistance));
-						break;
-					}
-					
-					mView.setText(mDistanceAsString);
-				} else {
-					mView.setText(R.string.misc_not_available);
-				}
-				
+				mView.setText(mDistanceAsString);
 			} else {
-				mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
 				mView.setText(R.string.misc_not_available);
 			}
 			
