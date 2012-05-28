@@ -105,7 +105,7 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
 			
-			// calculate the location
+			// calculate the distance
 			if(mLocation != null) {
 				
 				// calculate the distance using the default preferences

@@ -43,7 +43,7 @@
     <string name="peer_info_ui_lbl_latitude">Latitude:</string>
     <string name="peer_info_ui_lbl_longitude">Longitude:</string>
     <string name="peer_info_ui_lbl_age">Information Age:</string>
-    <string name="peer_info_ui_lbl_distance">Approximate Distance:</string>
+    <string name="peer_info_ui_lbl_distance">Approx. Distance:</string>
     <string name="peer_info_ui_btn_call">Call Peer</string>
     <string name="peer_info_ui_btn_back">Back to Map</string>
     <string name="peer_info_ui_btn_msg">Message Peer</string>
@@ -77,8 +77,9 @@
     <string name="poi_info_ui_lbl_description">Description</string>
     <string name="poi_info_ui_lbl_age">Information Age:</string>
     <string name="poi_info_toast_no_record_error">Unable to load required data at this time</string>
-    <string name="poi_info_ui_lbl_distance">Approximate Distance:</string>
+    <string name="poi_info_ui_lbl_distance">Approx. Distance:</string>
     <string name="poi_info_ui_btn_photo">View Photo</string>
+    <string name="poi_info_ui_ui_btn_back">Back to Map</string>
     <string name="poi_into_toast_no_photo">Unable to show the photo as this time</string>
     
     <!-- POI List Activity -->
@@ -209,7 +210,6 @@
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
     <string name="system_path_export_data">/servalproject/maps/export-data/</string>
-    <string name="system_path_rhizome_data">/serval/rhizome/bundles/</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>

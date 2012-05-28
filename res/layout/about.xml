@@ -28,7 +28,6 @@
     <TextView
         android:id="@+id/about_ui_lbl"
         style="@style/smapsHeader"
-        android:gravity="center_vertical|center_horizontal"
         android:text="@string/about_ui_lbl" />
     
     <TextView
@@ -45,6 +44,7 @@
             <TextView
                 android:id="@+id/about_ui_txt"
                 style="@style/smapsText"
+                android:textColorLink="@color/green"
                 android:text="@string/about_ui_txt" />
             
         </LinearLayout>

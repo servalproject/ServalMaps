@@ -23,10 +23,40 @@
 
 <resources>
 
-    <!-- Body -->
+    <!-- body -->
     <style name="smapsBody">
         <item name="android:background">@color/black</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+    
+    <!-- header -->
+    <style name="smapsHeader" parent="smapsText">
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+    
+    <!-- delete warning label -->
+    <style name="smapsWarning" parent="smapsWrap">
+        <item name="android:textSize">13sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:drawableLeft">@drawable/warning_sign</item>
+        <item name="android:contentDescription">@string/delete_ui_lbl_warning</item>
+        <item name="android:drawablePadding">@dimen/ui_elem_margin_right</item>
+    </style>
+    
+    <!-- emoticons -->
+    <style name="smapsEmoticonsHappy">
+        <item name="android:layout_width">14sp</item>
+        <item name="android:layout_height">14sp</item>
+        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
+        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
+        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
+        <item name="android:src">@drawable/emo_im_happy</item>
     </style>
 
     <style name="smapsScroll">
@@ -34,13 +64,6 @@
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
-    </style>
-
-    <style name="smapsUrl" parent="smapsWrap">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColorLink">@color/green</item>
-        <item name="android:autoLink">web</item>
     </style>
 
     <style name="smapsContent" parent="smapsWrap">
@@ -80,7 +103,7 @@
         <item name="android:textSize">13sp</item>
     </style>
 
-    <style name="smapsExporttext" parent="smapsWrap">
+    <style name="smapsProgresstext" parent="smapsLayoutfill">
         <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
@@ -97,8 +120,8 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
         <item name="android:gravity">center_horizontal</item>
     </style>
-
-    <style name="smapsPOI">
+     
+   <style name="smapsInput">
         <item name="android:textSize">13sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -107,12 +130,12 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
     </style>
 
-    <style name="smapsExport" parent="smapsWrap">
+    <style name="smapsLabel" parent="smapsWrap">
         <item name="android:textSize">15sp</item>
         <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
-        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="smapsTextwrapped" parent="smapsWrap">
@@ -129,36 +152,10 @@
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
     </style>
 
-    <style name="smapsTextalign" parent="smapsWrap">
-        <item name="android:textSize">13sp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
-        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
-        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
-        <item name="android:drawableLeft">@drawable/warning_sign</item>
-        <item name="android:contentDescription">@string/delete_ui_lbl_warning</item>
-        <item name="android:drawablePadding">@dimen/ui_elem_margin_right</item>
-    </style>
-
-    <style name="smapsHeader" parent="smapsText">
-        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:textSize">24sp</item>
-    </style>
-
-    <!-- Images -->
-    <style name="smapsImages">
-        <item name="android:layout_width">14sp</item>
-        <item name="android:layout_height">14sp</item>
-        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
-        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
-        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
-    </style>
-
     <!-- Buttons -->
     <style name="smapsButton">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/button_message</item>
@@ -170,20 +167,16 @@
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
     </style>
-
-    <style name="smapsButtonexport" parent="smapsLayoutfill">
+    
+    <style name="smapsButtonNoWeight">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/button_message</item>
-        <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
-        <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
-        <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>
-    </style>
-
-    <style name="smapsButtonstats" parent="smapsLayoutmatch">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/button_message</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
         <item name="android:layout_marginBottom">@dimen/ui_elem_margin_bottom</item>
         <item name="android:layout_marginLeft">@dimen/ui_elem_margin_left</item>
         <item name="android:layout_marginRight">@dimen/ui_elem_margin_right</item>

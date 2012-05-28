@@ -14,16 +14,13 @@
 
         <TextView
             android:id="@+id/new_poi_ui_lbl_title"
-            style="@style/smapsExport"
+            style="@style/smapsLabel"
             android:text="@string/new_poi_ui_lbl_title" />
 
         <EditText
             android:id="@+id/new_poi_ui_txt_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-            android:layout_marginLeft="@dimen/ui_elem_margin_left"
-            android:layout_marginRight="@dimen/ui_elem_margin_right"
+            style="@style/smapsInput"
             android:inputType="textCapWords" >
 
             <requestFocus />
@@ -31,12 +28,12 @@
 
         <TextView
             android:id="@+id/new_poi_ui_lbl_description"
-            style="@style/smapsExport"
+            style="@style/smapsLabel"
             android:text="@string/new_poi_ui_lbl_description" />
 
         <EditText
             android:id="@+id/new_poi_ui_txt_description"
-            style="@style/smapsSpinner"
+            style="@style/smapsInput"
             android:inputType="textMultiLine|textShortMessage"
             android:lines="3" >
         </EditText>
@@ -47,12 +44,13 @@
 
             <TextView
                 android:id="@+id/new_poi_ui_lbl_characters"
-                style="@style/smapsExport"
+                style="@style/smapsLabel"
                 android:text="@string/new_poi_ui_lbl_characters" />
 
             <TextView
                 android:id="@+id/new_poi_ui_txt_characters"
-                style="@style/smapsExport"
+                style="@style/smapsLabel"
+                android:textStyle="normal"
                 android:text="" />
         </LinearLayout>
 
@@ -63,22 +61,22 @@
 
             <TextView
                 android:id="@+id/new_poi_ui_lbl_latitude"
-                style="@style/smapsExport"
+                style="@style/smapsLabel"
                 android:text="@string/new_poi_ui_lbl_latitude" />
 
             <EditText
                 android:id="@+id/new_poi_ui_txt_latitude"
-                style="@style/smapsSpinner"
+                style="@style/smapsInput"
                 android:inputType="numberDecimal|numberSigned" />
 
             <TextView
                 android:id="@+id/new_poi_ui_lbl_longitude"
-                style="@style/smapsExport"
+                style="@style/smapsLabel"
                 android:text="@string/new_poi_ui_lbl_longitude" />
 
             <EditText
                 android:id="@+id/new_poi_ui_txt_longitude"
-                style="@style/smapsSpinner"
+                style="@style/smapsInput"
                 android:inputType="numberDecimal|numberSigned" />
         </LinearLayout>
 
