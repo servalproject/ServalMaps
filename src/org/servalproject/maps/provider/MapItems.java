@@ -19,6 +19,10 @@
  */
 package org.servalproject.maps.provider;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -337,6 +341,13 @@ public class MapItems extends ContentProvider {
 		
 		// get a list of individual tags
 		String[] mTags = tagList.split(TagsContract.TAG_DELIMITER);
+		
+		// remove duplicate tags
+		if(mTags.length > 1) {
+			Set<String> mTempSet = new HashSet<String>(Arrays.asList(mTags));
+			mTags = new String[mTempSet.size()];
+			mTags = mTempSet.toArray(mTags);
+		}
 		
 		// get a connection to the database
 		SQLiteDatabase mDatabase = databaseHelper.getWritableDatabase();
