@@ -127,6 +127,9 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         mButton = (Button) findViewById(R.id.new_poi_ui_btn_photo);
         mButton.setOnClickListener(this);
         
+        mButton = (Button) findViewById(R.id.new_poi_ui_btn_back);
+        mButton.setOnClickListener(this);
+        
         // get the mesh phone number and sid
         ServalMaps mApplication = (ServalMaps) getApplicationContext();
 		phoneNumber = mApplication.getPhoneNumber();
@@ -264,6 +267,16 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 			}
 			break;
 		case R.id.new_poi_ui_btn_photo:
+			
+			// check to see if a photo has to be deleted to be tidy
+			if(photoFileUri != null) {
+				// delete the photo
+				File mPhotoFile = new File(photoFileUri.getPath());
+				if(!mPhotoFile.delete()) {
+					Log.w(TAG, "unable to delete unecessary photo: " + photoFileUri.toString());
+				}
+			}
+			
 			// use the inbuilt camera app to take a photo
 			Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -273,7 +286,35 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		    // start the image capture Intent
 		    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 			break;
+		case R.id.new_poi_ui_btn_back:
+			// go back to the map
+			
+			// check to see if a photo has to be deleted to be tidy
+			if(photoFileUri != null) {
+				// delete the photo
+				File mPhotoFile = new File(photoFileUri.getPath());
+				if(!mPhotoFile.delete()) {
+					Log.w(TAG, "unable to delete unecessary photo: " + photoFileUri.toString());
+				}
+			}
+			
+			finish();
+			break;
+		default:
+			// unknown view id
+			Log.w(TAG, "unkown view id in onClick: " + v.getId());
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		// fake a press on the back to map button
+	    Button mButton = (Button) findViewById(R.id.new_poi_ui_btn_back);
+	    this.onClick(mButton);
 	}
 	
 	/*

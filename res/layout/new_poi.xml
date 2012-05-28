@@ -1,50 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
-	xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/smapsLayoutmatch"
-    android:id="@+id/scrollView1">
-<LinearLayout
-    style="@style/smapsLayout"
-    android:orientation="vertical" >
-    
-    <TextView
-        android:id="@+id/new_poi_ui_lbl_heading"
-        style="@style/smapsHeader"
-        android:text="@string/new_poi_ui_lbl_heading" />
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    style="@style/smapsLayoutmatch" >
 
-     <TextView
-         android:id="@+id/new_poi_ui_lbl_title"
-         style="@style/smapsExport"
-         android:text="@string/new_poi_ui_lbl_title"/>
+    <LinearLayout
+        style="@style/smapsLayout"
+        android:orientation="vertical" >
 
-     <EditText
-         android:id="@+id/new_poi_ui_txt_title"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content" 
-         android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-         android:layout_marginLeft="@dimen/ui_elem_margin_left"
-         android:layout_marginRight="@dimen/ui_elem_margin_right"
-         android:inputType="textCapWords">
-         <requestFocus />
-     </EditText>
-     
-     <TextView
-         android:id="@+id/new_poi_ui_lbl_description"
-         style="@style/smapsExport"
-         android:text="@string/new_poi_ui_lbl_description"/>
+        <TextView
+            android:id="@+id/new_poi_ui_lbl_heading"
+            style="@style/smapsHeader"
+            android:text="@string/new_poi_ui_lbl_heading" />
 
-     <EditText
-         android:id="@+id/new_poi_ui_txt_description"
-         style="@style/smapsSpinner"
-         android:inputType="textMultiLine|textShortMessage"
-         android:lines="3">
-         
-     </EditText>
+        <TextView
+            android:id="@+id/new_poi_ui_lbl_title"
+            style="@style/smapsExport"
+            android:text="@string/new_poi_ui_lbl_title" />
 
-     <LinearLayout
-         android:id="@+id/linearLayout1"
-         style="@style/smapsLayout" >
-         <TextView
+        <EditText
+            android:id="@+id/new_poi_ui_txt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+            android:layout_marginLeft="@dimen/ui_elem_margin_left"
+            android:layout_marginRight="@dimen/ui_elem_margin_right"
+            android:inputType="textCapWords" >
+
+            <requestFocus />
+        </EditText>
+
+        <TextView
+            android:id="@+id/new_poi_ui_lbl_description"
+            style="@style/smapsExport"
+            android:text="@string/new_poi_ui_lbl_description" />
+
+        <EditText
+            android:id="@+id/new_poi_ui_txt_description"
+            style="@style/smapsSpinner"
+            android:inputType="textMultiLine|textShortMessage"
+            android:lines="3" >
+        </EditText>
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            style="@style/smapsLayout" >
+
+            <TextView
                 android:id="@+id/new_poi_ui_lbl_characters"
                 style="@style/smapsExport"
                 android:text="@string/new_poi_ui_lbl_characters" />
@@ -53,42 +54,54 @@
                 android:id="@+id/new_poi_ui_txt_characters"
                 style="@style/smapsExport"
                 android:text="" />
-     </LinearLayout>
-     
-     <LinearLayout
-         android:id="@+id/new_poi_ui_geocord_layout"
-    	 style="@style/smapsLayout"
-    	 android:orientation="vertical" >
-     <TextView
-         android:id="@+id/new_poi_ui_lbl_latitude"
-         style="@style/smapsExport"
-         android:text="@string/new_poi_ui_lbl_latitude"/>
+        </LinearLayout>
 
-    <EditText
-        android:id="@+id/new_poi_ui_txt_latitude"
-        style="@style/smapsSpinner"
-        android:inputType="numberDecimal|numberSigned" />
-    
-    <TextView
-         android:id="@+id/new_poi_ui_lbl_longitude"
-         style="@style/smapsExport"
-         android:text="@string/new_poi_ui_lbl_longitude"/>
+        <LinearLayout
+            android:id="@+id/new_poi_ui_geocord_layout"
+            style="@style/smapsLayout"
+            android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/new_poi_ui_txt_longitude"
-        style="@style/smapsSpinner"
-        android:inputType="numberDecimal|numberSigned" />
+            <TextView
+                android:id="@+id/new_poi_ui_lbl_latitude"
+                style="@style/smapsExport"
+                android:text="@string/new_poi_ui_lbl_latitude" />
+
+            <EditText
+                android:id="@+id/new_poi_ui_txt_latitude"
+                style="@style/smapsSpinner"
+                android:inputType="numberDecimal|numberSigned" />
+
+            <TextView
+                android:id="@+id/new_poi_ui_lbl_longitude"
+                style="@style/smapsExport"
+                android:text="@string/new_poi_ui_lbl_longitude" />
+
+            <EditText
+                android:id="@+id/new_poi_ui_txt_longitude"
+                style="@style/smapsSpinner"
+                android:inputType="numberDecimal|numberSigned" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            style="@style/smapsLayoutmatch"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/new_poi_ui_btn_photo"
+                style="@style/smapsButton"
+                android:text="@string/new_poi_ui_btn_photo" />
+
+            <Button
+                android:id="@+id/new_poi_ui_btn_save"
+                style="@style/smapsButton"
+                android:text="@string/new_poi_ui_btn_save" />
+
+            <Button
+                android:id="@+id/new_poi_ui_btn_back"
+                style="@style/smapsButton"
+                android:text="@string/new_poi_ui_btn_back" />
+        </LinearLayout>
     </LinearLayout>
-    
-    <Button
-         android:id="@+id/new_poi_ui_btn_photo"
-         style="@style/smapsButtonexport"
-         android:text="@string/new_poi_ui_btn_photo" />
 
-     <Button
-         android:id="@+id/new_poi_ui_btn_save"
-         style="@style/smapsButtonexport"
-         android:text="@string/new_poi_ui_btn_save" />
-
-	</LinearLayout>
 </ScrollView>
