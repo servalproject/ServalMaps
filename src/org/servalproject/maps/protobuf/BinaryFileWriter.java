@@ -182,7 +182,8 @@ public class BinaryFileWriter {
 			try {
 				mOutput = new FileOutputStream(mOutputPath + mFileName, true);
 				
-				BinaryFileContract.writeLocationRecord(mCursor , mOutput);
+				//BinaryFileContract.writeLocationRecord(mCursor , mOutput);
+				BinaryFileContract.writePointOfInterestRecord(mCursor, mOutput);
 			}finally{
 				mOutput.close();
 			}

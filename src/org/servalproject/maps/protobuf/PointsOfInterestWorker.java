@@ -37,15 +37,15 @@ public class PointsOfInterestWorker implements Runnable {
 	 * private class level constants
 	 */
 	private final String TAG = "PointsOfInterestWorker";
-	private final boolean V_LOG = false;
+	private final boolean V_LOG = true;
 	
 	private final long sleepTime = 300;
 	
 	/*
 	 * private class level variables
 	 */
-	Context context;
-	Uri uri;
+	private Context context;
+	private Uri dataFile;
 	
 	/**
 	 * construct a new location read worker
@@ -53,9 +53,9 @@ public class PointsOfInterestWorker implements Runnable {
 	 * @param context the context object used to access a content resolver
 	 * @param uri the path to the binary file
 	 */
-	public PointsOfInterestWorker(Context context, Uri uri) {
+	public PointsOfInterestWorker(Context context, Uri dataFile) {
 		this.context = context;
-		this.uri = uri;
+		this.dataFile = dataFile;
 	}
 
 	@Override
@@ -63,11 +63,20 @@ public class PointsOfInterestWorker implements Runnable {
 		try{
 			// try and open the file
 			if(V_LOG) {
-				Log.v(TAG, "reading POI data from: " + uri);
+				Log.v(TAG, "reading POI data from: " + dataFile);
 			}
 			
 			ContentResolver mContentResolver = context.getContentResolver();
-			InputStream mInputStream = mContentResolver.openInputStream(uri);
+			
+			InputStream mInputStream = null;
+			
+			try {
+				mInputStream = mContentResolver.openInputStream(dataFile);
+			} catch (java.io.FileNotFoundException e) {
+				Log.e(TAG, "unable to open file for reading: " + dataFile);
+				return;
+			}
+			
 			try{
 				// prepare helper variables
 				ContentValues mNewValues = null;
@@ -124,6 +133,10 @@ public class PointsOfInterestWorker implements Runnable {
 						mNewValues.put(PointsOfInterestContract.Table.CATEGORY, mMessage.getCategory());
 						mNewValues.put(PointsOfInterestContract.Table.PHOTO, mMessage.getPhoto());
 						
+						//debug code
+						Log.d(TAG, "description: '" + mMessage.getDescription() + "'");
+						Log.d(TAG, "title: '" + mMessage.getTitle() + "'");
+						
 						try {
 							mContentResolver.insert(
 									PointsOfInterestContract.CONTENT_URI,
@@ -137,9 +150,9 @@ public class PointsOfInterestWorker implements Runnable {
 							Log.v(TAG, "added new POI record to the database");
 						}
 					} else {
-						if(V_LOG) {
-							Log.v(TAG, "skipped an existing POI record");
-						}
+//						if(V_LOG) {
+//							Log.v(TAG, "skipped an existing POI record");
+//						}
 						
 						// don't hit the CPU so hard so sleep for a bit
 						try {

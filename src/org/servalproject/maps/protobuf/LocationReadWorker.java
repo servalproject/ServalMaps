@@ -42,7 +42,7 @@ public class LocationReadWorker implements Runnable {
 	 * private class level constants
 	 */
 	private final String TAG = "LocationReadWorker";
-	private final boolean V_LOG = false;
+	private final boolean V_LOG = true;
 	
 	private final long sleepTime = 300;
 	
@@ -75,7 +75,15 @@ public class LocationReadWorker implements Runnable {
 			}
 			
 			ContentResolver mContentResolver = context.getContentResolver();
-			InputStream mInputStream = mContentResolver.openInputStream(dataFile);
+			
+			InputStream mInputStream = null;
+			
+			try {
+				mInputStream = mContentResolver.openInputStream(dataFile);
+			} catch (java.io.FileNotFoundException e) {
+				Log.e(TAG, "unable to open file for reading: " + dataFile);
+				return;
+			}
 			
 			try{
 				// prepare helper variables
@@ -141,9 +149,9 @@ public class LocationReadWorker implements Runnable {
 							Log.v(TAG, "added new location record to the database");
 						}
 					} else {
-						if(V_LOG) {
-							Log.v(TAG, "skipped an existing location record");
-						}
+//						if(V_LOG) {
+//							Log.v(TAG, "skipped an existing location record");
+//						}
 						
 						// don't hit the CPU so hard so sleep for a bit
 						try {
