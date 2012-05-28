@@ -38,6 +38,7 @@ import android.location.LocationManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * The CoreService class undertakes the core activities that need to be 
@@ -91,10 +92,17 @@ public class CoreService extends Service {
 
 		// determine if mock locations should be used
 		if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
-			try {
-				mockLocations = new MockLocations(this.getApplicationContext()); 
-			} catch (IOException e) {
-				Log.e(TAG, "unable to create MockLocations instance", e);
+			
+			if(MockLocations.isMockLocationSet(this) == true) {
+				try {
+					mockLocations = new MockLocations(this.getApplicationContext());
+					Toast.makeText(getApplicationContext(), R.string.system_mock_locations_allowed, Toast.LENGTH_LONG).show();
+				} catch (IOException e) {
+					Log.e(TAG, "unable to create MockLocations instance", e);
+				}
+			} else {
+				Toast.makeText(getApplicationContext(), R.string.system_mock_locations_not_allowed, Toast.LENGTH_LONG).show();
+				Log.e(TAG, "'Allow Mock Locations' setting is not set");
 			}
 		}
 

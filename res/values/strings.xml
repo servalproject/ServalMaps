@@ -234,6 +234,10 @@
     <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to conserve power.</string>
     <string name="system_battery_status_ok">Your battery charge is OK. Serval Maps has restarted using GPS.</string>
     
+    <!-- mock location strings -->
+    <string name="system_mock_locations_allowed">Using Mock Location Data</string>
+    <string name="system_mock_locations_not_allowed">The use of Mock Location data is not allowed. Adjust the setting and try again.</string>
+    
     <!-- file upload strings -->
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
     
