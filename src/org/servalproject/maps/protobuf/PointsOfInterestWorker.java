@@ -62,9 +62,12 @@ public class PointsOfInterestWorker implements Runnable {
 	public void run() {
 		try{
 			// try and open the file
-			Log.v(TAG, "reading POI data from: " + uri);
+			if(V_LOG) {
+				Log.v(TAG, "reading POI data from: " + uri);
+			}
+			
 			ContentResolver mContentResolver = context.getContentResolver();
-			InputStream in = mContentResolver.openInputStream(uri);
+			InputStream mInputStream = mContentResolver.openInputStream(uri);
 			try{
 				// prepare helper variables
 				ContentValues mNewValues = null;
@@ -74,7 +77,7 @@ public class PointsOfInterestWorker implements Runnable {
 				long mLatestTimeStamp = -1;
 				
 				// loop through the data
-				while((mMessage = PointOfInterestMessage.Message.parseDelimitedFrom(in)) != null) {
+				while((mMessage = PointOfInterestMessage.Message.parseDelimitedFrom(mInputStream)) != null) {
 					
 					// check to see if we need to get the latest time stamp
 					if(mLatestTimeStamp == -1) {
@@ -156,7 +159,7 @@ public class PointsOfInterestWorker implements Runnable {
 					}
 				}
 			}finally{
-				in.close();
+				mInputStream.close();
 			}
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage(), e);

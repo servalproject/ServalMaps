@@ -31,17 +31,11 @@ import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * a class to hold utility methods for working with mapsforge classes and data
  */
 public class MapUtils {
-	
-	/*
-	 * private class level constants
-	 */
-	private static String TAG = "MapUtils";
 	
 	/**
 	 * extract metadata from a map file
@@ -66,9 +60,11 @@ public class MapUtils {
 		MapDatabase mMapDatabase = new MapDatabase();
 		
 		// open the database file
-		FileOpenResult ret = mMapDatabase.openFile(new File(filePath));
-		if(ret != FileOpenResult.SUCCESS)
-			throw new IllegalArgumentException("Unable to open file "+filePath+" ("+ret+")");
+		FileOpenResult mFileOpenResult = mMapDatabase.openFile(new File(filePath));
+		
+		if(mFileOpenResult != FileOpenResult.SUCCESS) {
+			throw new IOException("unable to open the following file: " + filePath +" (" + mFileOpenResult + ")");
+		}
 			
 		// get the metadata
 		MapFileInfo mMapFileInfo = mMapDatabase.getMapFileInfo();

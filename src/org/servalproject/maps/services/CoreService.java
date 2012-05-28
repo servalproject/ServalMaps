@@ -20,14 +20,11 @@
 package org.servalproject.maps.services;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.location.JsonLocationWriter;
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.location.MockLocations;
-import org.servalproject.maps.rhizome.RhizomeBroadcastReceiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -35,7 +32,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.LocationManager;

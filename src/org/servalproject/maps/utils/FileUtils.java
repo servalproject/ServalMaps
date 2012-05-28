@@ -22,7 +22,6 @@ package org.servalproject.maps.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,20 +100,26 @@ public class FileUtils {
 		}
 	}
 	
-	public static void copyFileToDir(InputStream in, File destination) throws IOException {
+	/**
+	 * copy the contents of one file into another file
+	 * @param inputStream an InputStream which is the source of the data
+	 * @param destination the destination file
+	 * @throws IOException
+	 */
+	public static void copyFile(InputStream inputStream, File destination) throws IOException {
 		try{
-			OutputStream out = new FileOutputStream(destination);
+			OutputStream mOutputStream = new FileOutputStream(destination);
 			try{
 				byte buff[] = new byte[1024];
 				int read=0;
-				while((read = in.read(buff)) >=0){
-					out.write(buff, 0, read);
+				while((read = inputStream.read(buff)) >=0){
+					mOutputStream.write(buff, 0, read);
 				}
 			}finally{
-				out.close();
+				mOutputStream.close();
 			}
 		}finally{
-			in.close();
+			inputStream.close();
 		}
 	}
 	
@@ -127,10 +132,10 @@ public class FileUtils {
 	 * @throws IOException 
 	 */
 	public static String copyFileToDir(String filePath, String dirPath) throws IOException {
-		File srcFile = new File(filePath);
-		File dstFile = new File(dirPath, srcFile.getName());
-		copyFileToDir(new FileInputStream(srcFile), dstFile);
-		return dstFile.getAbsolutePath();
+		File mSourceFile = new File(filePath);
+		File mDestinationFile = new File(dirPath, mSourceFile.getName());
+		copyFile(new FileInputStream(mSourceFile), mDestinationFile);
+		return mDestinationFile.getAbsolutePath();
 	}
 	
 	/**

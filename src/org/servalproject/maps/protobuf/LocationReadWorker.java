@@ -49,8 +49,8 @@ public class LocationReadWorker implements Runnable {
 	/*
 	 * private class level variables
 	 */
-	Context context;
-	Uri dataFile;
+	private Context context;
+	private Uri dataFile;
 	
 	/**
 	 * construct a new location read worker
@@ -70,9 +70,13 @@ public class LocationReadWorker implements Runnable {
 		
 		try {
 			// try and open the file
-			Log.v(TAG, "reading location data from: " + dataFile);
+			if(V_LOG) {
+				Log.v(TAG, "reading location data from: " + dataFile);
+			}
+			
 			ContentResolver mContentResolver = context.getContentResolver();
-			InputStream in = mContentResolver.openInputStream(dataFile);
+			InputStream mInputStream = mContentResolver.openInputStream(dataFile);
+			
 			try{
 				// prepare helper variables
 				ContentValues mNewValues = null;
@@ -82,7 +86,7 @@ public class LocationReadWorker implements Runnable {
 				long mLatestTimeStamp = -1;
 			
 				// loop through the data
-				while((mMessage = LocationMessage.Message.parseDelimitedFrom(in)) != null) {
+				while((mMessage = LocationMessage.Message.parseDelimitedFrom(mInputStream)) != null) {
 					
 					// check to see if we need to get the latest time stamp
 					if(mLatestTimeStamp == -1) {
@@ -159,7 +163,7 @@ public class LocationReadWorker implements Runnable {
 					}
 				}
 			}finally{
-				in.close();
+				mInputStream.close();
 			}
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage(), e);

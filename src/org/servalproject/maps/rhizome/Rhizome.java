@@ -41,12 +41,7 @@ public class Rhizome {
 	 * class level constants
 	 */
 	private static final String TAG = "Rhizome";
-	
-	private static File getManifestPath(String path){
-		File file = new File(path);
-		File manifest = new File(file.getParent(), ".manifest-"+file.getName());
-		return manifest;
-	}
+
 	/**
 	 * add a file to the Rhizome repository
 	 * 
@@ -69,13 +64,14 @@ public class Rhizome {
 		
 		mIntent.putExtra("path", filePath);
 		
-		File manifest = getManifestPath(filePath);
-		if (manifest.exists()){
+		File mManifestFile = getManifestPath(filePath);
+		if (mManifestFile.exists()){
 			// pass in the previous manifest, so rhizome can update it
-			mIntent.putExtra("previous_manifest", manifest.getAbsolutePath());
+			mIntent.putExtra("previous_manifest", mManifestFile.getAbsolutePath());
 		}
+		
 		// ask rhizome to save the new manifest here
-		mIntent.putExtra("save_manifest", manifest.getAbsolutePath());
+		mIntent.putExtra("save_manifest", mManifestFile.getAbsolutePath());
 		context.getApplicationContext().startService(mIntent);
 		
 	}
@@ -119,5 +115,15 @@ public class Rhizome {
 		} else {
 			throw new FileNotFoundException("unable to find the specified file: " + mRhizomePath + fileName);
 		}
+	}
+	
+	/*
+	 * get the path to a manifest based on the path to the content
+	 * @path the path to the content file
+	 */
+	private static File getManifestPath(String path){
+		File mManifestPath = new File(path);
+		File mManifestFile = new File(mManifestPath.getParent(), ".manifest-" + mManifestPath.getName());
+		return mManifestFile;
 	}
 }
