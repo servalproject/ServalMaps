@@ -35,6 +35,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -80,7 +81,15 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			
 			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
 			phoneNumber = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
-			mView.setText(phoneNumber);
+			
+			// display the contacts name or their phone number
+			String mDisplayName = getDisplayName(phoneNumber);
+			
+			if(mDisplayName == null) {
+				mView.setText(phoneNumber);
+			} else {
+				mView.setText(mDisplayName);
+			}
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_latitude);
 			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
@@ -192,6 +201,10 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 		mButton.setOnClickListener(this);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see android.view.View.OnClickListener#onClick(android.view.View)
+     */
 	@Override
 	public void onClick(View v) {
 		
@@ -218,6 +231,43 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			// unknown view id
 			Log.w(TAG, "unkown view id in onClick: " + v.getId());
 		}
+	}
+	
+	// method to get the contact name from the phone number
+	// assumes user has populated their address book from Serval Mesh
+	// TODO integrate with Serval Mesh contact lookup if possible
+	private String getDisplayName(String phoneNumber) {
+		
+		String displayName = null;
+		
+		// build a URI to use as the search
+		Uri mContactsUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+		
+		// do the database lookup
+		ContentResolver mContentResolver = getContentResolver();
+		
+		// build the projection
+		String[] mProjection = new String[2];
+		mProjection[0] = ContactsContract.PhoneLookup._ID;
+		mProjection[1] = ContactsContract.PhoneLookup.DISPLAY_NAME;
+		
+		// get the data
+		Cursor mCursor = mContentResolver.query(
+				mContactsUri,
+				mProjection,
+				null,
+				null,
+				null);
+		
+		// check to see what was returned
+		if(mCursor != null && mCursor.getCount() > 0) {
+			mCursor.moveToFirst();
+			
+			displayName = mCursor.getString(mCursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+			mCursor.close();
+		}
+
+		return displayName;
 	}
 
 }
