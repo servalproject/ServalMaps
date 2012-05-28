@@ -52,6 +52,7 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 	 */
 //	private final boolean V_LOG = true;
 	private final String  TAG = "PeerInfoActivity";
+	private String phoneNumber = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -78,7 +79,8 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			mCursor.moveToFirst();
 			
 			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
+			phoneNumber = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
+			mView.setText(phoneNumber);
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_latitude);
 			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
@@ -183,12 +185,17 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 		Button mButton = (Button) findViewById(R.id.peer_info_ui_btn_call);
 		mButton.setOnClickListener(this);
 		
+		mButton = (Button) findViewById(R.id.peer_info_ui_btn_msg);
+		mButton.setOnClickListener(this);
+		
 		mButton = (Button) findViewById(R.id.peer_info_ui_btn_back);
 		mButton.setOnClickListener(this);
     }
 
 	@Override
 	public void onClick(View v) {
+		
+		Intent mIntent;
 		
 		// determine which button was clicked
 		switch(v.getId()) {
@@ -198,10 +205,15 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.peer_info_ui_btn_call:
 			// call button was pressed
-			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
-			Intent mIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mView.getText()));
+			mIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
 			startActivityForResult(mIntent, 0);
 			break;
+		case R.id.peer_info_ui_btn_msg:
+			// message button was pressed
+			mIntent = new Intent(Intent.ACTION_VIEW);
+			mIntent.setType("vnd.android-dir/mms-sms");
+			mIntent.putExtra("address", phoneNumber);
+			startActivityForResult(mIntent, 0);
 		default:
 			// unknown view id
 			Log.w(TAG, "unkown view id in onClick: " + v.getId());

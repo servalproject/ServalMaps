@@ -46,6 +46,7 @@
     <string name="peer_info_ui_lbl_distance">Approximate Distance:</string>
     <string name="peer_info_ui_btn_call">Call Peer</string>
     <string name="peer_info_ui_btn_back">Back to Map</string>
+    <string name="peer_info_ui_btn_msg">Message Peer</string>
     <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
     
     <!-- New POI Activity -->

@@ -123,6 +123,11 @@
             android:id="@+id/peer_info_ui_btn_call"
             style="@style/smapsButton"
             android:text="@string/peer_info_ui_btn_call" />
+        
+        <Button
+            android:id="@+id/peer_info_ui_btn_msg"
+            style="@style/smapsButton"
+            android:text="@string/peer_info_ui_btn_msg" />
 
         <Button
             android:id="@+id/peer_info_ui_btn_back"
