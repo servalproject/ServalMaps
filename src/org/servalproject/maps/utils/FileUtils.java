@@ -27,10 +27,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 
 import org.servalproject.maps.protobuf.BinaryFileContract;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * a class that exposes a number of reusable methods related to files
@@ -228,6 +230,35 @@ public class FileUtils {
 	}
 	
 	/**
+	 * delete the specified directory
+	 * @param dirPath the full path to the directory
+	 * @throws IOException
+	 */
+	public static void deleteDirectory(String dirPath) throws IOException {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(dirPath) == true) {
+			throw new IllegalArgumentException("the dirPath paramter is required");
+		}
+		
+		if(isDirectoryWritable(dirPath) == false) {
+			throw new IOException("unable to access the required directory: " + dirPath);
+		}
+		
+		if(listFilesInDir(dirPath, null) != null) {
+			Log.d("FileUtils", Arrays.toString(listFilesInDir(dirPath, null)));
+			throw new IOException("unable to delete the directory, it isn't empty");
+		}
+		
+		// delete the directory
+		File mDirectory = new File(dirPath);
+		
+		if(!mDirectory.delete()) {
+			throw new IOException("unable to delete the specified directory");
+		}
+	}
+	
+	/**
 	 * get a list of files in a directory
 	 * 
 	 * @param dirPath the directory to search for files
@@ -249,12 +280,12 @@ public class FileUtils {
 			throw new IOException("unable to access the required directory: " + dirPath);
 		}
 		
-		// get a list of filee
+		// get a list of files
 		File mDir = new File(dirPath);
 		
 		File[] mFiles = mDir.listFiles(new ExtensionFileFilter(extensions));
 		
-		if(mFiles != null) {
+		if(mFiles != null && mFiles.length > 0) {
 			
 			mFileList = new String[mFiles.length];
 			
@@ -288,7 +319,7 @@ public class FileUtils {
 			String name = pathname.getName().toLowerCase();
 			
 			if(extensions == null) {
-				if(!name.startsWith(".")) {
+				if(!name.equals("..") || !name.equals(".")) {
 					return true;
 				}
 			} else {
