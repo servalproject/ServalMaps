@@ -104,6 +104,7 @@ public class BinaryFileWriter {
 			mOutput = new FileOutputStream(mOutputPath + mFileName, true);
 			try{
 				BinaryFileContract.writeLocationRecord(mCursor, mOutput);
+				mOutput.getFD().sync();
 			}finally{
 				mOutput.close();
 			}
@@ -182,8 +183,8 @@ public class BinaryFileWriter {
 			try {
 				mOutput = new FileOutputStream(mOutputPath + mFileName, true);
 				
-				//BinaryFileContract.writeLocationRecord(mCursor , mOutput);
 				BinaryFileContract.writePointOfInterestRecord(mCursor, mOutput);
+				mOutput.getFD().sync();
 			}finally{
 				mOutput.close();
 			}
