@@ -251,7 +251,7 @@
     
     <string name="misc_age_calculation_seconds">%d seconds</string>
     <string name="misc_age_calculation_minutes">%d minutes</string>
-    <string name="misc_age_calculation_hours">%d hours</string>
+    <string name="misc_age_calculation_hours">%.1f hours</string>
     <string name="misc_age_calculation_more_than_a_day">more than a day</string>
     
     <string name="misc_disance_metres">%s metres</string>

@@ -115,6 +115,8 @@ public class PoiInfoActivity extends Activity implements OnClickListener {
 			// calculate the distance between user and POI if possible
 			Location mLocation = LocationCollector.getLocation();
 			
+			mView = (TextView) findViewById(R.id.poi_info_ui_txt_distance);
+			
 			// calculate the distance
 			if(mLocation != null) {
 				
