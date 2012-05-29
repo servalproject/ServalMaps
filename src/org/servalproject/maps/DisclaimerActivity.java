@@ -61,6 +61,8 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	private final int MANY_FILES_DIALOG = 1;
 	private final int NO_SERVAL_DIALOG = 2;
 	private final int SERVAL_NOT_RUNNING_DIALOG = 3;
+	private final int EXTERNAL_STORAGE_NOT_AVAILABLE_DIALOG = 4;
+	private final int SERVAL_MESH_NOT_INSTALLED_DIALOG = 5;
 
 	/*
 	 * private class level variables
@@ -93,17 +95,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		if(Environment.MEDIA_MOUNTED.equals(mStorageState) == false) {
 
 			// show a dialog and disable the button
-			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_storage)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			AlertDialog mAlert = mBuilder.create();
-			mAlert.show();
-			
+			showDialog(EXTERNAL_STORAGE_NOT_AVAILABLE_DIALOG);
 			mContinue = false;
 		} 
 
@@ -111,19 +103,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		try {
 			getPackageManager().getApplicationInfo("org.servalproject", PackageManager.GET_META_DATA);
 		} catch (NameNotFoundException e) {
-			//Log.e(TAG, "serval maps was not found", e);
-			
-			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval_mesh)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			AlertDialog mAlert = mBuilder.create();
-			mAlert.show();
 
+			// show a dialog and disable the button
+			showDialog(SERVAL_MESH_NOT_INSTALLED_DIALOG);
 			mContinue = false;
 		}
 
@@ -382,6 +364,28 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 				}
 			})
 			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case EXTERNAL_STORAGE_NOT_AVAILABLE_DIALOG:
+			mBuilder = new AlertDialog.Builder(this);
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_storage)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case SERVAL_MESH_NOT_INSTALLED_DIALOG:
+			mBuilder = new AlertDialog.Builder(this);
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval_mesh)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
 				}
