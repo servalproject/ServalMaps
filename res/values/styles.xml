@@ -158,7 +158,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/button_message</item>
+        <item name="android:background">@drawable/smaps_button</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_weight">1</item>
@@ -173,7 +173,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:background">@drawable/button_message</item>
+        <item name="android:background">@drawable/smaps_button</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginTop">@dimen/ui_elem_margin_top</item>
