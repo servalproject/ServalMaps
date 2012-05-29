@@ -292,6 +292,8 @@ public class FileUtils {
 			for(int i = 0; i < mFiles.length; i++) {
 				mFileList[i] = mFiles[i].getName();
 			}
+			
+			Arrays.sort(mFileList);
 		}
 		
 		return mFileList;
