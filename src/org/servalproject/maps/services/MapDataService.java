@@ -104,12 +104,13 @@ public class MapDataService extends IntentService {
 			mBroadcastIntent.putParcelableArrayListExtra("files", mMapDataInfoList);
 			// populate the intent the intent
 			mBroadcastIntent.putExtra("count", mMapDataInfoList.size());
-		}else
+		} else {
+			
 			mBroadcastIntent.putExtra("count", 0);
-		
-		
+		}
 		
 		// send the broadcast intent
 		this.sendBroadcast(mBroadcastIntent, "org.servalproject.maps.MAP_DATA");
+	
 	}
 }
