@@ -35,6 +35,7 @@
             android:id="@+id/new_poi_ui_txt_description"
             style="@style/smapsInput"
             android:inputType="textMultiLine|textShortMessage"
+            android:gravity="top"
             android:lines="3" >
         </EditText>
 
