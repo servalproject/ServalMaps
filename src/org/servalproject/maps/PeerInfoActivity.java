@@ -165,10 +165,8 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.peer_info_ui_btn_msg:
 			// message button was pressed
-			mIntent = new Intent(Intent.ACTION_VIEW);
-			mIntent.setType("vnd.android-dir/mms-sms");
-			mIntent.putExtra("address", phoneNumber);
-			startActivityForResult(mIntent, 0);
+			mIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + phoneNumber));
+			this.startActivityForResult(mIntent, 0);
 		default:
 			// unknown view id
 			Log.w(TAG, "unkown view id in onClick: " + v.getId());
