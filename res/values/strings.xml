@@ -32,6 +32,7 @@
     <string name="disclaimer_ui_dialog_no_serval">Serval mesh phone number was not detected, confirm Serval mesh software is installed before continuing</string>
     <string name="disclaimer_ui_dialog_no_storage">The external storage is unavailable. Serval Maps cannot start without external storage.\n\nCheck the external storage and try again.</string>
     <string name="disclaimer_ui_dialog_no_serval_mesh">The Serval Mesh software is not installed. \n\nServal Maps requires the Serval Mesh software to be installed before continuing.</string>
+    <string name="disclaimer_ui_dialog_serval_not_running">The Serval Mesh is not running. Are you sure you wish to continue?</string>
     
     <!-- Maps Activity UI -->
     <string name="map_ui_toast_self_location">Your current location:\nLatitude: %1$f\nLongitude: %2$f</string>
@@ -239,6 +240,10 @@
     <!-- mock location strings -->
     <string name="system_mock_locations_allowed">Using Mock Location Data</string>
     <string name="system_mock_locations_not_allowed">The use of Mock Location data is not allowed. Adjust the setting and try again.</string>
+    
+    <!-- batphone status strings -->
+    <string name="system_toast_batphone_off">The Serval Mesh software is not running, data sharing is disabled</string>
+    <string name="system_toast_batphone_on">The Serval Mesh software is now running, data sharing is enabled</string>
     
     <!-- file upload strings -->
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
