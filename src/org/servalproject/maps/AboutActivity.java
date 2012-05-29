@@ -107,6 +107,7 @@ public class AboutActivity extends Activity implements OnClickListener {
 				licensesBtn.setText(R.string.about_ui_btn_about);
 				licenses = true;
 			}
+			break;
 		case R.id.about_ui_btn_contact:
 			
 			// check to see if we can potentially send an email

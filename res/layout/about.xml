@@ -57,15 +57,21 @@
 		<Button
 		    style="@style/smapsButton"
 		    android:id="@+id/about_ui_btn_stats"
+		    android:layout_width="0px"
+		    android:layout_weight="2"
 		    android:text="@string/about_ui_btn_stats" /> 
 		    
 		<Button
 		    style="@style/smapsButton"
+		    android:layout_width="0px"
+		    android:layout_weight="1"
 		    android:id="@+id/about_ui_btn_licenses"
 		    android:text="@string/about_ui_btn_licenses" />
 		
 		<Button
 		    style="@style/smapsButton"
+		    android:layout_width="0px"
+		    android:layout_weight="2"
 		    android:id="@+id/about_ui_btn_contact"
 		    android:text="@string/about_ui_btn_contact" />
 		
