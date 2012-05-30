@@ -124,10 +124,12 @@
             style="@style/smapsButton"
             android:text="@string/peer_info_ui_btn_call" />
         
+        <!-- hide this button to work around an issue in Serval Mesh -->
         <Button
             android:id="@+id/peer_info_ui_btn_msg"
             style="@style/smapsButton"
-            android:text="@string/peer_info_ui_btn_msg" />
+            android:text="@string/peer_info_ui_btn_msg"
+            android:visibility="invisibile" />
 
         <Button
             android:id="@+id/peer_info_ui_btn_back"
