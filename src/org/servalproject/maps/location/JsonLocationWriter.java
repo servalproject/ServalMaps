@@ -165,11 +165,11 @@ public class JsonLocationWriter implements Runnable {
 				
 				// write the output
 				try {
-					FileOutputStream fos = new FileOutputStream(fileName, true);
-					PrintWriter mOutput = new PrintWriter (fos);
+					FileOutputStream mFileOutputStream = new FileOutputStream(fileName, true);
+					PrintWriter mOutput = new PrintWriter (mFileOutputStream);
 					mOutput.println(String.format(jsonTemplate, mLocation.getLongitude(), mLocation.getLatitude()));
 					mOutput.flush();
-					fos.getFD().sync();
+					mFileOutputStream.getFD().sync();
 					mOutput.close();
 					
 					// add the file to rhizome
