@@ -129,8 +129,8 @@
             android:id="@+id/peer_info_ui_btn_msg"
             style="@style/smapsButton"
             android:text="@string/peer_info_ui_btn_msg"
-            android:visibility="invisibile" />
-
+            android:visibility="invisible"/>
+        
         <Button
             android:id="@+id/peer_info_ui_btn_back"
             style="@style/smapsButton"
