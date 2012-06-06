@@ -324,14 +324,18 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			mDialog = mBuilder.create();
 			break;
 		case MANY_FILES_DIALOG:
-
-			mFileNames = new CharSequence[mapDataInfoList.size()];
-			File mFile = null;
-
-			for(int i = 0; i < mapDataInfoList.size(); i++) {
-				MapDataInfo mInfo = mapDataInfoList.get(i);
-				mFile = new File(mInfo.getFileName());
-				mFileNames[i] = mFile.getName();
+			
+			if(mapDataInfoList != null) {
+				mFileNames = new CharSequence[mapDataInfoList.size()];
+				File mFile = null;
+	
+				for(int i = 0; i < mapDataInfoList.size(); i++) {
+					MapDataInfo mInfo = mapDataInfoList.get(i);
+					mFile = new File(mInfo.getFileName());
+					mFileNames[i] = mFile.getName();
+				}
+			} else {
+				mFileNames = new CharSequence[0];
 			}
 
 			mBuilder.setTitle(R.string.disclaimer_ui_dialog_many_files_title)
