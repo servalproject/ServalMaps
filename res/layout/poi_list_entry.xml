@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/poi_list_ui_entry_title"
-        style="@style/smapsHeader" />
+        style="@style/smapsLabel" />
     
      <TableLayout
         style="@style/smapsLayout" >
@@ -17,7 +17,7 @@
             
             <TextView
 		        android:id="@+id/poi_list_ui_entry_age_lbl"
-		        style="@style/smapsTextwrapped" 
+		        style="@style/smapsLabel" 
 		        android:text="@string/poi_info_ui_lbl_age"/>
 		    
 		    <TextView
@@ -32,7 +32,7 @@
 		    
             <TextView
 		        android:id="@+id/poi_list_ui_lbl_distance"
-		        style="@style/smapsTextwrapped" 
+		        style="@style/smapsLabel" 
 		        android:text="@string/poi_info_ui_lbl_distance" />
 		
 		    <TextView

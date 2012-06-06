@@ -32,6 +32,7 @@
     <string name="disclaimer_ui_dialog_no_serval">Serval mesh phone number was not detected, confirm Serval mesh software is installed before continuing</string>
     <string name="disclaimer_ui_dialog_no_storage">The external storage is unavailable. Serval Maps cannot start without external storage.\n\nCheck the external storage and try again.</string>
     <string name="disclaimer_ui_dialog_no_serval_mesh">The Serval Mesh software is not installed. \n\nServal Maps requires the Serval Mesh software to be installed before continuing.</string>
+    <string name="disclaimer_ui_dialog_serval_not_running">The Serval Mesh is not running. Are you sure you wish to continue?</string>
     
     <!-- Maps Activity UI -->
     <string name="map_ui_toast_self_location">Your current location:\nLatitude: %1$f\nLongitude: %2$f</string>
@@ -43,11 +44,11 @@
     <string name="peer_info_ui_lbl_latitude">Latitude:</string>
     <string name="peer_info_ui_lbl_longitude">Longitude:</string>
     <string name="peer_info_ui_lbl_age">Information Age:</string>
-    <string name="peer_info_ui_lbl_distance">Approximate Distance:</string>
-    
+    <string name="peer_info_ui_lbl_distance">Approx. Distance:</string>
     <string name="peer_info_ui_btn_call">Call Peer</string>
     <string name="peer_info_ui_btn_back">Back to Map</string>
-    
+    <string name="peer_info_ui_btn_msg">Message Peer</string>
+
     <string name="peer_info_toast_no_record_error">Unable to load required data at this time</string>
     
     <!-- New POI Activity -->
@@ -61,6 +62,7 @@
     
     <string name="new_poi_ui_btn_save">Save New POI</string>
     <string name="new_poi_ui_btn_photo">Add A Photo</string>
+    <string name="new_poi_ui_btn_back">Discard Changes</string>
     <string name="new_poi_ui_btn_photo_replace">Replace Photo</string>
     
     <string name="new_poi_toast_title_missing">A title must be provided</string>
@@ -79,10 +81,11 @@
     <string name="poi_info_ui_lbl_description">Description</string>
     <string name="poi_info_ui_lbl_age">Information Age:</string>
     <string name="poi_info_ui_lbl_tags">Tags: </string>
-    <string name="poi_info_ui_lbl_distance">Approximate Distance:</string>
-    <string name="poi_info_ui_btn_photo">View Photo</string>
-    
     <string name="poi_info_toast_no_record_error">Unable to load required data at this time</string>
+    <string name="poi_info_ui_lbl_distance">Approx. Distance:</string>
+    <string name="poi_info_ui_btn_photo">View Photo</string>
+    <string name="poi_info_ui_ui_btn_back">Back to Map</string>
+
     <string name="poi_into_toast_no_photo">Unable to show the photo as this time</string>
     
     <!-- POI List Activity -->
@@ -213,7 +216,6 @@
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
     <string name="system_path_export_data">/servalproject/maps/export-data/</string>
-    <string name="system_path_rhizome_data">/serval/rhizome/bundles/</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>
@@ -240,6 +242,14 @@
     <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to conserve power.</string>
     <string name="system_battery_status_ok">Your battery charge is OK. Serval Maps has restarted using GPS.</string>
     
+    <!-- mock location strings -->
+    <string name="system_mock_locations_allowed">Using Mock Location Data</string>
+    <string name="system_mock_locations_not_allowed">The use of Mock Location data is not allowed. Adjust the setting and try again.</string>
+    
+    <!-- batphone status strings -->
+    <string name="system_toast_batphone_off">The Serval Mesh software is not running, data sharing is disabled</string>
+    <string name="system_toast_batphone_on">The Serval Mesh software is now running, data sharing is enabled</string>
+    
     <!-- file upload strings -->
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
     
@@ -251,7 +261,7 @@
     
     <string name="misc_age_calculation_seconds">%d seconds</string>
     <string name="misc_age_calculation_minutes">%d minutes</string>
-    <string name="misc_age_calculation_hours">%d hours</string>
+    <string name="misc_age_calculation_hours">%.1f hours</string>
     <string name="misc_age_calculation_more_than_a_day">more than a day</string>
     
     <string name="misc_disance_metres">%s metres</string>

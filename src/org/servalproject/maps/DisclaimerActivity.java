@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.servalproject.maps.batphone.PhoneNumberReceiver;
+import org.servalproject.maps.batphone.StateReceiver;
 import org.servalproject.maps.parcelables.MapDataInfo;
 
 import android.app.Activity;
@@ -59,11 +60,15 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	private final int NO_FILES_DIALOG = 0;
 	private final int MANY_FILES_DIALOG = 1;
 	private final int NO_SERVAL_DIALOG = 2;
+	private final int SERVAL_NOT_RUNNING_DIALOG = 3;
+	private final int EXTERNAL_STORAGE_NOT_AVAILABLE_DIALOG = 4;
+	private final int SERVAL_MESH_NOT_INSTALLED_DIALOG = 5;
 
 	/*
 	 * private class level variables
 	 */
 	private PhoneNumberReceiver phoneNumberReceiver = null;
+	private StateReceiver batphoneStateReceiver = null;
 	private int mapFileCount = 0;
 	private ArrayList<MapDataInfo> mapDataInfoList = null;
 	private CharSequence[] mFileNames = null;
@@ -90,17 +95,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		if(Environment.MEDIA_MOUNTED.equals(mStorageState) == false) {
 
 			// show a dialog and disable the button
-			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_storage)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			AlertDialog mAlert = mBuilder.create();
-			mAlert.show();
-			
+			showDialog(EXTERNAL_STORAGE_NOT_AVAILABLE_DIALOG);
 			mContinue = false;
 		} 
 
@@ -108,19 +103,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		try {
 			getPackageManager().getApplicationInfo("org.servalproject", PackageManager.GET_META_DATA);
 		} catch (NameNotFoundException e) {
-			//Log.e(TAG, "serval maps was not found", e);
-			
-			AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval_mesh)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-				}
-			});
-			AlertDialog mAlert = mBuilder.create();
-			mAlert.show();
 
+			// show a dialog and disable the button
+			showDialog(SERVAL_MESH_NOT_INSTALLED_DIALOG);
 			mContinue = false;
 		}
 
@@ -148,7 +133,10 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			if(mApplication.getPhoneNumber() == null || mApplication.getSid() == null) {
 				// show the appropriate dialog
 				showDialog(NO_SERVAL_DIALOG);
-			} else {
+			} else if(mApplication.getBatphoneState() != ServalMaps.BatphoneState.On) {
+				// show the appropriate dialog
+				showDialog(SERVAL_NOT_RUNNING_DIALOG);
+			}else {
 				// check for files and go to the map activity
 				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
 				startService(mIntent);
@@ -244,6 +232,20 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		mBroadcastFilter = new IntentFilter();
 		mBroadcastFilter.addAction("org.servalproject.SET_PRIMARY");
 		registerReceiver(phoneNumberReceiver, mBroadcastFilter);
+		
+		if(batphoneStateReceiver == null) {
+			batphoneStateReceiver = new StateReceiver();
+		}
+		
+		mBroadcastFilter = new IntentFilter();
+		mBroadcastFilter.addAction("org.servalproject.ACTION_STATE_CHECK_UPDATE");
+		mBroadcastFilter.addAction("org.servalproject.ACTION_STATE");
+		registerReceiver(batphoneStateReceiver, mBroadcastFilter);
+		
+		// send off an intent to poll for the current state of the serval mesh
+		Intent mIntent = new Intent("org.servalproject.ACTION_STATE_CHECK");
+		startService(mIntent);
+		
 	}
 
 	// private method to unregister the various broadcast receivers
@@ -253,6 +255,10 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 
 		if(phoneNumberReceiver != null) {
 			unregisterReceiver(phoneNumberReceiver);
+		}
+		
+		if(batphoneStateReceiver != null) {
+			unregisterReceiver(batphoneStateReceiver);
 		}
 	}
 
@@ -347,7 +353,45 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			});
 			mDialog = mBuilder.create();
 			break;
-
+		case SERVAL_NOT_RUNNING_DIALOG:
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_serval_not_running)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					// check for files and go to the map activity
+					Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
+					startService(mIntent);
+				}
+			})
+			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case EXTERNAL_STORAGE_NOT_AVAILABLE_DIALOG:
+			mBuilder = new AlertDialog.Builder(this);
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_storage)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case SERVAL_MESH_NOT_INSTALLED_DIALOG:
+			mBuilder = new AlertDialog.Builder(this);
+			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval_mesh)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
 		default:
 			mDialog = null;
 		}

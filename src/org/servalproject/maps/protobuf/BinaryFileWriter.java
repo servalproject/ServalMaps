@@ -102,9 +102,12 @@ public class BinaryFileWriter {
 
 		try {
 			mOutput = new FileOutputStream(mOutputPath + mFileName, true);
-			
-			BinaryFileContract.writeLocationRecord(mCursor, mOutput);
-			
+			try{
+				BinaryFileContract.writeLocationRecord(mCursor, mOutput);
+				mOutput.getFD().sync();
+			}finally{
+				mOutput.close();
+			}
 			// add the file to rhizome
 			Rhizome.addFile(context, mOutputPath + mFileName);
 			
@@ -113,14 +116,6 @@ public class BinaryFileWriter {
 		} catch (IOException e) {
 			Log.e(TAG, "unable to write to the output file", e);
 		} finally {
-			// play nice and tidy up
-			try {
-				if(mOutput != null) {
-					mOutput.close();
-				}
-			} catch (IOException e) {
-				Log.e(TAG, "unable to close the output file", e);
-			}
 			mCursor.close();
 		}
 	}
@@ -184,11 +179,15 @@ public class BinaryFileWriter {
 		
 		// open the file and write the data
 		FileOutputStream mOutput = null;
-		try {
-			mOutput = new FileOutputStream(mOutputPath + mFileName, true);
-			
-			BinaryFileContract.writeLocationRecord(mCursor , mOutput);
-			
+		try{
+			try {
+				mOutput = new FileOutputStream(mOutputPath + mFileName, true);
+				
+				BinaryFileContract.writePointOfInterestRecord(mCursor, mOutput);
+				mOutput.getFD().sync();
+			}finally{
+				mOutput.close();
+			}
 			// add the file to rhizome
 			Rhizome.addFile(context, mOutputPath + mFileName);
 			

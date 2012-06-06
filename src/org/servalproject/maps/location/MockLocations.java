@@ -27,6 +27,7 @@ import java.util.zip.ZipInputStream;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
+import android.provider.Settings;
 import android.util.Log;
 
 /**
@@ -117,6 +118,20 @@ public class MockLocations implements Runnable {
 		// use the standard provider name so the rest of the code still works	
 		locationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, 0, 5);
 	}
+	
+	/**
+	 * check to confirm that the "Allow mock locations setting is set"
+	 * @param context a context object used to gain access to application resources
+	 * @return true if "Allow mock locations" is set, otherwise false
+	 */
+	public static boolean isMockLocationSet(Context context) { 
+		if (Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION).contentEquals("1")) { 
+			return true;  
+		} 
+		else { 
+			return false;                     
+		} 
+	} 
 	
 	/**
 	 * request that this thread stops

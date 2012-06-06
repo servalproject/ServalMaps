@@ -10,7 +10,7 @@
 
      <TextView
          android:id="@+id/poi_info_ui_lbl_title"
-         style="@style/smapsExport"
+         style="@style/smapsLabel"
          android:text="@string/poi_info_ui_lbl_title"/>
 
      <TextView
@@ -19,7 +19,7 @@
      
      <TextView
          android:id="@+id/poi_info_ui_lbl_description"
-         style="@style/smapsExport"
+         style="@style/smapsLabel"
          android:text="@string/poi_info_ui_lbl_description"/>
      
      <TextView
@@ -45,7 +45,7 @@
              
              <TextView
                 android:id="@+id/poi_info_ui_lbl_age"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/poi_info_ui_lbl_age" />
 
             <TextView
@@ -60,7 +60,7 @@
             
              <TextView
                 android:id="@+id/poi_info_ui_lbl_distance"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/poi_info_ui_lbl_distance" />
 
             <TextView
@@ -72,10 +72,21 @@
 
 
      </TableLayout>
+     
+     <LinearLayout
+        android:id="@+id/linearLayout1"
+        style="@style/smapsLayout" >
 
      <Button
          android:id="@+id/poi_info_ui_btn_photo"
-         style="@style/smapsButtonexport"
+         style="@style/smapsButton"
          android:text="@string/poi_info_ui_btn_photo" />
+     
+     <Button
+            android:id="@+id/poi_info_ui_btn_back"
+            style="@style/smapsButton"
+            android:text="@string/poi_info_ui_ui_btn_back" />
+
+    </LinearLayout>
 
 </LinearLayout>

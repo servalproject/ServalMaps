@@ -22,9 +22,11 @@ package org.servalproject.maps.rhizome;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import org.servalproject.maps.R;
 import org.servalproject.maps.ServalMaps;
 import org.servalproject.maps.protobuf.BinaryFileContract;
 import org.servalproject.maps.protobuf.LocationReadWorker;
@@ -35,8 +37,7 @@ import org.servalproject.maps.utils.MediaUtils;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Environment;
+import android.net.Uri;
 import android.util.Log;
 
 /**
@@ -47,118 +48,112 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = false;
+	private final boolean V_LOG = true;
 	private final String TAG = "RhizomeBroadcastReceiver";
 	
 	/*
 	 * private class level variables
 	 */
-	ExecutorService executor;
+	private static final int THREAD_POOL_SIZE = 2;
 	
-	/**
-	 * constructor a new instance of this receiver providing it an executor service
-	 * used to manage the data import threads
-	 * 
-	 * @param executor used to manage the execution of data import threads
-	 * @throws IllegalArgumentException if executor is null
-	 */
-	public RhizomeBroadcastReceiver(ExecutorService executor) {
-		
-		if(executor == null) {
-			throw new IllegalArgumentException("the executor parameter is required");
-		}
-		
-		this.executor = executor;
-		
-	}
-
+	// keep a static weak reference to a thread pool
+	// this should allow it to shutdown when there are no files being processed
+	private static WeakReference<ExecutorService> executorRef;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.content.BroadcastReceiver#onReceive(android.content.Context, android.content.Intent)
 	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		
-		Bundle mBundle = intent.getExtras();
-		
-		if(intent.getAction().equals("org.servalproject.rhizome.RECIEVE_FILE") == false) {
+			
+		if(!intent.getAction().equals("org.servalproject.rhizome.RECIEVE_FILE")) {
 			Log.e(TAG, "called with an intent with an unexepcted intent action");
 			return;
 		}
-		
+	
 		// see if the file is one we want to work with
-		String mFilePath = mBundle.getString("path");
+		String mFileName = intent.getStringExtra("name");
+		Uri uri = intent.getData();
 		
-		if(mFilePath == null) {
-			Log.e(TAG, "called with an intent missing the 'path' extra");
+		if(mFileName == null) {
+			Log.e(TAG, "called with an intent missing the 'name' extra");
+			return;
 		}
-		
-		// check to see if the file path is to our own file
+	
+		// skip files that we sent
 		ServalMaps mServalMaps = (ServalMaps) context.getApplicationContext();
-		String mFileName = new File(mFilePath).getName();
 		String[] mFileParts = mFileName.split("-");
-		
+	
 		String mPhoneNumber = mServalMaps.getPhoneNumber();
 		mPhoneNumber = mPhoneNumber.replace(" ", "");
 		mPhoneNumber = mPhoneNumber.replace("-", "");
 		
-		if(mFileParts[0].equals(mServalMaps.getPhoneNumber()) == true) { 
+		if(mFileParts[0].equals(mServalMaps.getPhoneNumber())) { 
 			// this doesn't look like one of our own binary files
 			return;
 		}
-		
+	
 		// is it one of our images?
 		if(mFileName.startsWith(MediaUtils.PHOTO_FILE_PREFIX) && mFileName.endsWith(".jpg")) {
 			// this is a serval maps photo
 			try {
-				FileUtils.copyFileToDir(mFilePath, MediaUtils.getMediaStore());
-				Log.d(TAG, MediaUtils.getMediaStore());
-			} catch (IOException e) {
-				Log.e(TAG, "unable to copy file", e);
-				return;
-			}
-		}
-		
-		// get the binary data directory
-		String mDataPath = Environment.getExternalStorageDirectory().getPath();
-		mDataPath += context.getString(R.string.system_path_binary_data);
-		
-		if(mFilePath.endsWith(BinaryFileContract.LOCATION_EXT) == true) {
-			// this is a binary location file
-			
-			// copy and process the file
-			try {
+				// get the destination file name
+				File mFileDestination = new File(MediaUtils.getMediaStore(), mFileName);
 				
-				String mDataFile = FileUtils.copyFileToDirWithTmpName(mFilePath, mDataPath);				
-				LocationReadWorker mWorker = new LocationReadWorker(context, mDataFile);
-				executor.submit(mWorker);
-
-			} catch (IOException e) {
-				Log.e(TAG, "unable to copy file", e);
-				return;
-			}
-
-		} else if(mFilePath.endsWith(BinaryFileContract.POI_EXT) == true) {
-			// this is a binary POI file
-			
-			// copy and process the file
-			try {
+				if(V_LOG) {
+					Log.v(TAG, "Extracting image to: " + mFileDestination.getAbsolutePath());
+				}
 				
-				String mDataFile = FileUtils.copyFileToDirWithTmpName(mFilePath, mDataPath);
-				PointsOfInterestWorker mWorker = new PointsOfInterestWorker(context, mDataFile);
-				executor.submit(mWorker);
-
+				// copy the file
+				InputStream mInputStream = context.getContentResolver().openInputStream(uri);
+				FileUtils.copyFile(mInputStream, mFileDestination);
+				
 			} catch (IOException e) {
 				Log.e(TAG, "unable to copy file", e);
-				return;
 			}
+			return;
+		}
+
+		// is this a location binary data file?
+		if(mFileName.endsWith(BinaryFileContract.LOCATION_EXT)) {
+			if(V_LOG) {
+				Log.v(TAG, "Queing location reader for "+mFileName);
+			}
+			
+			// queue the reading of the file
+			queue(new LocationReadWorker(context, uri));
+			return;
 		}
 		
-		if(V_LOG) {
-			Log.v(TAG, "received intent with action: " + intent.getAction());
-			Log.v(TAG, "file name: " + mBundle.getString("path"));
-			Log.v(TAG, "version: " + Long.toString(mBundle.getLong("version")));
-			Log.v(TAG, "name: " + mBundle.getString("name"));
+		// is this is a POI binary data file?
+		if(mFileName.endsWith(BinaryFileContract.POI_EXT) == true) {
+			if(V_LOG) {
+				Log.v(TAG, "Queing POI reader for "+mFileName);
+			}
+			
+			// queue the reading of the file
+			queue(new PointsOfInterestWorker(context, uri));
+			return;
 		}
+	}
+	
+	/*
+	 * queue the runnable that will process the file
+	 */
+	private void queue(Runnable r){
+		ExecutorService mExecutorService = null;
+		
+		// use existing service if 
+		if (executorRef != null){
+			mExecutorService = executorRef.get();
+		}
+		
+		if (mExecutorService == null){
+			mExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+			executorRef = new WeakReference<ExecutorService>(mExecutorService);
+		}
+		
+		mExecutorService.submit(r);
 	}
 }

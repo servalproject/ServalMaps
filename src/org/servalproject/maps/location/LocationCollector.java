@@ -107,7 +107,10 @@ public class LocationCollector implements LocationListener {
 			
 			if(V_LOG) {
 				Log.v(TAG, "new location is better than current location");
-				Log.v(TAG, "Lat: " + location.getLatitude() + " Lng: " + location.getLongitude());
+				if(currentLocation != null) {
+					Log.v(TAG, "old location: Lat: " + currentLocation.getLatitude() + " Lng: " + currentLocation.getLongitude() + " accuracy: " + currentLocation.getAccuracy());
+				}
+				Log.v(TAG, "new location: Lat: " + location.getLatitude() + " Lng: " + location.getLongitude() + " accuracy: " + location.getAccuracy());
 			}
 			
 			// save the location for later
@@ -192,7 +195,10 @@ public class LocationCollector implements LocationListener {
 	 * http://www.apache.org/licenses/LICENSE-2.0
 	 */
 	
-	private static final int TWO_MINUTES = 1000 * 60 * 2;
+	private static final int TWO_MINUTES = 1000 * 60 * 2; // maximum allowed time difference
+	private static final int THIRTY_SECONDS = 1000 * 30; // minimum allowed time difference
+	
+	private static final int MAXIMUM_DEVIATION = 200; // in meters
 	
 	/** Determines whether one Location reading is better than the current Location fix
 	 * @param location  The new Location that you want to evaluate
@@ -208,14 +214,26 @@ public class LocationCollector implements LocationListener {
 	    long timeDelta = location.getTime() - currentBestLocation.getTime();
 	    boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
 	    boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
-	    boolean isNewer = timeDelta > 0;
+	    boolean isNewer = timeDelta > THIRTY_SECONDS;
 
 	    // If it's been more than two minutes since the current location, use the new location
 	    // because the user has likely moved
 	    if (isSignificantlyNewer) {
+	    	
+	    	if(V_LOG) {
+	    		Log.v(TAG, "new location is significantly newer");
+	    		Log.v(TAG, "time delta: " + timeDelta + " comparison: " + TWO_MINUTES);
+	    	}
+	    	
 	        return true;
 	    // If the new location is more than two minutes older, it must be worse
 	    } else if (isSignificantlyOlder) {
+	    	
+	    	if(V_LOG) {
+	    		Log.v(TAG, "new location is significantly olrder");
+	    		Log.v(TAG, "time delta: " + timeDelta + " comparison: " + TWO_MINUTES);
+	    	}
+	    	
 	        return false;
 	    }
 
@@ -223,7 +241,7 @@ public class LocationCollector implements LocationListener {
 	    int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
 	    boolean isLessAccurate = accuracyDelta > 0;
 	    boolean isMoreAccurate = accuracyDelta < 0;
-	    boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+	    boolean isSignificantlyLessAccurate = accuracyDelta > MAXIMUM_DEVIATION;
 
 	    // Check if the old and new location are from the same provider
 	    boolean isFromSameProvider = isSameProvider(location.getProvider(),
@@ -231,10 +249,30 @@ public class LocationCollector implements LocationListener {
 
 	    // Determine location quality using a combination of timeliness and accuracy
 	    if (isMoreAccurate) {
+	    	
+	    	if(V_LOG) {
+	    		Log.v(TAG, "new location is more accurate");
+	    		Log.v(TAG, "accuracy delta: " + accuracyDelta);
+	    	}
+	    	
 	        return true;
 	    } else if (isNewer && !isLessAccurate) {
+	    	
+	    	if(V_LOG) {
+	    		Log.v(TAG, "new location is newer and not less acurrate");
+	    		Log.v(TAG, "time delta: " + timeDelta + " comparison: " + TWO_MINUTES);
+	    		Log.v(TAG, "accuracy delta: " + accuracyDelta);
+	    	}
+	    	
 	        return true;
 	    } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+	    	
+	    	if(V_LOG) {
+	    		Log.v(TAG, "new location is newer and not significantly less acurrate and is from the same provider");
+	    		Log.v(TAG, "time delta: " + timeDelta + " comparison: " + TWO_MINUTES);
+	    		Log.v(TAG, "accuracy delta: " + accuracyDelta + " threshold: " + MAXIMUM_DEVIATION);
+	    	}
+	    	
 	        return true;
 	    }
 	    return false;

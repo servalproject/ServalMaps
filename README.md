@@ -10,11 +10,22 @@ As development progresses more information will be made available on the [Though
 
 ## Change Log ##
 
+### Version 0.3.1 ####
+
+Version 0.3.1 builds on the previous version with new features and bug fixes primarily aimed at integrating with the new Rhizome functionality that is being included in version 0.09 of the [Serval Mesh](https://github.com/servalproject/batphone) software.
+
+Changes include:
+
+* Integration with the new Rhizome functionality in Serval Mesh (thanks [lakeman](https://github.com/lakeman))
+* Various tweaks to the user interface to improve the User Experience
+* Improve the display of contact information in the peer view activity
+* Improve the way in which GPS updates are processed
+
 ### Version 0.3 ###
 
 Version 0.3 builds on the previous version and adds a number of new areas of functionality. Including the implementation of feature requests as a result of feedback from a field trial of the software during the KiwiEx exercise conducted in February 2012 in New Zealand. 
 
-New functionality includes:
+Changes include:
 
 * Improvements and bug fixes to the efficiency of importing of new location and Point of Interest (POI) information
 * Distance between the user and other peers / points of interest is calculated and displayed
@@ -24,7 +35,7 @@ New functionality includes:
 * A picture can now be associated with a POI
 * Location and POI data can be exported in the native binary format and in plain CSV format
 * Statistics on the use of Serval Maps is collected and can be sent anonymously to the developers if the user chooses
-* Redesign of the UI to improve the User Experience and bring it inline with the overall Serval Project style
+* Redesign of the UI to improve the User Experience and bring it inline with the overall Serval Project style (thanks [timelady](https://github.com/timelady))
 * A variety of other minor bug fixes and tweaks
 
 ### Version 0.2 ###

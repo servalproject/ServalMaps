@@ -20,19 +20,11 @@
 package org.servalproject.maps.rhizome;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import org.servalproject.maps.R;
 import org.servalproject.maps.utils.FileUtils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.os.Environment;
-import android.text.TextUtils;
-import android.util.Log;
+
 
 /**
  * used to add a file to the Rhizome repository
@@ -42,8 +34,8 @@ public class Rhizome {
 	/*
 	 * class level constants
 	 */
-	private static final String TAG = "Rhizome";
-	
+	//private static final String TAG = "Rhizome";
+
 	/**
 	 * add a file to the Rhizome repository
 	 * 
@@ -61,70 +53,30 @@ public class Rhizome {
 			throw new IllegalArgumentException("unable to access the specified file '" + filePath + "'");
 		}
 		
-		// get access to the preferences
-		SharedPreferences mPreferences = context.getSharedPreferences("rhizome", Context.MODE_PRIVATE);
-		
-		String mVersionName = new File(filePath).getName() + "-version";
-		
-		Long mVersion = mPreferences.getLong(mVersionName, 0);
-		
-		// increment the version
-		mVersion++;
-		
-		// get the name identifier
-		String mName = context.getString(R.string.app_name);
-		
 		// build the intent
 		Intent mIntent = new Intent("org.servalproject.rhizome.ADD_FILE");
+		
 		mIntent.putExtra("path", filePath);
-		mIntent.putExtra("version", mVersion);
-		mIntent.putExtra("author", mName);
+		
+		File mManifestFile = getManifestPath(filePath);
+		if (mManifestFile.exists()){
+			// pass in the previous manifest, so rhizome can update it
+			mIntent.putExtra("previous_manifest", mManifestFile.getAbsolutePath());
+		}
+		
+		// ask rhizome to save the new manifest here
+		mIntent.putExtra("save_manifest", mManifestFile.getAbsolutePath());
 		context.getApplicationContext().startService(mIntent);
 		
-		// update version
-		Editor mEditor = mPreferences.edit();
-		mEditor.putLong(mVersionName, mVersion);
-		mEditor.commit();
 	}
 	
-	/**
-	 * check to see if a file is in Rhizome
-	 * 
-	 * @param fileNname the name of the file to look for
-	 * @return the full path to the file
+	/*
+	 * get the path to a manifest based on the path to the content
+	 * @path the path to the content file
 	 */
-	public static String checkForFile(Context context, String fileName) throws FileNotFoundException{
-		
-		// check on the parameters
-		if(context == null) {
-			throw new IllegalArgumentException("the context parameter is required");
-		}
-		
-		if(TextUtils.isEmpty(fileName)) {
-			throw new IllegalArgumentException("the file name parameter is required");
-		}
-		
-		// get the rhizome path
-		String mRhizomePath = context.getString(R.string.system_path_rhizome_data);
-		try {
-			String mExternal = Environment.getExternalStorageDirectory().getCanonicalPath();
-			mRhizomePath = mExternal + mRhizomePath;
-		} catch (IOException e) {
-			Log.e(TAG, "unable to determine the full path to the Rhizome data store", e);
-			throw new FileNotFoundException("unable to determine the full path to the Rhizome data store");
-		}
-		
-		// check on the rhizome path
-		if(FileUtils.isDirectoryReadable(mRhizomePath) == false) {
-			Log.e(TAG, "unable to access the rhizome directory: " + mRhizomePath);
-			throw new FileNotFoundException("unable to access the rhizome directory: " + mRhizomePath);
-		}
-		
-		// check to see if the file is available
-		if(FileUtils.isFileReadable(mRhizomePath + fileName) == true) {
-			return mRhizomePath + fileName;
-		} else {
-			throw new FileNotFoundException("unable to find the specified file: " + mRhizomePath + fileName);
-		}
+	private static File getManifestPath(String path){
+		File mManifestPath = new File(path);
+		File mManifestFile = new File(mManifestPath.getParent(), ".manifest-" + mManifestPath.getName());
+		return mManifestFile;
 	}
 }

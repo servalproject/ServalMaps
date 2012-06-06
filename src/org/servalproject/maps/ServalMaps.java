@@ -33,12 +33,27 @@ public class ServalMaps extends Application {
 	 * class level constants
 	 */
 	public final String TAG = "ServalMaps";
+	
+	/**
+	 * an enum representing the different states of the Serval Mesh software
+	 * derived from the org.serval.project.ServalBatphoneApplication class
+	 */
+	public static enum BatphoneState{
+		Installing,
+		Upgrading,
+		Off,
+		Starting,
+		On,
+		Stopping,
+		Broken
+	}
 
 	/*
 	 * class level variables
 	 */
 	private String phoneNumber = null;
 	private String sid = null;
+	private BatphoneState state = null;
 	
 	/**
 	 * set the phone number as reported by Serval
@@ -71,6 +86,20 @@ public class ServalMaps extends Application {
 	}
 	
 	/**
+	 * set the current state of the Serval Mesh
+	 * @param state the current state of the Serval Mesh
+	 * @throws IllegalArgumentException if the new state value is null
+	 */
+	public void setBatphoneState(BatphoneState state) {
+		if(state == null) {
+			throw new IllegalArgumentException("the state parameter cannot be null");
+		}
+		
+		this.state = state;
+		
+	}
+	
+	/**
 	 * Get the phone number of the device as reported by Serval 
 	 * 
 	 * @return the phone number
@@ -86,6 +115,14 @@ public class ServalMaps extends Application {
 	 */
 	public String getSid() {
 		return sid;
+	}
+	
+	/**
+	 * return the current known state of the Serval Mesh
+	 * @return the current known state of the Serval Mesh
+	 */
+	public BatphoneState getBatphoneState() {
+		return state;
 	}
 	
 	/*

@@ -20,14 +20,11 @@
 package org.servalproject.maps.services;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.servalproject.maps.R;
 import org.servalproject.maps.location.JsonLocationWriter;
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.location.MockLocations;
-import org.servalproject.maps.rhizome.RhizomeBroadcastReceiver;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -35,13 +32,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * The CoreService class undertakes the core activities that need to be 
@@ -63,8 +60,6 @@ public class CoreService extends Service {
 	private final boolean V_LOG = false;
 	private final String  TAG = "CoreService";
 
-	private final int THREAD_POOL_SIZE = 2;
-
 	// class level variables
 	private LocationCollector locationCollector;
 	private LocationManager locationManager;
@@ -75,10 +70,6 @@ public class CoreService extends Service {
 
 	private SharedPreferences preferences = null;
 
-	private RhizomeBroadcastReceiver rhizomeBroadcastReceiver = null;
-	
-	private ExecutorService executor = null;
-	
 	private Long uptimeStart;
 
 	/*
@@ -101,10 +92,17 @@ public class CoreService extends Service {
 
 		// determine if mock locations should be used
 		if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
-			try {
-				mockLocations = new MockLocations(this.getApplicationContext()); 
-			} catch (IOException e) {
-				Log.e(TAG, "unable to create MockLocations instance", e);
+			
+			if(MockLocations.isMockLocationSet(this) == true) {
+				try {
+					mockLocations = new MockLocations(this.getApplicationContext());
+					Toast.makeText(getApplicationContext(), R.string.system_mock_locations_allowed, Toast.LENGTH_LONG).show();
+				} catch (IOException e) {
+					Log.e(TAG, "unable to create MockLocations instance", e);
+				}
+			} else {
+				Toast.makeText(getApplicationContext(), R.string.system_mock_locations_not_allowed, Toast.LENGTH_LONG).show();
+				Log.e(TAG, "'Allow Mock Locations' setting is not set");
 			}
 		}
 
@@ -142,16 +140,6 @@ public class CoreService extends Service {
 			Log.v(TAG, "Service Created");
 		}
 		
-		// create the executor service with the required thread pool
-		executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-
-		// register for the Rhizome related broadcasts
-		rhizomeBroadcastReceiver = new RhizomeBroadcastReceiver(executor);
-
-		IntentFilter mBroadcastFilter = new IntentFilter();
-		mBroadcastFilter.addAction("org.servalproject.rhizome.RECIEVE_FILE");
-		registerReceiver(rhizomeBroadcastReceiver, mBroadcastFilter);
-
 	}
 
 	// listen for changes to the shared preferences
@@ -333,12 +321,6 @@ public class CoreService extends Service {
 			}
 		}
 
-		unregisterReceiver(rhizomeBroadcastReceiver);
-		
-		if(executor != null) {
-			executor.shutdown();
-		}
-		
 		// update the uptime count
 		long mUptime = System.currentTimeMillis() - uptimeStart;
 		
@@ -348,7 +330,7 @@ public class CoreService extends Service {
 		Editor mEditor = mPreferences.edit();
 		mEditor.putLong(PREFERENCES_VALUE, mUptime);
 		mEditor.commit();
-				
+		
 		super.onDestroy();
 
 		if(V_LOG) {

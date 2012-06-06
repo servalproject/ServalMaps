@@ -3,39 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
     <TextView
         android:id="@+id/stats_ui_lbl"
         style="@style/smapsHeader"
         android:text="@string/stats_ui_lbl" />
-    
+
     <TextView
         android:id="@+id/stats_ui_txt"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:layout_marginLeft="@dimen/ui_elem_margin_left"
         android:layout_marginRight="@dimen/ui_elem_margin_right"
-        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/stats_ui_txt" />
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-        
-         <TableRow
+
+        <TableRow
             android:id="@+id/tableRow0"
             style="@style/smapsWrap" >
 
             <TextView
                 android:id="@+id/stats_ui_lbl_version"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/stats_ui_lbl_version" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_version"
-                style="@style/smapsTextwrapped"/>
-            
+                style="@style/smapsTextwrapped" />
         </TableRow>
 
         <TableRow
@@ -44,99 +43,88 @@
 
             <TextView
                 android:id="@+id/stats_ui_lbl_locations"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/stats_ui_lbl_locations" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_locations"
-                style="@style/smapsTextwrapped"/>
-            
+                style="@style/smapsTextwrapped" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             style="@style/smapsWrap" >
-            
+
             <TextView
                 android:id="@+id/stats_ui_lbl_pois"
-                android:text="@string/stats_ui_lbl_pois"
-                style="@style/smapsTextwrapped"/>
+                style="@style/smapsLabel"
+                android:text="@string/stats_ui_lbl_pois" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_pois"
-                style="@style/smapsTextwrapped"/>
-            
+                style="@style/smapsTextwrapped" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow3"
             style="@style/smapsWrap" >
-            
+
             <TextView
                 android:id="@+id/stats_ui_lbl_photos"
-                android:text="@string/stats_ui_lbl_photos"
-                style="@style/smapsTextwrapped"/>
+                style="@style/smapsLabel"
+                android:text="@string/stats_ui_lbl_photos" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_photos"
-                style="@style/smapsTextwrapped"/>
-            
+                style="@style/smapsTextwrapped" />
         </TableRow>
-        
+
         <TableRow
             android:id="@+id/tableRow4"
             style="@style/smapsWrap" >
-            
+
             <TextView
                 android:id="@+id/stats_ui_lbl_photos_by_you"
-                android:text="@string/stats_ui_lbl_photos_by_you"
-                style="@style/smapsTextwrapped"/>
+                style="@style/smapsLabel"
+                android:text="@string/stats_ui_lbl_photos_by_you" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_photos_by_you"
-                style="@style/smapsTextwrapped"/>
-            
+                style="@style/smapsTextwrapped" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow5"
             style="@style/smapsWrap" >
-            
+
             <TextView
                 android:id="@+id/stats_ui_lbl_uptime"
-                android:text="@string/stats_ui_lbl_uptime"
-                style="@style/smapsTextwrapped"/>
+                style="@style/smapsLabel"
+                android:text="@string/stats_ui_lbl_uptime" />
 
             <TextView
                 android:id="@+id/stats_ui_txt_uptime"
-                style="@style/smapsTextwrapped"/>
-            
-        </TableRow>
-        
-        <TableRow
-            android:id="@+id/tableRow6"
-            style="@style/smapsWrap" >
-            
-                <Button
-			         android:id="@+id/stats_ui_btn_send"
-			         style="@style/smapsButton"
-			         android:text="@string/stats_ui_btn_send" />
-                
-                    <LinearLayout
-				        style="@style/smapsLayout"
-				        android:orientation="vertical" >
-				        
-                    	<ProgressBar
-	                        android:id="@+id/stats_ui_progress_bar"
-				        	style="@style/smapsExporttext" />
-				        
-                        <TextView
-			                android:id="@+id/stats_ui_txt_progress"
-			        		style="@style/smapsExporttext"/>
-				        
-				    </LinearLayout>
+                style="@style/smapsTextwrapped" />
         </TableRow>
     </TableLayout>
 
+    <Button
+        android:id="@+id/stats_ui_btn_send"
+        style="@style/smapsButtonNoWeight"
+        android:text="@string/stats_ui_btn_send" />
+
+    <TextView
+        android:id="@+id/stats_ui_txt_progress"
+        style="@style/smapsProgresstext" />
+
+    <ProgressBar
+        android:id="@+id/stats_ui_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+        android:layout_marginLeft="@dimen/ui_elem_margin_left"
+        android:layout_marginRight="@dimen/ui_elem_margin_right"
+        android:visibility="invisible" />
 
 </LinearLayout>

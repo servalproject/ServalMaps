@@ -37,7 +37,7 @@
 
     <Button
         android:id="@+id/disclaimer_ui_btn_continue"
-        style="@style/smapsButtonexport"
+        style="@style/smapsButtonNoWeight"
         android:text="@string/disclaimer_ui_btn_continue" />
 
 </LinearLayout>

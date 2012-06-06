@@ -25,6 +25,7 @@ import java.io.IOException;
 import org.servalproject.maps.R;
 import org.servalproject.maps.protobuf.BinaryFileContract;
 import org.servalproject.maps.provider.LocationsContract;
+import org.servalproject.maps.provider.PointsOfInterestContract;
 import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.MediaUtils;
 
@@ -220,7 +221,7 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 		
 		try {
 			mContentResolver.delete(
-					LocationsContract.CONTENT_URI, 
+					PointsOfInterestContract.CONTENT_URI, 
 					null, 
 					null);
 		} catch (SQLException e) {
@@ -242,13 +243,7 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 		
 		try {
 			
-// TODO reconsider how data is removed from rhizome			
-//			// delete the files in Rhizome
-//			if(deleteFromRhizome() == false) {
-//				
-//				return false;
-//				
-//			}
+			// TODO reconsider how data is removed from rhizome			
 			
 			String mExternal = Environment.getExternalStorageDirectory().getCanonicalPath() + "/";
 			
@@ -285,9 +280,10 @@ public class DeleteAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 		try {
 			
 			FileUtils.deleteFilesInDir(MediaUtils.getMediaStore(), null);
+			FileUtils.deleteDirectory(MediaUtils.getMediaStore());
 			
 		} catch(IOException e) {
-			Log.e(TAG, "unable to delete a data file", e);
+			Log.e(TAG, "unable to delete photo files", e);
 			
 			return false;
 		}

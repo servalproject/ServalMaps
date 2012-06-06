@@ -24,11 +24,15 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 
 import org.servalproject.maps.protobuf.BinaryFileContract;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * a class that exposes a number of reusable methods related to files
@@ -99,6 +103,29 @@ public class FileUtils {
 	}
 	
 	/**
+	 * copy the contents of one file into another file
+	 * @param inputStream an InputStream which is the source of the data
+	 * @param destination the destination file
+	 * @throws IOException
+	 */
+	public static void copyFile(InputStream inputStream, File destination) throws IOException {
+		try{
+			OutputStream mOutputStream = new FileOutputStream(destination);
+			try{
+				byte buff[] = new byte[1024];
+				int read=0;
+				while((read = inputStream.read(buff)) >=0){
+					mOutputStream.write(buff, 0, read);
+				}
+			}finally{
+				mOutputStream.close();
+			}
+		}finally{
+			inputStream.close();
+		}
+	}
+	
+	/**
 	 * copies a file into a directory
 	 * 
 	 * @param filePath path to the source file
@@ -107,43 +134,10 @@ public class FileUtils {
 	 * @throws IOException 
 	 */
 	public static String copyFileToDir(String filePath, String dirPath) throws IOException {
-		
-		// check the parameters
-		if(TextUtils.isEmpty(filePath) == true) {
-			throw new IllegalArgumentException("the filePath parameter is required");
-		}
-		
-		if(TextUtils.isEmpty(dirPath) == true) {
-			throw new IllegalArgumentException("the dirPath paramter is required");
-		}
-		
-		if(isFileReadable(filePath) == false) {
-			throw new IOException("unable to access the source file");
-		}
-		
-		if(isDirectoryWritable(dirPath) == false) {
-			throw new IOException("unable to access the destination directory");
-		}
-		
-		String mFileName = new File(filePath).getName();
-		
-		if(dirPath.endsWith(File.separator) == false) {
-			dirPath = dirPath + File.separator;
-		}
-		
-		// copy the file
-		// based on code found at the URL below and considered to be in the public domain
-		// http://stackoverflow.com/questions/1146153/copying-files-from-one-directory-to-another-in-java#answer-1146195
-		FileChannel mInputChannel = new FileInputStream(filePath).getChannel();
-		FileChannel mOutputChannel = new FileOutputStream(dirPath + mFileName).getChannel();
-		
-		mOutputChannel.transferFrom(mInputChannel, 0, mInputChannel.size());
-		
-		// play nice and tidy up
-		mInputChannel.close();
-		mOutputChannel.close();	
-		
-		return dirPath + mFileName;
+		File mSourceFile = new File(filePath);
+		File mDestinationFile = new File(dirPath, mSourceFile.getName());
+		copyFile(new FileInputStream(mSourceFile), mDestinationFile);
+		return mDestinationFile.getAbsolutePath();
 	}
 	
 	/**
@@ -236,6 +230,35 @@ public class FileUtils {
 	}
 	
 	/**
+	 * delete the specified directory
+	 * @param dirPath the full path to the directory
+	 * @throws IOException
+	 */
+	public static void deleteDirectory(String dirPath) throws IOException {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(dirPath) == true) {
+			throw new IllegalArgumentException("the dirPath paramter is required");
+		}
+		
+		if(isDirectoryWritable(dirPath) == false) {
+			throw new IOException("unable to access the required directory: " + dirPath);
+		}
+		
+		if(listFilesInDir(dirPath, null) != null) {
+			Log.d("FileUtils", Arrays.toString(listFilesInDir(dirPath, null)));
+			throw new IOException("unable to delete the directory, it isn't empty");
+		}
+		
+		// delete the directory
+		File mDirectory = new File(dirPath);
+		
+		if(!mDirectory.delete()) {
+			throw new IOException("unable to delete the specified directory");
+		}
+	}
+	
+	/**
 	 * get a list of files in a directory
 	 * 
 	 * @param dirPath the directory to search for files
@@ -257,18 +280,20 @@ public class FileUtils {
 			throw new IOException("unable to access the required directory: " + dirPath);
 		}
 		
-		// get a list of filee
+		// get a list of files
 		File mDir = new File(dirPath);
 		
 		File[] mFiles = mDir.listFiles(new ExtensionFileFilter(extensions));
 		
-		if(mFiles != null) {
+		if(mFiles != null && mFiles.length > 0) {
 			
 			mFileList = new String[mFiles.length];
 			
 			for(int i = 0; i < mFiles.length; i++) {
 				mFileList[i] = mFiles[i].getName();
 			}
+			
+			Arrays.sort(mFileList);
 		}
 		
 		return mFileList;
@@ -296,7 +321,7 @@ public class FileUtils {
 			String name = pathname.getName().toLowerCase();
 			
 			if(extensions == null) {
-				if(!name.startsWith(".")) {
+				if(!name.equals("..") || !name.equals(".")) {
 					return true;
 				}
 			} else {
@@ -333,4 +358,5 @@ public class FileUtils {
 			return fileName.substring(mLocation + 1);
 		}
 	}
+
 }

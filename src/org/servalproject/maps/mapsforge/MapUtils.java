@@ -31,17 +31,11 @@ import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.TimeUtils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * a class to hold utility methods for working with mapsforge classes and data
  */
 public class MapUtils {
-	
-	/*
-	 * private class level constants
-	 */
-	private static String TAG = "MapUtils";
 	
 	/**
 	 * extract metadata from a map file
@@ -57,8 +51,7 @@ public class MapUtils {
 			throw new IllegalArgumentException("the filePath parameter is required");
 		}
 		
-		if(FileUtils.isFileReadable(filePath) == false) {
-			Log.e(TAG, "unable to access the specified file");
+		if(!FileUtils.isFileReadable(filePath)) {
 			throw new IOException("unable to access the specified file");
 		}
 		
@@ -67,45 +60,44 @@ public class MapUtils {
 		MapDatabase mMapDatabase = new MapDatabase();
 		
 		// open the database file
-		if(mMapDatabase.openFile(new File(filePath)) == FileOpenResult.SUCCESS) {
-			
-			// get the metadata
-			MapFileInfo mMapFileInfo = mMapDatabase.getMapFileInfo();
-			mMapDatabase.closeFile();
-			
-			// populate the hashmap
-			mMetadata.put("date", TimeUtils.formatDate(mMapFileInfo.mapDate, TimeZone.getDefault().getID()));
-			
-			mMetadata.put("min-latitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.minLatitudeE6)
-					)
-				);
-			
-			mMetadata.put("min-longitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.minLongitudeE6)
-					)
-				);
-			
-			mMetadata.put("max-latitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.maxLatitudeE6)
-					)
-				);
-			
-			mMetadata.put("max-longitude", Double.toString(
-					microDegreesToDegrees(
-							mMapFileInfo.boundingBox.maxLongitudeE6)
-					)
-				);
-
-			
-			return mMetadata;
-			
-		}
+		FileOpenResult mFileOpenResult = mMapDatabase.openFile(new File(filePath));
 		
-		return null;	
+		if(mFileOpenResult != FileOpenResult.SUCCESS) {
+			throw new IOException("unable to open the following file: " + filePath +" (" + mFileOpenResult + ")");
+		}
+			
+		// get the metadata
+		MapFileInfo mMapFileInfo = mMapDatabase.getMapFileInfo();
+		mMapDatabase.closeFile();
+		
+		// populate the hashmap
+		mMetadata.put("date", TimeUtils.formatDate(mMapFileInfo.mapDate, TimeZone.getDefault().getID()));
+		
+		mMetadata.put("min-latitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.minLatitudeE6)
+				)
+			);
+		
+		mMetadata.put("min-longitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.minLongitudeE6)
+				)
+			);
+		
+		mMetadata.put("max-latitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.maxLatitudeE6)
+				)
+			);
+		
+		mMetadata.put("max-longitude", Double.toString(
+				microDegreesToDegrees(
+						mMapFileInfo.boundingBox.maxLongitudeE6)
+				)
+			);
+		
+		return mMetadata;
 	}
 	
 	/**

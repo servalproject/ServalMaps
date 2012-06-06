@@ -11,7 +11,7 @@
     
      <TextView
          android:id="@+id/export_ui_lbl_format"
-         style="@style/smapsExport"
+         style="@style/smapsLabel"
          android:text="@string/export_ui_lbl_format"/>
 
      <Spinner
@@ -21,7 +21,7 @@
      
      <TextView
          android:id="@+id/export_ui_lbl_data"
-         style="@style/smapsExport"
+         style="@style/smapsLabel"
          android:text="@string/export_ui_lbl_data"/>
 
      <Spinner
@@ -31,12 +31,12 @@
      
      <Button
          android:id="@+id/export_ui_btn_export"
-         style="@style/smapsButtonexport"
+         style="@style/smapsButtonNoWeight"
          android:text="@string/export_ui_btn_export" />
      
      <TextView
          android:id="@+id/export_ui_lbl_progress"
-         style="@style/smapsExporttext"/>
+         style="@style/smapsProgresstext"/>
 
      <ProgressBar
          android:id="@+id/export_ui_progress_bar"

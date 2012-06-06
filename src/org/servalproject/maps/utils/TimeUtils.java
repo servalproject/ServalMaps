@@ -67,28 +67,6 @@ public class TimeUtils {
 		long mTimeDifference = mCurrentTime - mToCalendar.getTimeInMillis();
 		
 		return getMillisHumanReadable(mTimeDifference, context);
-		
-//		// convert the different into human readable representation
-//		int mTime = (int) mTimeDifference / 60000;
-//		
-//		if(mTime < 1) {
-//			// less than one minute
-//			mTime = (int) (mTimeDifference % 60);
-//			mReturn = String.format(context.getString(R.string.misc_age_calculation_seconds), mTime);
-//		} else if(mTime > 60) { 
-//			// more than an hour
-//    		mTime = (int) (mTimeDifference / 3600);
-//    		
-//    		if(mTime > 24) { // more than 24 hours
-//    			mReturn = String.format(context.getString(R.string.misc_age_calculation_more_than_a_day), mTime);
-//    		} else {
-//    			mReturn = String.format(context.getString(R.string.misc_age_calculation_hours), mTime);
-//    		}
-//    	} else { // minutes
-//    		mReturn = String.format(context.getString(R.string.misc_age_calculation_minutes), mTime);
-//    	}
-//		
-//		return mReturn;
 	}
 	
 	/**
@@ -197,12 +175,14 @@ public class TimeUtils {
 			mReturn = String.format(context.getString(R.string.misc_age_calculation_seconds), mTime);
 		} else if(mTime > 60) { 
 			// more than an hour
-    		mTime = (int) (mTime / 3600);
+			// round the number of hours for display
+    		double mHours = mTime / 60.0;
+    		//mHours = (double)Math.round(mHours * 10) / 10;
     		
-    		if(mTime > 24) { // more than 24 hours
-    			mReturn = String.format(context.getString(R.string.misc_age_calculation_more_than_a_day), mTime);
+    		if(mHours > 24) { // more than 24 hours
+    			mReturn = String.format(context.getString(R.string.misc_age_calculation_more_than_a_day), mHours);
     		} else {
-    			mReturn = String.format(context.getString(R.string.misc_age_calculation_hours), mTime);
+    			mReturn = String.format(context.getString(R.string.misc_age_calculation_hours), mHours);
     		}
     	} else { // minutes
     		mReturn = String.format(context.getString(R.string.misc_age_calculation_minutes), mTime);

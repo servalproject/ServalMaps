@@ -19,8 +19,6 @@
  */
 package org.servalproject.maps;
 
-import java.text.DecimalFormat;
-
 import org.servalproject.maps.location.LocationCollector;
 import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.utils.GeoUtils;
@@ -29,12 +27,11 @@ import org.servalproject.maps.utils.TimeUtils;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,6 +49,7 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 	 */
 //	private final boolean V_LOG = true;
 	private final String  TAG = "PeerInfoActivity";
+	private String phoneNumber = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -78,7 +76,16 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			mCursor.moveToFirst();
 			
 			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
-			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER)));
+			phoneNumber = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
+			
+			// display the contacts name or their phone number
+			String mDisplayName = getDisplayName(phoneNumber);
+			
+			if(mDisplayName == null) {
+				mView.setText(phoneNumber);
+			} else {
+				mView.setText(mDisplayName);
+			}
 			
 			mView = (TextView) findViewById(R.id.peer_info_ui_txt_latitude);
 			mView.setText(mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
@@ -96,75 +103,21 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			// calculate the distance between user and POI if possible
 			Location mLocation = LocationCollector.getLocation();
 			
-			// calculate the location
-			if(mLocation != null) {
+			mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
 			
-				// get the preferences for the distance calculation
-				SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+			// calculate the distance
+			if(mLocation != null) {
 				
-				String mPreference = mPreferences.getString("preferences_measurement_units", null);
-				
-				int mUnits = GeoUtils.METRE_UNITS;
-				
-				if(mPreference != null) {
-					mUnits = Integer.parseInt(mPreference);
-				}
-				
-				mPreference = mPreferences.getString("preferences_measurement_algorithm", null);
-				
-				int mAlgorithm = GeoUtils.HAVERSINE_FORMULA;
-				
-				if(mPreference != null) {
-					mAlgorithm = Integer.parseInt(mPreference);
-				}
-				
-				double mDistance = GeoUtils.calculateDistance(
+				// calculate the distance using the default preferences
+				String mDistanceAsString = GeoUtils.calculateDistanceWithDefaults(
 						mLocation.getLatitude(), 
 						mLocation.getLongitude(),
 						mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)),
 						mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)),
-						mAlgorithm,
-						mUnits);
+						this);
 				
-				//debug code
-				Log.d(TAG, "distance: " + mDistance);
-				
-				String mDistanceAsString = null;
-				
-				mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
-				
-				if(mDistance != Double.NaN) {
-					
-					// round to two decimal places
-					DecimalFormat mFormat = new DecimalFormat("#.##");
-					
-					switch(mUnits){
-					case GeoUtils.METRE_UNITS:
-						// use metres string
-						if(mDistance > 1) {
-							mDistanceAsString = String.format(getString(R.string.misc_disance_kms), mFormat.format(mDistance));
-						} else {
-							mDistance = mDistance * 1000;
-							mDistanceAsString = String.format(getString(R.string.misc_disance_metres), mFormat.format(mDistance));
-						}
-						break;
-					case GeoUtils.MILE_UNITS:
-						// use mile units
-						mDistanceAsString = String.format(getString(R.string.misc_disance_miles), mFormat.format(mDistance));
-						break;
-					case GeoUtils.NAUTICAL_MILE_UNITS:
-						// use nautical mile units
-						mDistanceAsString = String.format(getString(R.string.misc_disance_nautical_miles), mFormat.format(mDistance));
-						break;
-					}
-					
-					mView.setText(mDistanceAsString);
-				} else {
-					mView.setText(R.string.misc_not_available);
-				}
-				
+				mView.setText(mDistanceAsString);
 			} else {
-				mView = (TextView) findViewById(R.id.peer_info_ui_txt_distance);
 				mView.setText(R.string.misc_not_available);
 			}
 			
@@ -183,12 +136,21 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 		Button mButton = (Button) findViewById(R.id.peer_info_ui_btn_call);
 		mButton.setOnClickListener(this);
 		
+		mButton = (Button) findViewById(R.id.peer_info_ui_btn_msg);
+		mButton.setOnClickListener(this);
+		
 		mButton = (Button) findViewById(R.id.peer_info_ui_btn_back);
 		mButton.setOnClickListener(this);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see android.view.View.OnClickListener#onClick(android.view.View)
+     */
 	@Override
 	public void onClick(View v) {
+		
+		Intent mIntent;
 		
 		// determine which button was clicked
 		switch(v.getId()) {
@@ -198,14 +160,54 @@ public class PeerInfoActivity extends Activity implements OnClickListener {
 			break;
 		case R.id.peer_info_ui_btn_call:
 			// call button was pressed
-			TextView mView = (TextView) findViewById(R.id.peer_info_ui_txt_phone_number);
-			Intent mIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + mView.getText()));
+			mIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
 			startActivityForResult(mIntent, 0);
 			break;
+		case R.id.peer_info_ui_btn_msg:
+			// message button was pressed
+			mIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + phoneNumber));
+			this.startActivityForResult(mIntent, 0);
 		default:
 			// unknown view id
 			Log.w(TAG, "unkown view id in onClick: " + v.getId());
 		}
+	}
+	
+	// method to get the contact name from the phone number
+	// assumes user has populated their address book from Serval Mesh
+	// TODO integrate with Serval Mesh contact lookup if possible
+	private String getDisplayName(String phoneNumber) {
+		
+		String displayName = null;
+		
+		// build a URI to use as the search
+		Uri mContactsUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
+		
+		// do the database lookup
+		ContentResolver mContentResolver = getContentResolver();
+		
+		// build the projection
+		String[] mProjection = new String[2];
+		mProjection[0] = ContactsContract.PhoneLookup._ID;
+		mProjection[1] = ContactsContract.PhoneLookup.DISPLAY_NAME;
+		
+		// get the data
+		Cursor mCursor = mContentResolver.query(
+				mContactsUri,
+				mProjection,
+				null,
+				null,
+				null);
+		
+		// check to see what was returned
+		if(mCursor != null && mCursor.getCount() > 0) {
+			mCursor.moveToFirst();
+			
+			displayName = mCursor.getString(mCursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
+			mCursor.close();
+		}
+
+		return displayName;
 	}
 
 }

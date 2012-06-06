@@ -121,7 +121,13 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
         
         // get the map data file name
         Bundle mBundle = this.getIntent().getExtras();
-        String mMapFileName = mBundle.getString("mapFileName");
+        String mMapFileName = null;
+        if(mBundle != null) {
+        	mMapFileName = mBundle.getString("mapFileName");
+        } else {
+        	// finish if there is no file name
+        	finish();
+        }
         
 		// instantiate mapsforge classes
 		mapView = new MapView(this);
@@ -133,7 +139,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(FileUtils.isFileReadable(mMapFileName) == false) {
 				String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
 				mMapDataPath += getString(R.string.system_path_map_data);
-				mapView.setMapFile(new File(mMapDataPath + mMapFileName));
+				mMapFileName = mMapDataPath + mMapFileName;
+				if (FileUtils.isFileReadable(mMapFileName))
+					mapView.setMapFile(new File(mMapFileName));
 			} else {
 				mapView.setMapFile(new File(mMapFileName));
 			}

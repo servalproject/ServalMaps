@@ -165,8 +165,11 @@ public class JsonLocationWriter implements Runnable {
 				
 				// write the output
 				try {
-					PrintWriter mOutput = new PrintWriter (new FileOutputStream(fileName, true));
+					FileOutputStream mFileOutputStream = new FileOutputStream(fileName, true);
+					PrintWriter mOutput = new PrintWriter (mFileOutputStream);
 					mOutput.println(String.format(jsonTemplate, mLocation.getLongitude(), mLocation.getLatitude()));
+					mOutput.flush();
+					mFileOutputStream.getFD().sync();
 					mOutput.close();
 					
 					// add the file to rhizome
@@ -176,8 +179,8 @@ public class JsonLocationWriter implements Runnable {
 						Log.v(TAG, "location values: '" + mLocation.getLatitude() + "','" +  mLocation.getLongitude() + "'");
 						Log.v(TAG, "wrote new file entry: " + String.format(jsonTemplate, mLocation.getLatitude(), mLocation.getLongitude()));
 					}
-				}catch (FileNotFoundException e) {
-					Log.e(TAG, "unable to open the output file");
+				}catch (IOException e) {
+					Log.e(TAG, e.getMessage(),e);
 					return;
 				}
 				

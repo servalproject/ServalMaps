@@ -39,7 +39,7 @@
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_phone_number"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/peer_info_ui_lbl_phone_number" />
 
             <TextView
@@ -56,7 +56,7 @@
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_latitude"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/peer_info_ui_lbl_latitude" />
 
             <TextView
@@ -72,7 +72,7 @@
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_longitude"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/peer_info_ui_lbl_longitude" />
 
             <TextView
@@ -88,7 +88,7 @@
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_age"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/peer_info_ui_lbl_age" />
 
             <TextView
@@ -104,7 +104,7 @@
 
             <TextView
                 android:id="@+id/peer_info_ui_lbl_distance"
-                style="@style/smapsTextwrapped"
+                style="@style/smapsLabel"
                 android:text="@string/peer_info_ui_lbl_distance" />
 
             <TextView
@@ -123,7 +123,14 @@
             android:id="@+id/peer_info_ui_btn_call"
             style="@style/smapsButton"
             android:text="@string/peer_info_ui_btn_call" />
-
+        
+        <!-- hide this button to work around an issue in Serval Mesh -->
+        <Button
+            android:id="@+id/peer_info_ui_btn_msg"
+            style="@style/smapsButton"
+            android:text="@string/peer_info_ui_btn_msg"
+            android:visibility="invisible"/>
+        
         <Button
             android:id="@+id/peer_info_ui_btn_back"
             style="@style/smapsButton"
