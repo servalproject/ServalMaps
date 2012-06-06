@@ -33,7 +33,7 @@ public class TagsContract {
 	public static final String CONTENT_URI_PATH = "tags";
 	
 	/**
-	 * content URI for the locations data
+	 * content URI for the tags data
 	 */
 	public static final Uri CONTENT_URI = Uri.parse("content://" + MapItems.AUTHORITY + "/" + CONTENT_URI_PATH);
 	
@@ -46,6 +46,11 @@ public class TagsContract {
 	 * content type for an individual item
 	 */
 	public static final String CONTENT_TYPE_ITEM = "vnd.android.cursor.item/vnd.org.servalproject.maps.provider.items." + CONTENT_URI_PATH;
+	
+	/**
+	 * content URI for the unique list of tags
+	 */
+	public static final Uri UNIQUE_CONTENT_URI = Uri.parse("content://" + MapItems.AUTHORITY + "/" + CONTENT_URI_PATH + "/unique");
 	
 	/**
 	 * the delimiter between tags

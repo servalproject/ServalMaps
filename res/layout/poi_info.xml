@@ -29,7 +29,7 @@
      
      <TextView
          android:id="@+id/poi_info_ui_lbl_tags"
-         style="@style/smapsExport"
+         style="@style/smapsLabel"
          android:text="@string/poi_info_ui_lbl_tags"/>
 
      <TextView

@@ -19,8 +19,8 @@
 
         <EditText
             android:id="@+id/new_poi_ui_txt_title"
-            android:layout_width="match_parent"
             style="@style/smapsInput"
+            android:layout_width="match_parent"
             android:inputType="textCapWords" >
 
             <requestFocus />
@@ -34,8 +34,8 @@
         <EditText
             android:id="@+id/new_poi_ui_txt_description"
             style="@style/smapsInput"
-            android:inputType="textMultiLine|textShortMessage"
             android:gravity="top"
+            android:inputType="textMultiLine|textShortMessage"
             android:lines="3" >
         </EditText>
 
@@ -51,9 +51,8 @@
             <TextView
                 android:id="@+id/new_poi_ui_txt_characters"
                 style="@style/smapsLabel"
-                android:textStyle="normal"
-                android:text="" />
-
+                android:text=""
+                android:textStyle="normal" />
         </LinearLayout>
 
         <LinearLayout
@@ -81,24 +80,32 @@
                 style="@style/smapsInput"
                 android:inputType="numberDecimal|numberSigned" />
         </LinearLayout>
-        
+
         <TextView
-       android:id="@+id/new_poi_ui_lbl_tags"
-       style="@style/smapsLabel"
-       android:text="@string/new_poi_ui_lbl_tags"/>
-
-	<EditText
-	    android:id="@+id/new_poi_ui_txt_tags"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
-	    android:layout_marginLeft="@dimen/ui_elem_margin_left"
-	    android:layout_marginRight="@dimen/ui_elem_margin_right"
-	    android:inputType="textNoSuggestions"
-        style="@style/smapsInput" >
-
-	</EditText>
-
+            android:id="@+id/new_poi_ui_lbl_tags"
+            style="@style/smapsLabel"
+            android:text="@string/new_poi_ui_lbl_tags" />
+        
+        <!--  use our custom field that can do lookups -->
+		<!--
+        <EditText
+            android:id="@+id/new_poi_ui_txt_tags"
+            style="@style/smapsInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/ui_elem_margin_bottom"
+            android:layout_marginLeft="@dimen/ui_elem_margin_left"
+            android:layout_marginRight="@dimen/ui_elem_margin_right"
+            android:inputType="textNoSuggestions" >
+        </EditText>
+        -->
+        <org.servalproject.maps.tags.TagsAutoComplete
+            android:id="@+id/new_poi_ui_txt_tags"
+            style="@style/smapsInput"
+            android:scrollbars="vertical"
+            android:hint="@string/new_poi_ui_txt_tags_hint"
+            android:singleLine="false">
+        </org.servalproject.maps.tags.TagsAutoComplete>
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -121,4 +128,5 @@
                 android:text="@string/new_poi_ui_btn_back" />
         </LinearLayout>
     </LinearLayout>
+
 </ScrollView>

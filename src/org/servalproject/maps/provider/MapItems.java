@@ -55,6 +55,7 @@ public class MapItems extends ContentProvider {
 	
 	private final int TAG_LIST_URI = 20;
 	private final int TAG_ITEM_URI = 21;
+	private final int TAG_UNIQUE_LIST_URI = 22;
 	
 	private final String TAG = "MapItems";
 	//private final boolean V_LOG = true;
@@ -83,6 +84,7 @@ public class MapItems extends ContentProvider {
 		
 		uriMatcher.addURI(MapItems.AUTHORITY, TagsContract.CONTENT_URI_PATH, TAG_LIST_URI);
 		uriMatcher.addURI(MapItems.AUTHORITY, TagsContract.CONTENT_URI_PATH + "/#", TAG_ITEM_URI);
+		uriMatcher.addURI(MapItems.AUTHORITY, TagsContract.CONTENT_URI_PATH + "/unique", TAG_UNIQUE_LIST_URI);
 		
 		// create the database connection
 		databaseHelper = new MainDatabaseHelper(getContext());
@@ -153,7 +155,11 @@ public class MapItems extends ContentProvider {
 			} else {
 				selection += " AND " + TagsContract.Table._ID + " = " + uri.getLastPathSegment();
 			}
-			mMatchedUri = POI_ITEM_URI;
+			mMatchedUri = TAG_ITEM_URI;
+			break;
+		case TAG_UNIQUE_LIST_URI:
+			// uri matches a request for the unique list
+			mMatchedUri = TAG_UNIQUE_LIST_URI;
 			break;
 		default:
 			// unknown uri found
@@ -175,7 +181,14 @@ public class MapItems extends ContentProvider {
 			mColumns[4] = LocationsContract.Table.TIMESTAMP;
 			mColumns[5] = "MAX(" + LocationsContract.Table.TIMESTAMP + ")";
 			
-			mResults = database.query(LocationsContract.Table.TABLE_NAME, mColumns, null, null, LocationsContract.Table.PHONE_NUMBER, null, null);
+			mResults = database.query(
+					LocationsContract.Table.TABLE_NAME, 
+					mColumns, 
+					null, 
+					null, 
+					LocationsContract.Table.PHONE_NUMBER, 
+					null, 
+					null);
 			
 		} else if (mMatchedUri == LOCATION_LIST_URI || mMatchedUri == LOCATION_ITEM_URI){
 			// execute the query as provided
@@ -185,6 +198,21 @@ public class MapItems extends ContentProvider {
 			mResults = database.query(PointsOfInterestContract.Table.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 		} else if(mMatchedUri == TAG_LIST_URI || mMatchedUri == TAG_ITEM_URI) {
 			mResults = database.query(TagsContract.Table.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+		} else if(mMatchedUri == TAG_UNIQUE_LIST_URI) {
+			
+			String[] mColumns = new String[3];
+			mColumns[0] = "MAX( " + TagsContract.Table._ID + ") AS " + TagsContract.Table._ID;
+			mColumns[1] = TagsContract.Table.TAG;
+			mColumns[2] = "COUNT(" + TagsContract.Table.TAG + ")";
+			
+			mResults = database.query(
+					TagsContract.Table.TABLE_NAME, 
+					mColumns,
+					selection,
+					selectionArgs,
+					TagsContract.Table.TAG,
+					null,
+					TagsContract.Table.TAG);
 		}
 				
 		// return the results

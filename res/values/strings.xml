@@ -59,6 +59,7 @@
     <string name="new_poi_ui_lbl_description">Description</string>
     <string name="new_poi_ui_lbl_characters">Characters Remaining:</string>
     <string name="new_poi_ui_lbl_tags">Tags</string>
+    <string name="new_poi_ui_txt_tags_hint">Enter Tags</string>
     
     <string name="new_poi_ui_btn_save">Save New POI</string>
     <string name="new_poi_ui_btn_photo">Add A Photo</string>
