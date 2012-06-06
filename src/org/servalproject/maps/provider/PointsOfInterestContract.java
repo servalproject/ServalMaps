@@ -132,6 +132,6 @@ public class PointsOfInterestContract {
 		/**
 		 * a list of all of the columns
 		 */
-		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY, PHOTO};
+		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY, PHOTO, TAGS};
 	}
 }
