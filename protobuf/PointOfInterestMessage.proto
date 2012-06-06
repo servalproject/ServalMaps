@@ -32,4 +32,5 @@ message Message {
 	optional string description = 8;
 	optional int64  category    = 9; // can we delete this now?
 	optional string photo       = 10;
+	optional string tags        = 11;
 }

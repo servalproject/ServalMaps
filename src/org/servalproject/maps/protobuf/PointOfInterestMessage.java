@@ -50,6 +50,10 @@ public final class PointOfInterestMessage {
     // optional string photo = 10;
     boolean hasPhoto();
     String getPhoto();
+    
+    // optional string tags = 11;
+    boolean hasTags();
+    String getTags();
   }
   public static final class Message extends
       com.google.protobuf.GeneratedMessage
@@ -312,6 +316,38 @@ public final class PointOfInterestMessage {
       }
     }
     
+    // optional string tags = 11;
+    public static final int TAGS_FIELD_NUMBER = 11;
+    private java.lang.Object tags_;
+    public boolean hasTags() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public String getTags() {
+      java.lang.Object ref = tags_;
+      if (ref instanceof String) {
+        return (String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        String s = bs.toStringUtf8();
+        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
+          tags_ = s;
+        }
+        return s;
+      }
+    }
+    private com.google.protobuf.ByteString getTagsBytes() {
+      java.lang.Object ref = tags_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
+        tags_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    
     private void initFields() {
       phoneNumber_ = "";
       subsciberId_ = "";
@@ -323,6 +359,7 @@ public final class PointOfInterestMessage {
       description_ = "";
       category_ = 0L;
       photo_ = "";
+      tags_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -365,6 +402,9 @@ public final class PointOfInterestMessage {
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeBytes(10, getPhotoBytes());
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeBytes(11, getTagsBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -414,6 +454,10 @@ public final class PointOfInterestMessage {
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(10, getPhotoBytes());
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(11, getTagsBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -559,6 +603,8 @@ public final class PointOfInterestMessage {
         bitField0_ = (bitField0_ & ~0x00000100);
         photo_ = "";
         bitField0_ = (bitField0_ & ~0x00000200);
+        tags_ = "";
+        bitField0_ = (bitField0_ & ~0x00000400);
         return this;
       }
       
@@ -637,6 +683,10 @@ public final class PointOfInterestMessage {
           to_bitField0_ |= 0x00000200;
         }
         result.photo_ = photo_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.tags_ = tags_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -682,6 +732,9 @@ public final class PointOfInterestMessage {
         }
         if (other.hasPhoto()) {
           setPhoto(other.getPhoto());
+        }
+        if (other.hasTags()) {
+          setTags(other.getTags());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -762,6 +815,11 @@ public final class PointOfInterestMessage {
             case 82: {
               bitField0_ |= 0x00000200;
               photo_ = input.readBytes();
+              break;
+            }
+            case 90: {
+              bitField0_ |= 0x00000400;
+              tags_ = input.readBytes();
               break;
             }
           }
@@ -1070,6 +1128,42 @@ public final class PointOfInterestMessage {
         onChanged();
       }
       
+      // optional string tags = 11;
+      private java.lang.Object tags_ = "";
+      public boolean hasTags() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      public String getTags() {
+        java.lang.Object ref = tags_;
+        if (!(ref instanceof String)) {
+          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+          tags_ = s;
+          return s;
+        } else {
+          return (String) ref;
+        }
+      }
+      public Builder setTags(String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000400;
+        tags_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearTags() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        tags_ = getDefaultInstance().getTags();
+        onChanged();
+        return this;
+      }
+      void setTags(com.google.protobuf.ByteString value) {
+        bitField0_ |= 0x00000400;
+        tags_ = value;
+        onChanged();
+      }
+      
       // @@protoc_insertion_point(builder_scope:Message)
     }
     
@@ -1095,13 +1189,13 @@ public final class PointOfInterestMessage {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\034PointOfInterestMessage.proto\"\302\001\n\007Messa" +
+      "\n\034PointOfInterestMessage.proto\"\320\001\n\007Messa" +
       "ge\022\023\n\013phoneNumber\030\001 \001(\t\022\023\n\013subsciberId\030\002" +
       " \001(\t\022\020\n\010latitude\030\003 \001(\001\022\021\n\tlongitude\030\004 \001(" +
       "\001\022\021\n\ttimestamp\030\005 \001(\003\022\020\n\010timeZone\030\006 \001(\t\022\r" +
       "\n\005title\030\007 \001(\t\022\023\n\013description\030\010 \001(\t\022\020\n\010ca" +
-      "tegory\030\t \001(\003\022\r\n\005photo\030\n \001(\tB!\n\037org.serva" +
-      "lproject.maps.protobuf"
+      "tegory\030\t \001(\003\022\r\n\005photo\030\n \001(\t\022\014\n\004tags\030\013 \001(" +
+      "\tB!\n\037org.servalproject.maps.protobuf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1113,7 +1207,7 @@ public final class PointOfInterestMessage {
           internal_static_Message_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Message_descriptor,
-              new java.lang.String[] { "PhoneNumber", "SubsciberId", "Latitude", "Longitude", "Timestamp", "TimeZone", "Title", "Description", "Category", "Photo", },
+              new java.lang.String[] { "PhoneNumber", "SubsciberId", "Latitude", "Longitude", "Timestamp", "TimeZone", "Title", "Description", "Category", "Photo", "Tags", },
               org.servalproject.maps.protobuf.PointOfInterestMessage.Message.class,
               org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder.class);
           return null;

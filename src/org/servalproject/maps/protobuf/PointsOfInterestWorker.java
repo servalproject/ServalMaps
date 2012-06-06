@@ -132,6 +132,7 @@ public class PointsOfInterestWorker implements Runnable {
 						mNewValues.put(PointsOfInterestContract.Table.DESCRIPTION, mMessage.getDescription());
 						mNewValues.put(PointsOfInterestContract.Table.CATEGORY, mMessage.getCategory());
 						mNewValues.put(PointsOfInterestContract.Table.PHOTO, mMessage.getPhoto());
+						mNewValues.put(PointsOfInterestContract.Table.TAGS, mMessage.getTags());
 						
 						//debug code
 						Log.d(TAG, "description: '" + mMessage.getDescription() + "'");
