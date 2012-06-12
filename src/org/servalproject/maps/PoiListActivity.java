@@ -239,6 +239,11 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 			listView.setAdapter(dataAdapter);
 			
 			return true;
+		case R.id.menu_poi_list_activity_view_tags:
+			// view a list of tags
+			Intent mIntent = new Intent(this, org.servalproject.maps.TagListActivity.class);
+			startActivityForResult(mIntent, 0);
+			return true;
 		case R.id.menu_poi_list_activity_close:
 			// close this activity
 			finish();
@@ -339,7 +344,7 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 			
 		} else {
 			Log.e(TAG, "unable to match list item position to poi id");
-			Toast.makeText(getApplicationContext(), R.string.poi_list_ui_tiast_missing_poi_id, Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), R.string.poi_list_ui_toast_missing_poi_id, Toast.LENGTH_LONG).show();
 			finish();
 		}
 		

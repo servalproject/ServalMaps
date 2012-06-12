@@ -98,6 +98,7 @@
         <activity android:name=".ExportActivity"></activity>
         <activity android:name=".DeleteActivity"></activity>
         <activity android:name=".StatsActivity"></activity>
+        <activity android:name=".TagListActivity"></activity>
         
         <!-- services -->
         <service 

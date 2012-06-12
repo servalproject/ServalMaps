@@ -12,6 +12,12 @@
           android:visible="true" 
           android:icon="@drawable/ic_menu_sort_by_size">
     </item>
+    <item android:id="@+id/menu_poi_list_activity_view_tags" 
+          android:enabled="true" 
+          android:title="@string/menu_poi_list_activity_view_tags" 
+          android:visible="true" 
+          android:icon="@drawable/ic_menu_star">
+    </item>
     <item android:id="@+id/menu_poi_list_activity_close" 
           android:enabled="true" 
           android:title="@string/menu_poi_list_activity_close" 

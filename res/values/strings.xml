@@ -92,7 +92,7 @@
     <!-- POI List Activity -->
     <string name="poi_list_ui_lbl_heading">List of POIs</string>
     <string name="poi_list_ui_toast_missing_data">Unable to lookup POI information at this time</string>
-    <string name="poi_list_ui_tiast_missing_poi_id">Unable to lookup POI id at this time</string>
+    <string name="poi_list_ui_toast_missing_poi_id">Unable to lookup POI id at this time</string>
     
     <!-- Export Activity -->
 	<string name="export_ui_lbl_heading">Export Data</string>
@@ -160,6 +160,15 @@
     <string name="stats_ui_progress_collecting">Collecting Statistics&#8230;</string>
     <string name="stats_ui_progress_uploading">Uploading Statistics&#8230;</string>
     
+    <!-- Tags list activity -->
+    <string name="tags_list_ui_lbl_heading">List of POI tags</string>
+    
+    <string name="tags_list_ui_entry_tag_lbl">Tag:</string>
+    <string name="tags_list_ui_entry_used_lbl">Used:</string>
+    
+    <string name="tags_list_ui_toast_missing_data">There is no tag data currently available. Try again later.</string>
+    <string name="tag_list_ui_toast_missing_poi_id">Unable to lookup tag information at this time.</string>
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
@@ -169,6 +178,7 @@
     <!--  POI List Menu UI -->
     <string name="menu_poi_list_activity_sort_alpha">Sort by Title</string>
     <string name="menu_poi_list_activity_sort_time">Sort by Time</string>
+    <string name="menu_poi_list_activity_view_tags">View Tags</string>
     <string name="menu_poi_list_activity_close">Close</string>
     
     <!-- Common Menu UI -->

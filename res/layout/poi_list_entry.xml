@@ -48,7 +48,7 @@
 		    
             <TextView
 		        android:id="@+id/poi_list_ui_lbl_tags"
-		        style="@style/smapsTextwrapped" 
+		        style="@style/smapsLabel" 
 		        android:text="@string/poi_info_ui_lbl_tags" />
 		
 		    <TextView

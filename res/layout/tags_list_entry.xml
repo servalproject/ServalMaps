@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        style="@style/smapsWrap" >
+
+        <TextView
+            android:id="@+id/tags_list_ui_entry_tag_lbl"
+            style="@style/smapsLabel"
+            android:text="@string/tags_list_ui_entry_tag_lbl" />
+
+        <TextView
+            android:id="@+id/tags_list_ui_entry_tag"
+            style="@style/smapsTextwrapped" />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        style="@style/smapsWrap" >
+
+        <TextView
+            android:id="@+id/tags_list_ui_entry_used_lbl"
+            style="@style/smapsLabel"
+            android:text="@string/tags_list_ui_entry_used_lbl" />
+
+        <TextView
+            android:id="@+id/tags_list_ui_entry_used"
+            style="@style/smapsTextwrapped"
+            android:text="" />
+    </TableRow>
+
+</TableLayout>

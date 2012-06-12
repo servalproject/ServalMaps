@@ -203,7 +203,7 @@ public class MapItems extends ContentProvider {
 			String[] mColumns = new String[3];
 			mColumns[0] = "MAX( " + TagsContract.Table._ID + ") AS " + TagsContract.Table._ID;
 			mColumns[1] = TagsContract.Table.TAG;
-			mColumns[2] = "COUNT(" + TagsContract.Table.TAG + ")";
+			mColumns[2] = "COUNT(" + TagsContract.Table.TAG + ") AS " + TagsContract.Table._COUNT;
 			
 			mResults = database.query(
 					TagsContract.Table.TABLE_NAME, 
