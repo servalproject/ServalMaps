@@ -9,10 +9,13 @@
         style="@style/smapsHeader"
         android:text="@string/poi_list_ui_lbl_heading" />
     
+    <TextView
+        android:id="@+id/poi_list_ui_lbl_subheading"
+        style="@style/smapsText"
+        android:visibility="gone" />
+    
     <ListView
         android:id="@android:id/android:list"
         style="@style/smapsLayoutfillall"/>
     
-    
-
 </LinearLayout>

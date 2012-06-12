@@ -24,6 +24,7 @@ import org.servalproject.maps.tags.TagsListAdapter;
 
 import android.app.ListActivity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -140,16 +141,29 @@ public class TagListActivity extends ListActivity implements OnItemClickListener
 				Log.v(sTag, "selected tag: " + cursor.getString(cursor.getColumnIndex(TagsContract.Table.TAG)));
 			}
 			
-//			Intent mIntent = new Intent(this, org.servalproject.maps.PoiInfoActivity.class);
-//			mIntent.putExtra("recordId", cursor.getInt(cursor.getColumnIndex(PointsOfInterestContract.Table._ID)));
-//			startActivity(mIntent);
-//			
+			// return back to the POI List with the chosen tag
+			Intent mIntent = new Intent();
+			mIntent.putExtra("tag", cursor.getString(cursor.getColumnIndex(TagsContract.Table.TAG)));
+			
+			setResult(PoiListActivity.TAG_SELECTED_RESULT, mIntent);
+			finish();
+			
 		} else {
 			Log.e(sTag, "unable to match list item position to tag");
 			Toast.makeText(getApplicationContext(), R.string.tag_list_ui_toast_missing_poi_id, Toast.LENGTH_LONG).show();
 			finish();
 		}
 		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		setResult(PoiListActivity.TAG_SELECTED_RESULT, null);
+		finish();
 	}
 	
 	/*

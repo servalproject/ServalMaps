@@ -19,6 +19,8 @@
  */
 package org.servalproject.maps;
 
+import java.util.Arrays;
+
 import org.servalproject.maps.provider.PointsOfInterestContract;
 
 import android.app.ListActivity;
@@ -36,6 +38,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -44,9 +47,14 @@ import android.widget.Toast;
 public class PoiListActivity extends ListActivity implements OnItemClickListener {
 	
 	/*
+	 * public class level constants
+	 */
+	public final static int TAG_SELECTED_RESULT = 1;
+	
+	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = false;
+	private final boolean V_LOG = true;
 	private final String  TAG = "PoiListActivity";
 	
 	private final String PREFERENCE_NAME = "preferences_poi_list_sort";
@@ -62,6 +70,8 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 	private PoiListAdapter dataAdapter;
 	private ListView listView;
 	private String[] columnNames;
+	
+	private String hasTag = null;
 	
 	/*
 	 * create the activity
@@ -106,7 +116,7 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		// get a reference to the list view
 		listView = getListView();
-		//mListView.setTextFilterEnabled(true); // allow filtering by the user by adding in content
+		
 		listView.setOnItemClickListener(this);
 	}
 	
@@ -138,13 +148,13 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 	 * get the required data and populate the cursor using the default sort order
 	 */
 	private Cursor getCursor() {
-		return getCursor(getPreference());
+		return getCursor(getPreference(), null);
 	}
 	
 	/*
 	 * get the required data and populate the cursor
 	 */
-	private Cursor getCursor(String sortField) {
+	private Cursor getCursor(String sortField, String selectedTag) {
 		
 		// get the data
 		String[] mProjection = new String[columnNames.length + 1];
@@ -165,6 +175,25 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 			mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
 		}
 		
+		// add the tag filter if necessary
+		if(selectedTag != null && mSelection != null) {
+			mSelection = mSelection + " AND " + PointsOfInterestContract.Table.TAGS + " GLOB ? ";
+			String mTemp = new String();
+			mTemp = mSelectionArgs[0];
+			mSelectionArgs = new String[2];
+			mSelectionArgs[0] = mTemp;
+			mSelectionArgs[1] = "*" + selectedTag + "*";
+		} else if (selectedTag != null ) {
+			mSelection = PointsOfInterestContract.Table.TAGS + " GLOB ? ";
+			mSelectionArgs = new String[1];
+			mSelectionArgs[0] = "*" + selectedTag + "*";
+		}
+		
+		if(V_LOG) {
+			Log.v(TAG, "selection statement: " + mSelection);
+			Log.v(TAG, "selection args: " + Arrays.toString(mSelectionArgs));
+		}
+		
 		// determine the order by
 		String mOrderBy = null;
 		
@@ -174,7 +203,9 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 			mOrderBy = sortField + " DESC";
 		}
 		
-		Log.d(TAG, "order by statement: " + mOrderBy);
+		if(V_LOG) {
+			Log.v(TAG, "order by statement: " + mOrderBy);
+		}
 		
 		// get a content resolver
 		ContentResolver mContentResolver = getApplicationContext().getContentResolver();
@@ -216,7 +247,7 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 			// sort list of items by title alphabetically
 			cursor.close();
 			cursor = null;
-			cursor = getCursor(PointsOfInterestContract.Table.TITLE);
+			cursor = getCursor(PointsOfInterestContract.Table.TITLE, hasTag);
 			
 			updatePreference(PointsOfInterestContract.Table.TITLE);
 			
@@ -227,10 +258,9 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 			return true;
 		case R.id.menu_poi_list_activity_sort_time:
 			// sort list of items by time
-			Log.d(TAG, "sorting the dataAdapter by time");
 			cursor.close();
 			cursor = null;
-			cursor = getCursor(PointsOfInterestContract.Table.TIMESTAMP);
+			cursor = getCursor(PointsOfInterestContract.Table.TIMESTAMP, hasTag);
 			
 			updatePreference(PointsOfInterestContract.Table.TIMESTAMP);
 			
@@ -277,6 +307,89 @@ public class PoiListActivity extends ListActivity implements OnItemClickListener
 		
 		return mPreferences.getString(PREFERENCE_NAME, DEFAULT_SORT_FIELD);
 		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		// check to see if we're coming back from the tag list
+		if(resultCode == TAG_SELECTED_RESULT) {
+			
+			TextView mTextView = (TextView) findViewById(R.id.poi_list_ui_lbl_subheading);
+			String mTag = null;
+			
+			if(data != null) {
+			
+				mTag = data.getStringExtra("tag");
+				
+				Log.d(TAG, mTag);
+			} 
+			
+			// check to see if a tag is present
+			if(mTag != null) {
+				
+				// filter the list of POIs based on the tag
+				
+				if(cursor != null) {
+					cursor.close();
+					cursor = null;
+				}
+				
+				cursor = getCursor(getPreference(), mTag);
+				
+				dataAdapter = getDataAdapter(cursor);
+				
+				listView.setAdapter(dataAdapter);
+				
+				mTextView.setText(String.format(getString(R.string.poi_list_ui_lbl_subheading), mTag));
+				mTextView.setVisibility(View.VISIBLE);
+				
+				// set a flag to indicate that there is a tag filter in place
+				hasTag = mTag;
+				
+			} else {
+				
+				if(cursor != null) {
+					cursor.close();
+					cursor = null;
+				}
+				
+				cursor = getCursor(getPreference(), null);
+				
+				dataAdapter = getDataAdapter(cursor);
+				
+				listView.setAdapter(dataAdapter);
+				
+				// hide the tag filter label
+				mTextView.setText("");
+				mTextView.setVisibility(View.GONE);
+				
+				// set the flag to indicate that there is no tag filter in place
+				hasTag = null;
+			}
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		
+		// is a tag filter in place
+		if(hasTag != null) {
+			// go back to the tag list
+			Intent mIntent = new Intent(this, org.servalproject.maps.TagListActivity.class);
+			startActivityForResult(mIntent, 0);
+		} else {
+			// leave this activity
+			finish();
+		}
 	}
 	
 	/*
