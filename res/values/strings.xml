@@ -180,7 +180,10 @@
     <string name="menu_poi_list_activity_sort_alpha">Sort by Title</string>
     <string name="menu_poi_list_activity_sort_time">Sort by Time</string>
     <string name="menu_poi_list_activity_view_tags">View Tags</string>
-    <string name="menu_poi_list_activity_close">Close</string>
+    
+    <!-- Tag List Menu UI -->
+    <string name="menu_tag_list_activity_sort_alpha">Sort by Tag</string>
+    <string name="menu_tag_list_activity_sort_use">Sort by Count</string>
     
     <!-- Common Menu UI -->
     <string name="menu_close">Close</string>

@@ -205,6 +205,10 @@ public class MapItems extends ContentProvider {
 			mColumns[1] = TagsContract.Table.TAG;
 			mColumns[2] = "COUNT(" + TagsContract.Table.TAG + ") AS " + TagsContract.Table._COUNT;
 			
+			if(sortOrder == null) {
+				sortOrder = TagsContract.Table.TAG;
+			}
+			
 			mResults = database.query(
 					TagsContract.Table.TABLE_NAME, 
 					mColumns,
@@ -212,7 +216,7 @@ public class MapItems extends ContentProvider {
 					selectionArgs,
 					TagsContract.Table.TAG,
 					null,
-					TagsContract.Table.TAG);
+					sortOrder);
 		}
 				
 		// return the results

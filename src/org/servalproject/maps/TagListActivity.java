@@ -25,9 +25,14 @@ import org.servalproject.maps.tags.TagsListAdapter;
 import android.app.ListActivity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -46,9 +51,10 @@ public class TagListActivity extends ListActivity implements OnItemClickListener
 	private final boolean V_LOG = true;
 	private final String  sTag = "TagListActivity";
 	
-	// TODO allow user to sort list by tag or count
-//	private final String sPreferenceName = "preferences_tag_list_sort";
-//	private final String sDefaultSortField = TagsContract.Table.TAG;
+	// allow user to sort list by tag or count
+	private final String sPreferenceName = "preferences_tag_list_sort";
+	private final String sDefaultSortField = TagsContract.Table.TAG;
+	private final String sCountSortField = "COUNT(" + TagsContract.Table.TAG + ")";
 	
 	/*
 	 * private class level variables
@@ -57,6 +63,8 @@ public class TagListActivity extends ListActivity implements OnItemClickListener
 	private String[] columnNames;
 	private int[] layoutElements;
 	private ListView listView;
+	
+	TagsListAdapter dataAdapter;
 	
 	/*
 	 * create the activity
@@ -78,25 +86,11 @@ public class TagListActivity extends ListActivity implements OnItemClickListener
 			finish();
 		}
         
-        // define the column and layout mapping
-        columnNames = new String[2];
-        columnNames[0] = TagsContract.Table.TAG;
-        columnNames[1] = TagsContract.Table._COUNT;
-        
-        layoutElements = new int[2];
-        layoutElements[0] = R.id.tags_list_ui_entry_tag;
-        layoutElements[1] = R.id.tags_list_ui_entry_used;
-        
         // get a data adapter
-        TagsListAdapter mTagsListAdapter = new TagsListAdapter(
-        		this,
-        		R.layout.tags_list_entry,
-        		cursor,
-        		columnNames,
-        		layoutElements);
+        dataAdapter = getDataAdapter(cursor);
         
         // use the data adapter with this activity
-        setListAdapter(mTagsListAdapter);
+        setListAdapter(dataAdapter);
         
         // listen for touching on list items
 		// get a reference to the list view
@@ -106,20 +100,148 @@ public class TagListActivity extends ListActivity implements OnItemClickListener
 	}
 	
 	/*
-	 * get a cursor containing the tag data
-	 * TODO take into account the POI age preference
+	 * get a cursor containing the tag data and default sort order
 	 */
 	private Cursor getCursor() {
+		return getCursor(getPreference());
+	}
+
+	/* 
+	 * get a cursor containing the tag data using the specified sort order
+	 */
+	private Cursor getCursor(String sortField) {
 		
 		ContentResolver mContentResolver = getContentResolver();
+		
+		// determine the order by
+		String mOrderBy = null;
+		
+		if(sortField.equals(sDefaultSortField) == true) {
+			mOrderBy = sortField + " ASC";
+		} else {
+			mOrderBy = sortField + " DESC";
+		}
+		
+		if(V_LOG) {
+			Log.v(sTag, "order by statement: " + mOrderBy);
+		}
 		
 		return mContentResolver.query(
 				TagsContract.UNIQUE_CONTENT_URI,
 				null,
 				null,
 				null,
-				null);
+				mOrderBy);
 		
+	}
+	
+	/*
+	 * get a populated data datapter
+	 */
+	private TagsListAdapter getDataAdapter(Cursor cursor) { 
+		
+		// define the column and layout mapping
+        columnNames = new String[2];
+        columnNames[0] = TagsContract.Table.TAG;
+        columnNames[1] = TagsContract.Table._COUNT;
+        
+        layoutElements = new int[2];
+        layoutElements[0] = R.id.tags_list_ui_entry_tag;
+        layoutElements[1] = R.id.tags_list_ui_entry_used;
+        
+        // get a data adapter
+        return new TagsListAdapter(
+        		this,
+        		R.layout.tags_list_entry,
+        		cursor,
+        		columnNames,
+        		layoutElements);
+		
+	}
+	
+	/*
+	 * private method to update a preference on the sort order
+	 */
+	private void updatePreference(String prefValue) {
+		
+		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		SharedPreferences.Editor mEditor = mPreferences.edit();
+		
+		mEditor.putString(sPreferenceName, prefValue);
+		
+		// TODO once on API 9 or above use apply not commit
+		mEditor.commit();
+	}
+	
+	/*
+	 * private method to get the preference on the sort order
+	 */
+	private String getPreference() {
+		
+		SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		return mPreferences.getString(sPreferenceName, sDefaultSortField);
+		
+	}
+	
+	/*
+	 * create the menu
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// inflate the menu based on the XML
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.tag_list_activity, menu);
+	    return true;
+	}
+	
+	/*
+	 * handle click events from the menu
+	 * 
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch(item.getItemId()){
+		case R.id.menu_tag_list_activity_sort_alpha:
+			// sort list of items by title alphabetically
+			cursor.close();
+			cursor = null;
+			cursor = getCursor(sDefaultSortField);
+			
+			updatePreference(sDefaultSortField);
+			
+			dataAdapter = getDataAdapter(cursor);
+			
+			listView.setAdapter(dataAdapter);
+
+			return true;
+		case R.id.menu_tag_list_activity_sort_count:
+			// sort list of items by time
+			cursor.close();
+			cursor = null;
+			cursor = getCursor(sCountSortField);
+			
+			updatePreference(sCountSortField);
+			
+			dataAdapter = getDataAdapter(cursor);
+			
+			listView.setAdapter(dataAdapter);
+			
+			return true;
+		case R.id.menu_tag_list_activity_close:
+			// close this activity
+			onBackPressed();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	
