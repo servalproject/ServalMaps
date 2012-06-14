@@ -43,10 +43,6 @@ public final class PointOfInterestMessage {
     boolean hasDescription();
     String getDescription();
     
-    // optional int64 category = 9;
-    boolean hasCategory();
-    long getCategory();
-    
     // optional string photo = 10;
     boolean hasPhoto();
     String getPhoto();
@@ -54,6 +50,14 @@ public final class PointOfInterestMessage {
     // optional string tags = 11;
     boolean hasTags();
     String getTags();
+    
+    // optional double altitude = 12 [default = -1];
+    boolean hasAltitude();
+    double getAltitude();
+    
+    // optional double accuracy = 13 [default = -1];
+    boolean hasAccuracy();
+    double getAccuracy();
   }
   public static final class Message extends
       com.google.protobuf.GeneratedMessage
@@ -274,21 +278,11 @@ public final class PointOfInterestMessage {
       }
     }
     
-    // optional int64 category = 9;
-    public static final int CATEGORY_FIELD_NUMBER = 9;
-    private long category_;
-    public boolean hasCategory() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    public long getCategory() {
-      return category_;
-    }
-    
     // optional string photo = 10;
     public static final int PHOTO_FIELD_NUMBER = 10;
     private java.lang.Object photo_;
     public boolean hasPhoto() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
+      return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     public String getPhoto() {
       java.lang.Object ref = photo_;
@@ -320,7 +314,7 @@ public final class PointOfInterestMessage {
     public static final int TAGS_FIELD_NUMBER = 11;
     private java.lang.Object tags_;
     public boolean hasTags() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
+      return ((bitField0_ & 0x00000200) == 0x00000200);
     }
     public String getTags() {
       java.lang.Object ref = tags_;
@@ -348,6 +342,26 @@ public final class PointOfInterestMessage {
       }
     }
     
+    // optional double altitude = 12 [default = -1];
+    public static final int ALTITUDE_FIELD_NUMBER = 12;
+    private double altitude_;
+    public boolean hasAltitude() {
+      return ((bitField0_ & 0x00000400) == 0x00000400);
+    }
+    public double getAltitude() {
+      return altitude_;
+    }
+    
+    // optional double accuracy = 13 [default = -1];
+    public static final int ACCURACY_FIELD_NUMBER = 13;
+    private double accuracy_;
+    public boolean hasAccuracy() {
+      return ((bitField0_ & 0x00000800) == 0x00000800);
+    }
+    public double getAccuracy() {
+      return accuracy_;
+    }
+    
     private void initFields() {
       phoneNumber_ = "";
       subsciberId_ = "";
@@ -357,9 +371,10 @@ public final class PointOfInterestMessage {
       timeZone_ = "";
       title_ = "";
       description_ = "";
-      category_ = 0L;
       photo_ = "";
       tags_ = "";
+      altitude_ = -1D;
+      accuracy_ = -1D;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -398,13 +413,16 @@ public final class PointOfInterestMessage {
         output.writeBytes(8, getDescriptionBytes());
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeInt64(9, category_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeBytes(10, getPhotoBytes());
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
         output.writeBytes(11, getTagsBytes());
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeDouble(12, altitude_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        output.writeDouble(13, accuracy_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -449,15 +467,19 @@ public final class PointOfInterestMessage {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(9, category_);
+          .computeBytesSize(10, getPhotoBytes());
       }
       if (((bitField0_ & 0x00000200) == 0x00000200)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(10, getPhotoBytes());
+          .computeBytesSize(11, getTagsBytes());
       }
       if (((bitField0_ & 0x00000400) == 0x00000400)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(11, getTagsBytes());
+          .computeDoubleSize(12, altitude_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(13, accuracy_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -599,12 +621,14 @@ public final class PointOfInterestMessage {
         bitField0_ = (bitField0_ & ~0x00000040);
         description_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
-        category_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000100);
         photo_ = "";
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000100);
         tags_ = "";
+        bitField0_ = (bitField0_ & ~0x00000200);
+        altitude_ = -1D;
         bitField0_ = (bitField0_ & ~0x00000400);
+        accuracy_ = -1D;
+        bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
       
@@ -678,15 +702,19 @@ public final class PointOfInterestMessage {
         if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
           to_bitField0_ |= 0x00000100;
         }
-        result.category_ = category_;
+        result.photo_ = photo_;
         if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
           to_bitField0_ |= 0x00000200;
         }
-        result.photo_ = photo_;
+        result.tags_ = tags_;
         if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
           to_bitField0_ |= 0x00000400;
         }
-        result.tags_ = tags_;
+        result.altitude_ = altitude_;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000800;
+        }
+        result.accuracy_ = accuracy_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -727,14 +755,17 @@ public final class PointOfInterestMessage {
         if (other.hasDescription()) {
           setDescription(other.getDescription());
         }
-        if (other.hasCategory()) {
-          setCategory(other.getCategory());
-        }
         if (other.hasPhoto()) {
           setPhoto(other.getPhoto());
         }
         if (other.hasTags()) {
           setTags(other.getTags());
+        }
+        if (other.hasAltitude()) {
+          setAltitude(other.getAltitude());
+        }
+        if (other.hasAccuracy()) {
+          setAccuracy(other.getAccuracy());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -807,19 +838,24 @@ public final class PointOfInterestMessage {
               description_ = input.readBytes();
               break;
             }
-            case 72: {
-              bitField0_ |= 0x00000100;
-              category_ = input.readInt64();
-              break;
-            }
             case 82: {
-              bitField0_ |= 0x00000200;
+              bitField0_ |= 0x00000100;
               photo_ = input.readBytes();
               break;
             }
             case 90: {
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000200;
               tags_ = input.readBytes();
+              break;
+            }
+            case 97: {
+              bitField0_ |= 0x00000400;
+              altitude_ = input.readDouble();
+              break;
+            }
+            case 105: {
+              bitField0_ |= 0x00000800;
+              accuracy_ = input.readDouble();
               break;
             }
           }
@@ -1071,31 +1107,10 @@ public final class PointOfInterestMessage {
         onChanged();
       }
       
-      // optional int64 category = 9;
-      private long category_ ;
-      public boolean hasCategory() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      public long getCategory() {
-        return category_;
-      }
-      public Builder setCategory(long value) {
-        bitField0_ |= 0x00000100;
-        category_ = value;
-        onChanged();
-        return this;
-      }
-      public Builder clearCategory() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        category_ = 0L;
-        onChanged();
-        return this;
-      }
-      
       // optional string photo = 10;
       private java.lang.Object photo_ = "";
       public boolean hasPhoto() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
+        return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       public String getPhoto() {
         java.lang.Object ref = photo_;
@@ -1111,19 +1126,19 @@ public final class PointOfInterestMessage {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000200;
+  bitField0_ |= 0x00000100;
         photo_ = value;
         onChanged();
         return this;
       }
       public Builder clearPhoto() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000100);
         photo_ = getDefaultInstance().getPhoto();
         onChanged();
         return this;
       }
       void setPhoto(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000100;
         photo_ = value;
         onChanged();
       }
@@ -1131,7 +1146,7 @@ public final class PointOfInterestMessage {
       // optional string tags = 11;
       private java.lang.Object tags_ = "";
       public boolean hasTags() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
+        return ((bitField0_ & 0x00000200) == 0x00000200);
       }
       public String getTags() {
         java.lang.Object ref = tags_;
@@ -1147,21 +1162,63 @@ public final class PointOfInterestMessage {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000400;
+  bitField0_ |= 0x00000200;
         tags_ = value;
         onChanged();
         return this;
       }
       public Builder clearTags() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        bitField0_ = (bitField0_ & ~0x00000200);
         tags_ = getDefaultInstance().getTags();
         onChanged();
         return this;
       }
       void setTags(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000200;
         tags_ = value;
         onChanged();
+      }
+      
+      // optional double altitude = 12 [default = -1];
+      private double altitude_ = -1D;
+      public boolean hasAltitude() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      public double getAltitude() {
+        return altitude_;
+      }
+      public Builder setAltitude(double value) {
+        bitField0_ |= 0x00000400;
+        altitude_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAltitude() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        altitude_ = -1D;
+        onChanged();
+        return this;
+      }
+      
+      // optional double accuracy = 13 [default = -1];
+      private double accuracy_ = -1D;
+      public boolean hasAccuracy() {
+        return ((bitField0_ & 0x00000800) == 0x00000800);
+      }
+      public double getAccuracy() {
+        return accuracy_;
+      }
+      public Builder setAccuracy(double value) {
+        bitField0_ |= 0x00000800;
+        accuracy_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAccuracy() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        accuracy_ = -1D;
+        onChanged();
+        return this;
       }
       
       // @@protoc_insertion_point(builder_scope:Message)
@@ -1189,13 +1246,14 @@ public final class PointOfInterestMessage {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\034PointOfInterestMessage.proto\"\320\001\n\007Messa" +
+      "\n\034PointOfInterestMessage.proto\"\352\001\n\007Messa" +
       "ge\022\023\n\013phoneNumber\030\001 \001(\t\022\023\n\013subsciberId\030\002" +
       " \001(\t\022\020\n\010latitude\030\003 \001(\001\022\021\n\tlongitude\030\004 \001(" +
       "\001\022\021\n\ttimestamp\030\005 \001(\003\022\020\n\010timeZone\030\006 \001(\t\022\r" +
-      "\n\005title\030\007 \001(\t\022\023\n\013description\030\010 \001(\t\022\020\n\010ca" +
-      "tegory\030\t \001(\003\022\r\n\005photo\030\n \001(\t\022\014\n\004tags\030\013 \001(" +
-      "\tB!\n\037org.servalproject.maps.protobuf"
+      "\n\005title\030\007 \001(\t\022\023\n\013description\030\010 \001(\t\022\r\n\005ph" +
+      "oto\030\n \001(\t\022\014\n\004tags\030\013 \001(\t\022\024\n\010altitude\030\014 \001(" +
+      "\001:\002-1\022\024\n\010accuracy\030\r \001(\001:\002-1B!\n\037org.serva" +
+      "lproject.maps.protobuf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1207,7 +1265,7 @@ public final class PointOfInterestMessage {
           internal_static_Message_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Message_descriptor,
-              new java.lang.String[] { "PhoneNumber", "SubsciberId", "Latitude", "Longitude", "Timestamp", "TimeZone", "Title", "Description", "Category", "Photo", "Tags", },
+              new java.lang.String[] { "PhoneNumber", "SubsciberId", "Latitude", "Longitude", "Timestamp", "TimeZone", "Title", "Description", "Photo", "Tags", "Altitude", "Accuracy", },
               org.servalproject.maps.protobuf.PointOfInterestMessage.Message.class,
               org.servalproject.maps.protobuf.PointOfInterestMessage.Message.Builder.class);
           return null;

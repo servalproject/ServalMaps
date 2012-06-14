@@ -30,7 +30,9 @@ message Message {
 	optional string timeZone    = 6;
 	optional string title       = 7;
 	optional string description = 8;
-	optional int64  category    = 9; // can we delete this now?
+	//optional int64  category    = 9; // unnecessary tag so it is deleted, do not use the identifier 9 again
 	optional string photo       = 10;
 	optional string tags        = 11;
+	optional double altitude    = 12 [default = -1];
+	optional double accuracy    = 13 [default = -1];
 }

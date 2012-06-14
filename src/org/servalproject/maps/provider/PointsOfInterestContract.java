@@ -95,6 +95,16 @@ public class PointsOfInterestContract {
 		public static final String LONGITUDE = "longitude";
 		
 		/**
+		 * altitude geo-coordinate
+		 */
+		public static final String ALTITUDE = "altitude";
+		
+		/**
+		 * accuracy estimate for the geo-coordinate
+		 */
+		public static final String ACCURACY = "accuracy";
+		
+		/**
 		 * timestamp of when the information was saved
 		 */
 		public static final String TIMESTAMP = "timestamp";
@@ -115,11 +125,6 @@ public class PointsOfInterestContract {
 		public static final String DESCRIPTION = "description";
 		
 		/**
-		 * category of the POI
-		 */
-		public static final String CATEGORY = "category";
-		
-		/**
 		 * photo associated with this POI
 		 */
 		public static final String PHOTO = "photo";
@@ -132,6 +137,6 @@ public class PointsOfInterestContract {
 		/**
 		 * a list of all of the columns
 		 */
-		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, CATEGORY, PHOTO, TAGS};
+		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, ALTITUDE, ACCURACY, TIMESTAMP, TIMEZONE, TITLE, DESCRIPTION, PHOTO, TAGS};
 	}
 }

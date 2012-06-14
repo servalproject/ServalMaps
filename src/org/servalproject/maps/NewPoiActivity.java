@@ -75,6 +75,8 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	
 	private double latitude = -1;
 	private double longitude = -1;
+	private double altitude = -1;
+	private float accuracy = -1;
 	
 	private String phoneNumber;
 	private String subscriberId; 
@@ -105,6 +107,9 @@ public class NewPoiActivity extends Activity implements OnClickListener{
         	if(mLocation != null) {
         		latitude = mLocation.getLatitude();
         		longitude = mLocation.getLongitude();
+        		
+        		altitude = mLocation.getAltitude();
+        		accuracy = mLocation.getAccuracy();
         	}
         }
         
@@ -403,6 +408,8 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 		mValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, subscriberId);
 		mValues.put(PointsOfInterestContract.Table.LATITUDE, latitude);
 		mValues.put(PointsOfInterestContract.Table.LONGITUDE, longitude);
+		mValues.put(PointsOfInterestContract.Table.ACCURACY, accuracy);
+		mValues.put(PointsOfInterestContract.Table.ALTITUDE, altitude);
 		mValues.put(PointsOfInterestContract.Table.TIMESTAMP, System.currentTimeMillis());
 		mValues.put(PointsOfInterestContract.Table.TIMEZONE, TimeZone.getDefault().getID());
 		mValues.put(PointsOfInterestContract.Table.TITLE, title);

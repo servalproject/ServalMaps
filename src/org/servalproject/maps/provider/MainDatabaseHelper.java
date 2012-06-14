@@ -43,11 +43,12 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ PointsOfInterestContract.Table.SUBSCRIBER_ID + " TEXT, "
 			+ PointsOfInterestContract.Table.LATITUDE + " REAL, "
 			+ PointsOfInterestContract.Table.LONGITUDE + " REAL, "
+			+ PointsOfInterestContract.Table.ALTITUDE + " REAL, "
+			+ PointsOfInterestContract.Table.ACCURACY + " REAL, "
 			+ PointsOfInterestContract.Table.TIMESTAMP + " INTEGER, "
 			+ PointsOfInterestContract.Table.TIMEZONE + " TEXT, "
 			+ PointsOfInterestContract.Table.TITLE + " TEXT, "
 			+ PointsOfInterestContract.Table.DESCRIPTION + " TEXT, "
-			+ PointsOfInterestContract.Table.CATEGORY + " INTEGER DEFAULT " + PointsOfInterestContract.DEFAULT_CATEGORY + ", "
 			+ PointsOfInterestContract.Table.PHOTO + " TEXT, "
 			+ PointsOfInterestContract.Table.TAGS + " TEXT)";
 	
@@ -80,9 +81,17 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			PointsOfInterestContract.Table.TABLE_NAME + " ADD " 
 			+ PointsOfInterestContract.Table.TAGS + " TEXT";
 	
+	private final String ALTER_TABLE_POI_GEO_INFO_1 = "ALTER TABLE " 
+			+ PointsOfInterestContract.Table.TABLE_NAME + " ADD "
+			+ PointsOfInterestContract.Table.ALTITUDE + " REAL";
+			
+	private final String ALTER_TABLE_POI_GEO_INFO_2 = "ALTER TABLE " 
+			+ PointsOfInterestContract.Table.TABLE_NAME + " ADD "
+			+ PointsOfInterestContract.Table.ACCURACY + " REAL";
+	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps.db";
-	public static final int DB_VERSION = 2;
+	public static final int DB_VERSION = 3;
 	
 	/**
 	 * Constructs a new MainDatabaseHelper object
@@ -124,6 +133,11 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			db.execSQL(TAGS_INDEX_1);
 			db.execSQL(TAGS_INDEX_2);
 			db.execSQL(ALTER_TABLE_POI_TAGS);
+			db.execSQL(ALTER_TABLE_POI_GEO_INFO_1);
+			db.execSQL(ALTER_TABLE_POI_GEO_INFO_2);
+		} else if(oldVersion == 2) {
+			db.execSQL(ALTER_TABLE_POI_GEO_INFO_1);
+			db.execSQL(ALTER_TABLE_POI_GEO_INFO_2);
 		}
 	}
 }
