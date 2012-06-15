@@ -109,7 +109,7 @@ public class GeoUtils {
 		
 		String mDistanceAsString = null;
 		
-		if(mDistance != Double.NaN) {
+		if(Double.isNaN(mDistance) == false) {
 			
 			// round to two decimal places
 			DecimalFormat mFormat = new DecimalFormat("#.##");
@@ -172,8 +172,8 @@ public class GeoUtils {
 		}
 		
 		// check to make sure the conversion went ok
-		if(mDistance == Double.NaN) {
-			return mDistance;
+		if(Double.isNaN(mDistance)) {
+			return Double.NaN;
 		}
 		
 		// convert distance to the required units

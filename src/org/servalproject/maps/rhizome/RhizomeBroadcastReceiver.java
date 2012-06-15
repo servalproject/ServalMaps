@@ -58,7 +58,7 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 	
 	// keep a static weak reference to a thread pool
 	// this should allow it to shutdown when there are no files being processed
-	private static WeakReference<ExecutorService> executorRef;
+	private static volatile WeakReference<ExecutorService> executorRef;
 	
 	/*
 	 * (non-Javadoc)
