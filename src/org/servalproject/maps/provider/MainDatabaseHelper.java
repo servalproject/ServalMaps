@@ -33,6 +33,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ LocationsContract.Table.SUBSCRIBER_ID + " TEXT, "
 			+ LocationsContract.Table.LATITUDE + " REAL, "
 			+ LocationsContract.Table.LONGITUDE + " REAL, "
+			+ LocationsContract.Table.ALTITUDE + " REAL, "
+			+ LocationsContract.Table.ACCURACY + " REAL, "
 			+ LocationsContract.Table.TIMESTAMP + " INTEGER, "
 			+ LocationsContract.Table.TIMEZONE + " TEXT)";
 	
@@ -77,21 +79,9 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ TagsContract.Table.TAG + " ASC, "
 			+ TagsContract.Table.POI_RECORD_ID + " ASC)";
 	
-	private final String ALTER_TABLE_POI_TAGS = "ALTER TABLE " +
-			PointsOfInterestContract.Table.TABLE_NAME + " ADD " 
-			+ PointsOfInterestContract.Table.TAGS + " TEXT";
-	
-	private final String ALTER_TABLE_POI_GEO_INFO_1 = "ALTER TABLE " 
-			+ PointsOfInterestContract.Table.TABLE_NAME + " ADD "
-			+ PointsOfInterestContract.Table.ALTITUDE + " REAL";
-			
-	private final String ALTER_TABLE_POI_GEO_INFO_2 = "ALTER TABLE " 
-			+ PointsOfInterestContract.Table.TABLE_NAME + " ADD "
-			+ PointsOfInterestContract.Table.ACCURACY + " REAL";
-	
 	// declare public class constants
 	public static final String DB_NAME = "serval-maps.db";
-	public static final int DB_VERSION = 3;
+	public static final int DB_VERSION = 1;
 	
 	/**
 	 * Constructs a new MainDatabaseHelper object
@@ -127,17 +117,6 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
-		if(oldVersion == 1) {
-			db.execSQL(TAGS_CREATE);
-			db.execSQL(TAGS_INDEX_1);
-			db.execSQL(TAGS_INDEX_2);
-			db.execSQL(ALTER_TABLE_POI_TAGS);
-			db.execSQL(ALTER_TABLE_POI_GEO_INFO_1);
-			db.execSQL(ALTER_TABLE_POI_GEO_INFO_2);
-		} else if(oldVersion == 2) {
-			db.execSQL(ALTER_TABLE_POI_GEO_INFO_1);
-			db.execSQL(ALTER_TABLE_POI_GEO_INFO_2);
-		}
+		// TODO add onUpgrade code if DB tables change once multiple release version are in the wild
 	}
 }

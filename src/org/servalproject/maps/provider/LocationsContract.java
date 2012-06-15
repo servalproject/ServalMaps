@@ -96,6 +96,16 @@ public class LocationsContract {
 		public static final String LONGITUDE = "longitude";
 		
 		/**
+		 * altitude geo-coordinate
+		 */
+		public static final String ALTITUDE = "altitude";
+		
+		/**
+		 * accuracy estimate for the geo-coordinate
+		 */
+		public static final String ACCURACY = "accuracy";
+		
+		/**
 		 * timestamp of when the information was saved
 		 */
 		public static final String TIMESTAMP = "timestamp";
@@ -108,6 +118,6 @@ public class LocationsContract {
 		/**
 		 * a list of all of the columns
 		 */
-		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, TIMESTAMP, TIMEZONE};
+		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, ALTITUDE, ACCURACY, TIMESTAMP, TIMEZONE};
 	}
 }

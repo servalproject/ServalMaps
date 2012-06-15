@@ -39,7 +39,7 @@ public class PointsOfInterestWorker implements Runnable {
 	private final String TAG = "PointsOfInterestWorker";
 	private final boolean V_LOG = true;
 	
-	private final long sleepTime = 300;
+	private final long sSleepTime = 300;
 	
 	/*
 	 * private class level variables
@@ -154,7 +154,7 @@ public class PointsOfInterestWorker implements Runnable {
 						
 						// don't hit the CPU so hard so sleep for a bit
 						try {
-							Thread.sleep(sleepTime);
+							Thread.sleep(sSleepTime);
 						}catch (InterruptedException e) {
 							Log.w(TAG, "thread was interrupted unexepectantly");
 						}
@@ -164,7 +164,7 @@ public class PointsOfInterestWorker implements Runnable {
 					
 					// don't hit the database so hard with writes to sleep for a bit
 					try {
-						Thread.sleep(sleepTime);
+						Thread.sleep(sSleepTime);
 					}catch (InterruptedException e) {
 						Log.w(TAG, "thread was interrupted unexepectantly");
 					}

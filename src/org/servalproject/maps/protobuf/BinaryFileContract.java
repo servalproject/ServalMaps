@@ -63,6 +63,8 @@ public class BinaryFileContract {
 		mMessageBuilder.setSubsciberId(cursor.getString(cursor.getColumnIndex(LocationsContract.Table.SUBSCRIBER_ID)));
 		mMessageBuilder.setLatitude(cursor.getDouble(cursor.getColumnIndex(LocationsContract.Table.LATITUDE)));
 		mMessageBuilder.setLongitude(cursor.getDouble(cursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
+		mMessageBuilder.setAltitude(cursor.getDouble(cursor.getColumnIndex(LocationsContract.Table.ALTITUDE)));
+		mMessageBuilder.setAccuracy(cursor.getDouble(cursor.getColumnIndex(LocationsContract.Table.ACCURACY)));
 		mMessageBuilder.setTimestamp(cursor.getLong(cursor.getColumnIndex(LocationsContract.Table.TIMESTAMP)));
 		mMessageBuilder.setTimeZone(cursor.getString(cursor.getColumnIndex(LocationsContract.Table.TIMEZONE)));
 		

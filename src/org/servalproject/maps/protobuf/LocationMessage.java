@@ -34,6 +34,14 @@ public final class LocationMessage {
     // optional string timeZone = 6;
     boolean hasTimeZone();
     String getTimeZone();
+    
+    // optional double accuracy = 7;
+    boolean hasAccuracy();
+    double getAccuracy();
+    
+    // optional double altitude = 8;
+    boolean hasAltitude();
+    double getAltitude();
   }
   public static final class Message extends
       com.google.protobuf.GeneratedMessage
@@ -190,6 +198,26 @@ public final class LocationMessage {
       }
     }
     
+    // optional double accuracy = 7;
+    public static final int ACCURACY_FIELD_NUMBER = 7;
+    private double accuracy_;
+    public boolean hasAccuracy() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    public double getAccuracy() {
+      return accuracy_;
+    }
+    
+    // optional double altitude = 8;
+    public static final int ALTITUDE_FIELD_NUMBER = 8;
+    private double altitude_;
+    public boolean hasAltitude() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    public double getAltitude() {
+      return altitude_;
+    }
+    
     private void initFields() {
       phoneNumber_ = "";
       subsciberId_ = "";
@@ -197,6 +225,8 @@ public final class LocationMessage {
       longitude_ = 0D;
       timestamp_ = 0L;
       timeZone_ = "";
+      accuracy_ = 0D;
+      altitude_ = 0D;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -227,6 +257,12 @@ public final class LocationMessage {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(6, getTimeZoneBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeDouble(7, accuracy_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeDouble(8, altitude_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -260,6 +296,14 @@ public final class LocationMessage {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, getTimeZoneBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(7, accuracy_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(8, altitude_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -397,6 +441,10 @@ public final class LocationMessage {
         bitField0_ = (bitField0_ & ~0x00000010);
         timeZone_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
+        accuracy_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        altitude_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
       
@@ -459,6 +507,14 @@ public final class LocationMessage {
           to_bitField0_ |= 0x00000020;
         }
         result.timeZone_ = timeZone_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.accuracy_ = accuracy_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.altitude_ = altitude_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -492,6 +548,12 @@ public final class LocationMessage {
         }
         if (other.hasTimeZone()) {
           setTimeZone(other.getTimeZone());
+        }
+        if (other.hasAccuracy()) {
+          setAccuracy(other.getAccuracy());
+        }
+        if (other.hasAltitude()) {
+          setAltitude(other.getAltitude());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -552,6 +614,16 @@ public final class LocationMessage {
             case 50: {
               bitField0_ |= 0x00000020;
               timeZone_ = input.readBytes();
+              break;
+            }
+            case 57: {
+              bitField0_ |= 0x00000040;
+              accuracy_ = input.readDouble();
+              break;
+            }
+            case 65: {
+              bitField0_ |= 0x00000080;
+              altitude_ = input.readDouble();
               break;
             }
           }
@@ -731,6 +803,48 @@ public final class LocationMessage {
         onChanged();
       }
       
+      // optional double accuracy = 7;
+      private double accuracy_ ;
+      public boolean hasAccuracy() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      public double getAccuracy() {
+        return accuracy_;
+      }
+      public Builder setAccuracy(double value) {
+        bitField0_ |= 0x00000040;
+        accuracy_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAccuracy() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        accuracy_ = 0D;
+        onChanged();
+        return this;
+      }
+      
+      // optional double altitude = 8;
+      private double altitude_ ;
+      public boolean hasAltitude() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      public double getAltitude() {
+        return altitude_;
+      }
+      public Builder setAltitude(double value) {
+        bitField0_ |= 0x00000080;
+        altitude_ = value;
+        onChanged();
+        return this;
+      }
+      public Builder clearAltitude() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        altitude_ = 0D;
+        onChanged();
+        return this;
+      }
+      
       // @@protoc_insertion_point(builder_scope:Message)
     }
     
@@ -756,11 +870,12 @@ public final class LocationMessage {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\025LocationMessage.proto\"}\n\007Message\022\023\n\013ph" +
-      "oneNumber\030\001 \001(\t\022\023\n\013subsciberId\030\002 \001(\t\022\020\n\010" +
-      "latitude\030\003 \001(\001\022\021\n\tlongitude\030\004 \001(\001\022\021\n\ttim" +
-      "estamp\030\005 \001(\003\022\020\n\010timeZone\030\006 \001(\tB!\n\037org.se" +
-      "rvalproject.maps.protobuf"
+      "\n\025LocationMessage.proto\"\241\001\n\007Message\022\023\n\013p" +
+      "honeNumber\030\001 \001(\t\022\023\n\013subsciberId\030\002 \001(\t\022\020\n" +
+      "\010latitude\030\003 \001(\001\022\021\n\tlongitude\030\004 \001(\001\022\021\n\tti" +
+      "mestamp\030\005 \001(\003\022\020\n\010timeZone\030\006 \001(\t\022\020\n\010accur" +
+      "acy\030\007 \001(\001\022\020\n\010altitude\030\010 \001(\001B!\n\037org.serva" +
+      "lproject.maps.protobuf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -772,7 +887,7 @@ public final class LocationMessage {
           internal_static_Message_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Message_descriptor,
-              new java.lang.String[] { "PhoneNumber", "SubsciberId", "Latitude", "Longitude", "Timestamp", "TimeZone", },
+              new java.lang.String[] { "PhoneNumber", "SubsciberId", "Latitude", "Longitude", "Timestamp", "TimeZone", "Accuracy", "Altitude", },
               org.servalproject.maps.protobuf.LocationMessage.Message.class,
               org.servalproject.maps.protobuf.LocationMessage.Message.Builder.class);
           return null;

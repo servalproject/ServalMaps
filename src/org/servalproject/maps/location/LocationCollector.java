@@ -132,14 +132,27 @@ public class LocationCollector implements LocationListener {
 			mNewValues.put(LocationsContract.Table.TIMEZONE, timeZone);
 			mNewValues.put(LocationsContract.Table.TIMESTAMP, mTime);
 
+			/*
+			 * add accuracy and altitude values if available
+			 */
+			if(location.hasAccuracy()) {
+				mNewValues.put(LocationsContract.Table.ACCURACY, location.getAccuracy());
+			} else {
+				mNewValues.put(LocationsContract.Table.ACCURACY, -1);
+			}
+			
+			if(location.hasAltitude()) {
+				mNewValues.put(LocationsContract.Table.ALTITUDE, location.getAltitude());
+			} else {
+				mNewValues.put(LocationsContract.Table.ALTITUDE, -1);
+			}
+			
+			
 			try {
 				Uri newRecord = contentResolver.insert(LocationsContract.CONTENT_URI, mNewValues);
 				if(V_LOG) {
 					Log.v(TAG, "new location record created with id: " + newRecord.getLastPathSegment());
 				}
-				
-				// functionality not required at this stage 
-				//OutgoingMeshMS.sendLocationMessage(context, newRecord.getLastPathSegment());
 				
 				// write an entry to the binary log file
 				BinaryFileWriter.writeLocation(context,  newRecord.getLastPathSegment());
