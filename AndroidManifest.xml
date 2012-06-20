@@ -57,7 +57,7 @@
     </permission>
     <permission 
         android:label="@string/system_permission_provider_read_map_items_label" 
-        android:protectionLevel="signature" 
+        android:protectionLevel="dangerous" 
         android:description="@string/system_permission_provider_read_map_items_description" 
         android:name="org.servalproject.maps.provider.READ_ITEMS">
     </permission>
@@ -66,12 +66,6 @@
         android:protectionLevel="signature" 
         android:description="@string/system_permission_provider_write_map_items_description" 
         android:name="org.servalproject.maps.provider.WRITE_ITEMS">
-    </permission>
-    <permission 
-        android:name="org.servalprokect.maps.provider.READ_POI_ITEMS" 
-        android:label="@string/system_permission_provider_read_poi_items_label" 
-        android:description="@string/system_permission_provider_read_poi_items_description" 
-        android:protectionLevel="normal">
     </permission>
 
     <application
@@ -121,9 +115,6 @@
             android:description="@string/system_provider_map_items_description" 
             android:label="@string/system_provider_map_items_label" 
             android:readPermission="org.servalproject.maps.provider.READ_ITEMS">
-            <path-permission 
-                android:pathPattern="org.servalproject.maps.provider.items/poi/*" 
-                android:readPermission="org.servalprokect.maps.provider.READ_POI_ITEMS"/>
         </provider>
         
         <receiver android:name=".rhizome.RhizomeBroadcastReceiver">
