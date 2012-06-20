@@ -26,6 +26,7 @@ import java.util.Set;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -264,8 +265,23 @@ public class MapItems extends ContentProvider {
 		getContext().getContentResolver().notifyChange(mResults, null);
 		
 		// check to see if we need to update the tag index
-		if(uriMatcher.match(uri) == POI_LIST_URI && values.containsKey(PointsOfInterestContract.Table.TAGS)) {
-			updateTagIndexOnInsert(mId, values.getAsString(PointsOfInterestContract.Table.TAGS));
+		if(uriMatcher.match(uri) == POI_LIST_URI) {
+			
+			// update the tag table if required
+			if(values.containsKey(PointsOfInterestContract.Table.TAGS)) {
+				updateTagIndexOnInsert(mId, values.getAsString(PointsOfInterestContract.Table.TAGS));
+			}
+			
+			// send a broadcast about the new POI record
+			Intent mIntent = new Intent();
+			mIntent.setAction("org.servalproject.maps.NEW_POI_RECORD");
+			mIntent.setData(mResults);
+			
+			this.getContext().sendBroadcast(mIntent, "org.servalprokect.maps.provider.READ_POI_ITEMS");
+			
+			//debug logging
+			Log.d(TAG, "broadcast intent sent, uri: " + mResults.toString());
+			
 		}
 		
 		return mResults;
