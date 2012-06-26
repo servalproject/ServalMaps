@@ -192,6 +192,29 @@ public class HttpUtils {
 	        }
         }
 	}
+//	
+//	/**
+//	 * check to see if the device is online, ie. has a valid Internet connection
+//	 * @param context a context used to gain access to system resources
+//	 * 
+//	 * @return true if there is an Internet connection, false if there isn't
+//	 */
+//	public static boolean isOnline(Context context) {
+//		
+//		// the code in this method is based on the code available here:
+//		// http://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-timeouts#4009133
+//		// and considered to be in the public domain
+//		
+//		ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+//		
+//		NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+//		
+//		if(mNetworkInfo != null && mNetworkInfo.isConnected()) {
+//			return true;
+//		} else {
+//			return false;
+//		}		
+//	}
 	
 	/**
 	 * check to see if the device is online, ie. has a valid Internet connection
@@ -201,18 +224,22 @@ public class HttpUtils {
 	 */
 	public static boolean isOnline(Context context) {
 		
-		// the code in this method is based on the code available here:
-		// http://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-timeouts#4009133
-		// and considered to be in the public domain
-		
 		ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		
-		NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+		NetworkInfo[] mNetworkInfos = mConnectivityManager.getAllNetworkInfo();
 		
-		if(mNetworkInfo != null && mNetworkInfo.isConnected()) {
-			return true;
-		} else {
+		if(mNetworkInfos == null) {
 			return false;
-		}		
+		}
+		
+		for(NetworkInfo mInfo : mNetworkInfos) {
+			
+			if(mInfo.isConnected() == true) {
+				return true;
+			}
+			
+		}
+		
+		return false;	
 	}
 }
