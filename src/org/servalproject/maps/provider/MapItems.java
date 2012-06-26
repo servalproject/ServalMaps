@@ -275,9 +275,12 @@ public class MapItems extends ContentProvider {
 			// send a broadcast about the new POI record
 			Intent mIntent = new Intent();
 			mIntent.setAction("org.servalproject.maps.NEW_POI_RECORD");
-			mIntent.setData(mResults);
+			mIntent.putExtra("uri", mResults);
 			
-			this.getContext().sendBroadcast(mIntent, "org.servalprokect.maps.provider.READ_POI_ITEMS");
+			this.getContext().sendBroadcast(mIntent, "org.servalproject.maps.provider.READ_ITEMS");
+			
+			//debug code
+			//this.getContext().sendBroadcast(mIntent);
 			
 			//debug logging
 			Log.d(TAG, "broadcast intent sent, uri: " + mResults.toString());
