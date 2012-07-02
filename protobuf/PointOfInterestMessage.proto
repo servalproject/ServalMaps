@@ -25,7 +25,6 @@ option java_package = "org.servalproject.maps.protobuf";
  * this format breaks binary compatibility with any proceeding formats
  */
 message Message {
-	required int32  versionNumber = 1 [default = 1];
 	optional string phoneNumber = 2;
 	optional string subsciberId = 3;
 	optional double latitude    = 4;
