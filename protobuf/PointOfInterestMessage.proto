@@ -20,19 +20,24 @@
 // define some options
 option java_package = "org.servalproject.maps.protobuf";
 
-// define the point of interest message
+/*
+ * define the extended point of interest format
+ * this format breaks binary compatibility with any proceeding formats
+ */
 message Message {
-	optional string phoneNumber = 1;
-	optional string subsciberId = 2;
-	optional double latitude    = 3;
-	optional double longitude   = 4;
-	optional int64  timestamp   = 5;
-	optional string timeZone    = 6;
-	optional string title       = 7;
-	optional string description = 8;
-	//optional int64  category    = 9; // unnecessary tag so it is deleted, do not use the identifier 9 again
-	optional string photo       = 10;
-	optional string tags        = 11;
-	optional double altitude    = 12 [default = -1];
-	optional double accuracy    = 13 [default = -1];
+	required int32  versionNumber = 1 [default = 1];
+	optional string phoneNumber = 2;
+	optional string subsciberId = 3;
+	optional double latitude    = 4;
+	optional double longitude   = 5;
+	optional double altitude    = 6 [default = -1];
+	optional double accuracy    = 7 [default = -1];
+	optional int64  timestamp   = 8;
+	optional string timeZone    = 9;
+	optional string title       = 10;
+	optional string description = 11;
+	optional string category    = 12;
+	optional string photo       = 13;
+	optional string tags        = 14;
+	optional bytes  extras      = 15;
 }
