@@ -97,6 +97,7 @@ public class BinaryFileContract {
 		mMessageBuilder.setDescription(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
 		mMessageBuilder.setAccuracy(cursor.getDouble(cursor.getColumnIndex(PointsOfInterestContract.Table.ACCURACY)));
 		mMessageBuilder.setAltitude(cursor.getDouble(cursor.getColumnIndex(PointsOfInterestContract.Table.ALTITUDE)));
+		mMessageBuilder.setTags(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.TAGS)));
 		
 		// check to see if this POI has a photo associated with it
 		String mPhotoName = cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
