@@ -67,7 +67,7 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 			
-		if(!intent.getAction().equals("org.servalproject.rhizome.RECIEVE_FILE")) {
+		if(!intent.getAction().equals("org.servalproject.rhizome.RECEIVE_FILE")) {
 			Log.e(TAG, "called with an intent with an unexepcted intent action");
 			return;
 		}

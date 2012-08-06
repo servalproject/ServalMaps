@@ -42,7 +42,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     
     <uses-permission android:name="org.servalproject.rhizome.ADD_FILE"/>
-    <uses-permission android:name="org.servalproject.rhizome.RECIEVE_FILE"/>
+    <uses-permission android:name="org.servalproject.rhizome.RECEIVE_FILE"/>
     
     <uses-permission android:name="org.servalproject.maps.MAP_DATA"/>
     <uses-permission android:name="org.servalproject.maps.provider.READ_ITEMS"/>
@@ -117,9 +117,9 @@
             android:readPermission="org.servalproject.maps.provider.READ_ITEMS">
         </provider>
         
-        <receiver android:name=".rhizome.RhizomeBroadcastReceiver">
+        <receiver android:name=".rhizome.RhizomeBroadcastReceiver" android:permission="org.servalproject.rhizome.RECEIVE_FILE">
             <intent-filter>
-                <action android:name="org.servalproject.rhizome.RECIEVE_FILE"/>
+                <action android:name="org.servalproject.rhizome.RECEIVE_FILE"/> 
                 <data android:scheme="content"/>
             </intent-filter>
         </receiver>
