@@ -37,6 +37,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -107,7 +108,7 @@ public class PoiInfoActivity extends Activity implements OnClickListener {
 			photoName = mCursor.getString(mCursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO));
 			Button mButton = (Button) findViewById(R.id.poi_info_ui_btn_photo);
 			
-			if(photoName == null) {
+			if(TextUtils.isEmpty(photoName)) {
 				mButton.setVisibility(View.INVISIBLE);
 			} else {
 				mButton.setOnClickListener(this);
