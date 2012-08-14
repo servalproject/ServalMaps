@@ -19,12 +19,15 @@
  */
 package org.servalproject.maps.utils;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -33,6 +36,7 @@ import java.net.URL;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -192,29 +196,58 @@ public class HttpUtils {
 	        }
         }
 	}
-//	
-//	/**
-//	 * check to see if the device is online, ie. has a valid Internet connection
-//	 * @param context a context used to gain access to system resources
-//	 * 
-//	 * @return true if there is an Internet connection, false if there isn't
-//	 */
-//	public static boolean isOnline(Context context) {
-//		
-//		// the code in this method is based on the code available here:
-//		// http://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-timeouts#4009133
-//		// and considered to be in the public domain
-//		
-//		ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-//		
-//		NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
-//		
-//		if(mNetworkInfo != null && mNetworkInfo.isConnected()) {
-//			return true;
-//		} else {
-//			return false;
-//		}		
-//	}
+	
+	
+	
+	/**
+	 * a utility method that can be used to download data and return it is a string
+	 * 
+	 * @param url the url to return
+	 * @return the data at the url as a string
+	 * @throws IOException if anything bad happens
+	 */
+	public static String downloadString(String url) throws IOException {
+		
+		// check on the parameter
+		if(TextUtils.isEmpty(url)) {
+			throw new IllegalArgumentException("A url parameter is required");
+		}
+		
+		// connect to the supplied URL
+		URL mUrl = null;
+		HttpURLConnection urlConnection = null;
+		try {
+			mUrl = new URL(url);
+			urlConnection = (HttpURLConnection) mUrl.openConnection();
+			urlConnection.setRequestMethod("GET");
+			urlConnection.setDoOutput(true);
+			urlConnection.connect();
+		} catch (MalformedURLException e) {
+			Log.e(TAG, "invalid url", e);
+			throw new IOException("Unable to connect to the given url");
+		} catch (IOException e) {
+			Log.e(TAG, "unbable to connect to the given url", e);
+			throw new IOException("Unable to connect to the given url");
+		}
+		
+		// get the data
+		try {
+		InputStream mInputStream = urlConnection.getInputStream();
+		BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
+		StringBuilder mBuilder = new StringBuilder();
+		
+		String mLine;
+		
+		while ((mLine = mBufferedReader.readLine()) != null) {
+			mBuilder.append(mLine);
+		}
+		
+		return mBuilder.toString();
+		} catch (IOException e) {
+			Log.e(TAG, "unable to download the data", e);
+			throw new IOException("unable to download the required data");
+		}
+	}
 	
 	/**
 	 * check to see if the device is online, ie. has a valid Internet connection
@@ -242,4 +275,6 @@ public class HttpUtils {
 		
 		return false;	
 	}
+	
+	
 }

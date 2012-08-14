@@ -170,6 +170,11 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		Intent mIntent;
 		
 		switch(item.getItemId()){
+		case R.id.menu_disclaimer_activity_download:
+			// show the start of the map data download process
+			mIntent = new Intent(this, org.servalproject.maps.download.MapMirrorActivity.class);
+			startActivity(mIntent);
+			return true;
 		case R.id.menu_disclaimer_activity_export:
 			// show the export activity
 			mIntent = new Intent(this, org.servalproject.maps.ExportActivity.class);

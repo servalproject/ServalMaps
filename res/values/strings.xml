@@ -170,6 +170,14 @@
     <string name="tags_list_ui_toast_missing_data">There is no tag data currently available. Try again later.</string>
     <string name="tag_list_ui_toast_missing_poi_id">Unable to lookup tag information at this time.</string>
     
+    <!-- Download map data mirror activity -->
+    <string name="map_mirror_ui_lbl_heading">Map Data Mirrors</string>
+    <string name="map_mirror_ui_lbl_subheading">Downloading list of mirrors&#8230;</string>
+    
+    <string name="map_mirror_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
+    <string name="map_mirror_ui_dialog_error_in_download">An error occured while downloading the list of mirrors, please try again later.</string>
+    
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
@@ -184,6 +192,10 @@
     <!-- Tag List Menu UI -->
     <string name="menu_tag_list_activity_sort_alpha">Sort by Tag</string>
     <string name="menu_tag_list_activity_sort_use">Sort by Count</string>
+    
+        
+    <!-- Disclaimer Menu UI -->
+    <string name="menu_disclaimer_activity_download_map_data">Download Maps</string>
     
     <!-- Common Menu UI -->
     <string name="menu_close">Close</string>
@@ -262,8 +274,9 @@
     <string name="system_toast_batphone_off">The Serval Mesh software is not running, data sharing is disabled</string>
     <string name="system_toast_batphone_on">The Serval Mesh software is now running, data sharing is enabled</string>
     
-    <!-- file upload strings -->
+    <!-- system url strings -->
     <string name="system_url_file_upload">http://maps.servalproject.org/upload/statistics/</string>
+    <string name="system_url_map_mirrors">http://maps.servalproject.org/map-data/mirrors/</string>
     
     <!-- contact strings -->
     <string name="system_contact_email">maps@servalproject.org</string>

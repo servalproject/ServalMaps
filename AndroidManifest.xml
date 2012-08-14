@@ -93,6 +93,7 @@
         <activity android:name=".DeleteActivity"></activity>
         <activity android:name=".StatsActivity"></activity>
         <activity android:name=".TagListActivity"></activity>
+        <activity android:name=".download.MapMirrorActivity"></activity>
         
         <!-- services -->
         <service 

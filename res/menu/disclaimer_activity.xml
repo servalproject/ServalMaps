@@ -21,6 +21,12 @@
  */
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_disclaimer_activity_download"
+          android:enabled="true"
+          android:title="@string/menu_disclaimer_activity_download_map_data"
+          android:visible="true"
+          android:icon="@drawable/ic_menu_mapmode">
+    </item>
     <item android:id="@+id/menu_disclaimer_activity_export"
           android:enabled="true"
           android:title="@string/menu_export"
