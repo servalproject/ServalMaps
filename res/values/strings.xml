@@ -27,7 +27,7 @@
         Serval Maps will store geographic location information locally, and will also broadcast it over the network. \n\nBy continuing, you accept that this information will be broadcast. \n\nServal has no long term repository storage of location details. \n\nCommunications made using this software are not secure or private and data may also be witnessed by someone other than the intended recipient.
     </string>
     <string name="disclaimer_ui_btn_continue">I understand</string>
-    <string name="disclaimer_ui_dialog_no_files">No map data files found. Do you wish to continue?</string>
+    <string name="disclaimer_ui_dialog_no_files">No map data files found. A map data file is required before continuing.</string>
     <string name="disclaimer_ui_dialog_many_files_title">Choose Map Data File</string>
     <string name="disclaimer_ui_dialog_no_serval">Serval mesh phone number was not detected, confirm Serval mesh software is installed before continuing</string>
     <string name="disclaimer_ui_dialog_no_storage">The external storage is unavailable. Serval Maps cannot start without external storage.\n\nCheck the external storage and try again.</string>

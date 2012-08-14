@@ -309,20 +309,36 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		switch(id) {
 		case NO_FILES_DIALOG:
 			// show an alert dialog
+// version 0.3.0 of the mapsforge library doesn't work when rendering a map
+// without a map data file
+//
+// this is different to the behaviour in the of the previous version
+//
+//			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_files)
+//			.setCancelable(false)
+//			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//				public void onClick(DialogInterface dialog, int id) {
+//					showMapActivity(null);
+//				}
+//			})
+//			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+//				public void onClick(DialogInterface dialog, int id) {
+//					dialog.cancel();
+//				}
+//			});
+//			mDialog = mBuilder.create();
+//			break;
+			// show an alert dialog and stop user from continuing
 			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_files)
 			.setCancelable(false)
-			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					showMapActivity(null);
-				}
-			})
-			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
+					return;
 				}
 			});
 			mDialog = mBuilder.create();
 			break;
+			
 		case MANY_FILES_DIALOG:
 			
 			if(mapDataInfoList != null) {
