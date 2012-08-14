@@ -115,8 +115,14 @@ public class MockLocations implements Runnable {
 		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		
 		// add a reference to our test provider
-		// use the standard provider name so the rest of the code still works	
-		locationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, 0, 5);
+		// use the standard provider name so the rest of the code still works
+		try {
+			locationManager.addTestProvider(LocationManager.GPS_PROVIDER, false, false, false, false, false, true, true, 0, 5);
+		}
+		catch (SecurityException e) {
+			Log.e(TAG, "unable to use mock locations, not allowed.", e);
+			throw new IOException("unable to use mock locations, not allowed '" + e.toString() + "'");
+		}
 	}
 	
 	/**
@@ -124,7 +130,7 @@ public class MockLocations implements Runnable {
 	 * @param context a context object used to gain access to application resources
 	 * @return true if "Allow mock locations" is set, otherwise false
 	 */
-	public static boolean isMockLocationSet(Context context) { 
+	public static boolean isMockLocationsAllowed(Context context) { 
 		if (Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ALLOW_MOCK_LOCATION).contentEquals("1")) { 
 			return true;  
 		} 

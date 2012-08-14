@@ -93,7 +93,7 @@ public class CoreService extends Service {
 		// determine if mock locations should be used
 		if(preferences.getBoolean("preferences_developer_mock_locations", false) == true ) {
 			
-			if(MockLocations.isMockLocationSet(this) == true) {
+			if(MockLocations.isMockLocationsAllowed(this) == true) {
 				try {
 					mockLocations = new MockLocations(this.getApplicationContext());
 					Toast.makeText(getApplicationContext(), R.string.system_mock_locations_allowed, Toast.LENGTH_LONG).show();
