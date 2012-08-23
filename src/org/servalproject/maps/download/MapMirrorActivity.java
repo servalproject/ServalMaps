@@ -37,6 +37,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 /**
  * class representing the starting point for downloading map data by downloading the list of mirrors
@@ -112,18 +115,30 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 				return;
 			}
 			
-			// build the data
-			JSONArray mirrorList = null;
+			// build the list of mirrors if available 
 			try {
-				mirrorList = new JSONArray(result);
+				JSONArray mirrorList = new JSONArray(result);
+				
+				// update the UI
+				TextView mSubHeading = (TextView) REFERENCE_TO_SELF.findViewById(R.id.map_mirror_ui_subheading);
+				mSubHeading.setText(R.string.map_mirror_ui_lbl_subheading_2);
+				mSubHeading = null;
+				
+				ProgressBar mProgressBar = (ProgressBar) REFERENCE_TO_SELF.findViewById(R.id.map_mirror_ui_progress_bar);
+				mProgressBar.setVisibility(View.GONE);
+				
+				ListView mListView = (ListView) REFERENCE_TO_SELF.getListView();
+				
+				MapMirrorAdapter mAdapter = new MapMirrorAdapter(REFERENCE_TO_SELF, mirrorList);
+				mListView.setAdapter(mAdapter);
+				
+				mListView.setVisibility(View.VISIBLE);	
+				
 			} catch (JSONException e) {
 				Log.e(TAG, "unable to parse JSON", e);
 				showDialog(ERROR_IN_DOWNLOAD);
 				return;
 			}
-			
-			//debug code
-			Log.d(TAG, "lenght of mirror list: " + mirrorList.length());
 		}
 		
 	};
@@ -157,6 +172,7 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
+					REFERENCE_TO_SELF.finish();
 				}
 			});
 			mDialog = mBuilder.create();

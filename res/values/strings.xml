@@ -173,9 +173,13 @@
     <!-- Download map data mirror activity -->
     <string name="map_mirror_ui_lbl_heading">Map Data Mirrors</string>
     <string name="map_mirror_ui_lbl_subheading">Downloading list of mirrors&#8230;</string>
+    <string name="map_mirror_ui_lbl_subheading_2">Select a download mirror</string>
     
     <string name="map_mirror_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
     <string name="map_mirror_ui_dialog_error_in_download">An error occured while downloading the list of mirrors, please try again later.</string>
+    
+    <string name="map_mirror_ui_entry_desc_lbl">Description:</string>
+    <string name="map_mirror_ui_entry_location_lbl">Location:</string>
     
     
     <!-- Map Menu UI -->

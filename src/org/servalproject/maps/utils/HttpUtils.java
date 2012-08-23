@@ -262,6 +262,7 @@ public class HttpUtils {
 		NetworkInfo[] mNetworkInfos = mConnectivityManager.getAllNetworkInfo();
 		
 		if(mNetworkInfos == null) {
+			Log.w(TAG, "no network info could be retrived");
 			return false;
 		}
 		
