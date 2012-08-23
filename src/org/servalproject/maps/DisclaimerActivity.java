@@ -358,15 +358,24 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			} else {
 				mFileNames = new CharSequence[0];
 			}
-
-			mBuilder.setTitle(R.string.disclaimer_ui_dialog_many_files_title)
-			.setCancelable(false)
-			.setItems(mFileNames, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int item) {
-					showMapActivity(mFileNames[item].toString());
-				}
-			});
-			mDialog = mBuilder.create();
+			
+			// do not show an empty list of files
+			if(mFileNames.length != 0) {
+				mBuilder.setTitle(R.string.disclaimer_ui_dialog_many_files_title)
+				.setCancelable(false)
+				.setItems(mFileNames, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						showMapActivity(mFileNames[item].toString());
+					}
+				});
+				mDialog = mBuilder.create();
+			} else {
+				// retry getting a list of files
+				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
+				startService(mIntent);
+				
+				mDialog = null;
+			}
 			break;
 		case NO_SERVAL_DIALOG:
 			mBuilder.setMessage(R.string.disclaimer_ui_dialog_no_serval)
