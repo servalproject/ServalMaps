@@ -97,14 +97,23 @@ public class BinaryFileContract {
 		mMessageBuilder.setDescription(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.DESCRIPTION)));
 		mMessageBuilder.setAccuracy(cursor.getDouble(cursor.getColumnIndex(PointsOfInterestContract.Table.ACCURACY)));
 		mMessageBuilder.setAltitude(cursor.getDouble(cursor.getColumnIndex(PointsOfInterestContract.Table.ALTITUDE)));
-		mMessageBuilder.setTags(cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.TAGS)));
+		
+		String item;
+		
+		// check to see if tags need to be added
+		item = cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.TAGS));
+		
+		if(item != null) {
+			mMessageBuilder.setTags(item);
+		}
+		
 		
 		// check to see if this POI has a photo associated with it
-		String mPhotoName = cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
+		item = cursor.getString(cursor.getColumnIndex(PointsOfInterestContract.Table.PHOTO)); 
 		
 		// check to see if a photo is associated with this poi
-		if(mPhotoName != null) {
-			mMessageBuilder.setPhoto(mPhotoName);
+		if(item != null) {
+			mMessageBuilder.setPhoto(item);
 		}
 		
 		// write the message
