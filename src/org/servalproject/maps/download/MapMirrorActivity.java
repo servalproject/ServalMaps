@@ -32,7 +32,6 @@ import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,7 +48,7 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 	/*
 	 * private class level constants
 	 */
-	private final boolean V_LOG = true;
+	//private final boolean V_LOG = true;
 	private final String  TAG = "DownloadMapMirrorActivity";
 	
 	private final int NO_NETWORK_DIALOG = 1;
