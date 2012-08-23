@@ -25,13 +25,10 @@ import org.json.JSONObject;
 import org.servalproject.maps.R;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
@@ -104,19 +101,6 @@ public class MapMirrorAdapter extends BaseAdapter implements ListAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
 		// check to see if there is a view that can be reused
-//		LinearLayout mItemLayout;
-//		
-//		if(convertView == null) {
-//			
-//			mItemLayout = new LinearLayout(activity);
-//			LayoutInflater mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//			mLayoutInflater.inflate(R.layout.map_mirror_entry, mItemLayout);
-//
-//		} else {
-//			
-//			mItemLayout = (LinearLayout) convertView;
-//		}
-		
 		if(convertView == null) {
 			convertView = activity.getLayoutInflater().inflate(R.layout.map_mirror_entry, null);
 		}
