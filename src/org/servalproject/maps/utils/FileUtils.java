@@ -26,11 +26,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 
 import org.servalproject.maps.protobuf.BinaryFileContract;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -357,6 +359,29 @@ public class FileUtils {
 		} else {
 			return fileName.substring(mLocation + 1);
 		}
+	}
+	
+	/**
+	 * write the provided string to a temp file
+	 * 
+	 * @param context a context object used to gain access to system resources
+	 * @param contents the contents of the file
+	 * @return the full path to the temp file
+	 * @throws IOException if something bad happens
+	 */
+	public static String writeTempFile(Context context, String contents) throws IOException {
+		
+		// get the external cache directory
+		File mTempFile = new File(context.getExternalFilesDir(null), System.currentTimeMillis() + ".tmp");
+		
+		// write the provided string to the file
+		PrintWriter mPrintWriter = new PrintWriter(new FileOutputStream(mTempFile)); 
+		
+		mPrintWriter.print(contents);
+		
+		mPrintWriter.close();
+		
+		return mTempFile.getCanonicalPath();	
 	}
 
 }
