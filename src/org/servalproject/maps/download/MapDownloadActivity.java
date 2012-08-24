@@ -1,20 +1,24 @@
 package org.servalproject.maps.download;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.servalproject.maps.R;
-import org.servalproject.maps.utils.FileUtils;
 import org.servalproject.maps.utils.HttpUtils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.DownloadManager.Request;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +37,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 	
 	private final int NO_NETWORK_DIALOG = 1;
 	private final int ERROR_IN_DOWNLOAD = 2;
+	private final int UNABLE_TO_USE_FILE = 3;
 	
 	// store reference to ourself to gain access to activity methods in inner classes
 	private final MapDownloadActivity REFERENCE_TO_SELF = this;
@@ -200,6 +205,17 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			});
 			mDialog = mBuilder.create();
 			break;
+		case UNABLE_TO_USE_FILE:
+			mBuilder.setMessage(R.string.map_download_ui_dialog_unable_to_use_mirror)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					REFERENCE_TO_SELF.finish();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
 		default:
 			mDialog = null;
 		}
@@ -208,10 +224,50 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 		return mDialog;	
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		
+		// get the details of the file
+		JSONObject mItem = null;
+		
+		try {
+			mItem = (JSONObject) sMapFileList.get(position);
+			
+			String mFileName =  mItem.getString("fileName");
+			
+			// make sure the downloads directory exists
+			File mDownloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+			
+			Log.v(TAG, mDownloadDirectory.getPath());
+			
+			mDownloadDirectory = new File(mDownloadDirectory.getPath() + getString(R.string.system_path_download_data) +  mFileName).getParentFile();
+		    mDownloadDirectory.mkdirs();
+		    
+		    Log.v(TAG, mDownloadDirectory.getPath());
+			
+			// setup the request
+			Request mDownloadRequest = new Request(Uri.parse(mirrorUrl + mFileName));
+			mDownloadRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+			mDownloadRequest.setAllowedOverRoaming(false);
+			mDownloadRequest.setTitle(getString(R.string.system_notification_title));
+			mDownloadRequest.setDescription(getString(R.string.system_download_description));
+			
+			mDownloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, getString(R.string.system_path_download_data) +  mFileName);
+			
+			// enque the downloading of this file
+			DownloadManager mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+			
+			mDownloadManager.enqueue(mDownloadRequest);
+			
+		} catch (JSONException e) {
+			showDialog(UNABLE_TO_USE_FILE);
+			Log.e(TAG, "mirror list item at position '" + position + "' could not be used");
+			return;
+		}		
 	}
 
 }

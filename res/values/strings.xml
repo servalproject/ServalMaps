@@ -190,12 +190,12 @@
     
     <string name="map_download_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
     <string name="map_download_ui_dialog_error_in_download">An error occured while downloading the list of map files, please try again later.</string>
+    <string name="map_download_ui_dialog_unable_to_use_mirror">Unable to download file at this time, please choose another or try again later.</string>
     
     <string name="map_mirror_ui_entry_size_lbl">File Size:</string>
     <string name="map_download_ui_entry_generated_lbl">File Date:</string>
     <string name="map_download_ui_entry_bbox_lbl_top">Top Coordinates:</string>
     <string name="map_download_ui_entry_bbox_lbl_bottom">Bottom Coordinates:</string>
-    
     
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
@@ -211,8 +211,7 @@
     <!-- Tag List Menu UI -->
     <string name="menu_tag_list_activity_sort_alpha">Sort by Tag</string>
     <string name="menu_tag_list_activity_sort_use">Sort by Count</string>
-    
-        
+       
     <!-- Disclaimer Menu UI -->
     <string name="menu_disclaimer_activity_download_map_data">Download Maps</string>
     
@@ -262,6 +261,7 @@
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
     <string name="system_path_export_data">/servalproject/maps/export-data/</string>
+    <string name="system_path_download_data">/servalproject/maps/map-data/</string>
  
     <!-- permissions -->
     <string name="system_permission_map_data_label">Request information on available map data files</string>
@@ -280,6 +280,9 @@
     <string name="system_notification_ticker_text">Serval Maps Running</string>
     <string name="system_notification_title">Serval Maps</string>
     <string name="system_notification_content">Serval Maps is running and collecting location information</string>
+    
+    <!-- system strings for the downloads -->
+    <string name="system_download_description">Map Data Download</string>
     
     <!-- battery strings -->
     <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to conserve power.</string>
