@@ -383,5 +383,23 @@ public class FileUtils {
 		
 		return mTempFile.getCanonicalPath();	
 	}
+	
+	/**
+	 * format the size of a file in a human readable format
+	 * 
+	 * code is sourced from http://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java/3758880#3758880
+	 * and considered to be in the public domain
+	 * 
+	 * @param bytes the size of the file
+	 * @param binary output the size using binary units
+	 * @return the human readable representation of the size of the file
+	 */
+	public static String humanReadableByteCount(long bytes, boolean binary) {
+		int unit = binary ? 1000 : 1024;
+		if (bytes < unit) return bytes + " B";
+		int exp = (int) (Math.log(bytes) / Math.log(unit));
+		String pre = (binary ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (binary ? "" : "i");
+		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
 
 }
