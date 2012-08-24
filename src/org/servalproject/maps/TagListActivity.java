@@ -169,9 +169,8 @@ public class TagListActivity extends ListActivity implements OnItemClickListener
 		SharedPreferences.Editor mEditor = mPreferences.edit();
 		
 		mEditor.putString(sPreferenceName, prefValue);
-		
-		// TODO once on API 9 or above use apply not commit
-		mEditor.commit();
+
+		mEditor.apply();
 	}
 	
 	/*
