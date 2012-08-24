@@ -48,7 +48,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 	 * class level variables
 	 */
 	private String mirrorName = null;
-	private String mirrorUrl = null;
+	private static String sMirrorUrl = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -63,7 +63,14 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 		Bundle mBundle = this.getIntent().getExtras();
 		
 		mirrorName = mBundle.getString("name");
-		mirrorUrl  = mBundle.getString("url");
+		
+		// invalidate the cached data if this is a different mirror
+		if(sMirrorUrl == null) {
+			sMirrorUrl = mBundle.getString("url");
+		} if(sMirrorUrl != mBundle.getString("url")) {
+			sMirrorUrl = mBundle.getString("url");
+			sMapFileList = null;
+		}
 		
 		// check and see if a network connection is available
 		if(HttpUtils.isOnline(this) == false) {
@@ -93,7 +100,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 		
 		if(sMapFileList == null) {
 			// get the mirror list and update the ui
-			new DownloadFileList().execute(mirrorUrl + "index.json");
+			new DownloadFileList().execute(sMirrorUrl + "index.json");
 		} else {
 			populateList(sMapFileList);
 		}
@@ -250,7 +257,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 		    Log.v(TAG, mDownloadDirectory.getPath());
 			
 			// setup the request
-			Request mDownloadRequest = new Request(Uri.parse(mirrorUrl + mFileName));
+			Request mDownloadRequest = new Request(Uri.parse(sMirrorUrl + mFileName));
 			mDownloadRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
 			mDownloadRequest.setAllowedOverRoaming(false);
 			mDownloadRequest.setTitle(getString(R.string.system_notification_title));
@@ -269,5 +276,4 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			return;
 		}		
 	}
-
 }
