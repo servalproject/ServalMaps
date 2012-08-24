@@ -115,6 +115,106 @@ public class TimeUtils {
 	}
 	
 	/**
+	 * format the given time into a more friendly format using the default time zone
+	 * 
+	 * @param time the time format
+	 * @return
+	 */
+	public static String formatDate(String time) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(time) == true) {
+			throw new IllegalArgumentException("the time parameter is required");
+		}
+		
+		return formatDate(Long.parseLong(time), TimeZone.getDefault().getID());	
+	}
+	
+	/**
+	 * format the given time into a more friendly format using the default time zone
+	 * 
+	 * @param time the time format
+	 * @return
+	 */
+	public static String formatDate(long time) {
+		
+		return formatDate(time, TimeZone.getDefault().getID());	
+	}
+	
+	/**
+	 * format the given time and timezone into a more human friendly format
+	 * 
+	 * @param time the time to format
+	 * @param timeZone the time zone associated with the time
+	 * @return
+	 */
+	public static String formatDateSimple(long time, String timeZone) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(timeZone) == true) {
+			throw new IllegalArgumentException("the timeZone parameter is required");
+		}
+		
+		// get a calendar instance to help with the formating of the date
+		Calendar mCalendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+		mCalendar.setTimeInMillis(time);
+		
+		SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM/yyyy");
+		
+		return mFormat.format(mCalendar.getTime());
+	}
+	
+	/**
+	 * format the given time and timezone into a more human friendly format
+	 * 
+	 * @param time the time to format
+	 * @param timeZone the time zone associated with the time
+	 * @return
+	 */
+	public static String formatDateSimple(String time, String timeZone) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(time) == true) {
+			throw new IllegalArgumentException("the time parameter is required");
+		}
+		
+		if(TextUtils.isEmpty(timeZone) == true) {
+			throw new IllegalArgumentException("the timeZone parameter is required");
+		}
+		
+		return formatDateSimple(Long.parseLong(time), timeZone);
+		
+	}
+	
+	/**
+	 * format the given time into a more friendly format using the default time zone
+	 * 
+	 * @param time the time format
+	 * @return
+	 */
+	public static String formatDateSimple(String time) {
+		
+		// check the parameters
+		if(TextUtils.isEmpty(time) == true) {
+			throw new IllegalArgumentException("the time parameter is required");
+		}
+		
+		return formatDateSimple(Long.parseLong(time), TimeZone.getDefault().getID());	
+	}
+	
+	/**
+	 * format the given time into a more friendly format using the default time zone
+	 * 
+	 * @param time the time format
+	 * @return
+	 */
+	public static String formatDateSimple(long time) {
+		
+		return formatDateSimple(time, TimeZone.getDefault().getID());	
+	}
+	
+	
+	/**
 	 * return today's date as a string
 	 */
 	public static String getTodayWithHour() {
