@@ -262,6 +262,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			mDownloadRequest.setAllowedOverRoaming(false);
 			mDownloadRequest.setTitle(getString(R.string.system_notification_title));
 			mDownloadRequest.setDescription(getString(R.string.system_download_description));
+			mDownloadRequest.setMimeType(getString(R.string.system_map_file_mime_type));
 			
 			mDownloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, getString(R.string.system_path_download_data) +  mFileName);
 			

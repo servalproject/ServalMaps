@@ -283,6 +283,7 @@
     
     <!-- system strings for the downloads -->
     <string name="system_download_description">Map Data Download</string>
+    <string name="system_map_file_mime_type">application/vnd.org.mapsforge.map</string>
     
     <!-- battery strings -->
     <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to conserve power.</string>
