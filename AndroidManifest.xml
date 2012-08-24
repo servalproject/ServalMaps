@@ -94,6 +94,7 @@
         <activity android:name=".StatsActivity"></activity>
         <activity android:name=".TagListActivity"></activity>
         <activity android:name=".download.MapMirrorActivity"></activity>
+        <activity android:name=".download.MapDownloadActivity"></activity>
         
         <!-- services -->
         <service 

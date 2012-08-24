@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.servalproject.maps.R;
 import org.servalproject.maps.utils.HttpUtils;
 
@@ -30,6 +31,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,13 +51,16 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
-	private final String  TAG = "DownloadMapMirrorActivity";
+	private final String  TAG = "MapMirrorActivity";
 	
 	private final int NO_NETWORK_DIALOG = 1;
 	private final int ERROR_IN_DOWNLOAD = 2;
+	private final int UNABLE_TO_USE_MIRROR = 3;
 	
-	// store reference to ourself to close activity if required
+	// store reference to ourself to gain access to activity methods in inner classes
 	private final MapMirrorActivity REFERENCE_TO_SELF = this;
+	
+	private static JSONArray sMapMirrorList = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -65,7 +70,6 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_mirror);
-		
 		
 		// check and see if a network connection is available
 		if(HttpUtils.isOnline(this) == false) {
@@ -83,8 +87,12 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 			return;
 		}
 		
-		// get the mirror list and update the ui
-		new DownloadMirrorList().execute(getString(R.string.system_url_map_mirrors));
+		if(sMapMirrorList == null) {
+			// get the mirror list and update the ui
+			new DownloadMirrorList().execute(getString(R.string.system_url_map_mirrors));
+		} else {
+			populateList(sMapMirrorList);
+		}
 	}
 	
 	/*
@@ -118,20 +126,7 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 			try {
 				JSONArray mirrorList = new JSONArray(result);
 				
-				// update the UI
-				TextView mSubHeading = (TextView) REFERENCE_TO_SELF.findViewById(R.id.map_mirror_ui_subheading);
-				mSubHeading.setText(R.string.map_mirror_ui_lbl_subheading_2);
-				mSubHeading = null;
-				
-				ProgressBar mProgressBar = (ProgressBar) REFERENCE_TO_SELF.findViewById(R.id.map_mirror_ui_progress_bar);
-				mProgressBar.setVisibility(View.GONE);
-				
-				ListView mListView = (ListView) REFERENCE_TO_SELF.getListView();
-				
-				MapMirrorAdapter mAdapter = new MapMirrorAdapter(REFERENCE_TO_SELF, mirrorList);
-				mListView.setAdapter(mAdapter);
-				
-				mListView.setVisibility(View.VISIBLE);	
+				REFERENCE_TO_SELF.populateList(mirrorList);
 				
 			} catch (JSONException e) {
 				Log.e(TAG, "unable to parse JSON", e);
@@ -141,6 +136,31 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 		}
 		
 	};
+	
+	/*
+	 * private method used to populate the list of mirrors
+	 */
+	private void populateList(JSONArray mirrorList) {
+		
+		// update the UI
+		TextView mSubHeading = (TextView) findViewById(R.id.map_mirror_ui_subheading);
+		mSubHeading.setText(R.string.map_mirror_ui_lbl_subheading_2);
+		mSubHeading = null;
+		
+		ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.map_mirror_ui_progress_bar);
+		mProgressBar.setVisibility(View.GONE);
+		
+		ListView mListView = (ListView) getListView();
+		
+		MapMirrorAdapter mAdapter = new MapMirrorAdapter(this, mirrorList);
+		mListView.setAdapter(mAdapter);
+		
+		mListView.setVisibility(View.VISIBLE);
+		mListView.setOnItemClickListener(this);
+
+		sMapMirrorList = mirrorList;
+		
+	}
 	
 	/*
 	 * callback method used to construct the required dialog
@@ -176,6 +196,17 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 			});
 			mDialog = mBuilder.create();
 			break;
+		case UNABLE_TO_USE_MIRROR:
+			mBuilder.setMessage(R.string.map_mirror_ui_dialog_unable_to_use_mirror)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					REFERENCE_TO_SELF.finish();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
 		default:
 			mDialog = null;
 		}
@@ -184,9 +215,48 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 		return mDialog;	
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
 	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		
+		// get the details of the mirror
+		JSONObject mItem = null;
+		try {
+			mItem = (JSONObject) sMapMirrorList.get(position);
+		} catch (JSONException e) {
+			showDialog(UNABLE_TO_USE_MIRROR);
+			Log.e(TAG, "mirror list item at position '" + position + "' could not be used");
+			return;
+		}
+		
+		// get the name and URL of the mirror
+		String mMirrorName = null;
+		try {
+			mMirrorName = mItem.getString("name");
+		} catch (JSONException e) {
+			showDialog(UNABLE_TO_USE_MIRROR);
+			Log.e(TAG, "mirror list item at position '" + position + "' missing name attribute");
+			return;
+		}
+		
+		String mMirrorUrl = null;
+		try {
+			mMirrorUrl = mItem.getString("url");
+		} catch (JSONException e) {
+			showDialog(UNABLE_TO_USE_MIRROR);
+			Log.e(TAG, "mirror list item at position '" + position + "' missing url attribute");
+			return;
+		}
+		
+		// build an intent
+		Intent mIntent = new Intent(this, org.servalproject.maps.download.MapDownloadActivity.class);
+		mIntent.putExtra("name", mMirrorName);
+		mIntent.putExtra("url", mMirrorUrl);
+		
+		// start the activity
+		startActivity(mIntent);
 	}
 }

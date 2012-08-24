@@ -177,9 +177,24 @@
     
     <string name="map_mirror_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
     <string name="map_mirror_ui_dialog_error_in_download">An error occured while downloading the list of mirrors, please try again later.</string>
+    <string name="map_mirror_ui_dialog_unable_to_use_mirror">Unable to use mirror at this time, please choose another or try again later.</string>
     
     <string name="map_mirror_ui_entry_desc_lbl">Description:</string>
     <string name="map_mirror_ui_entry_location_lbl">Location:</string>
+    
+    <!--  Download map data activity -->
+    <string name="map_download_ui_lbl_heading">Map Data Files</string>
+    <string name="map_download_ui_lbl_subheading">Using the \'%1$s\' mirror \n %2$s</string>
+    <string name="map_download_ui_lbl_subheading_part_a">Downloading list of files&#8230;</string>
+    <string name="map_download_ui_lbl_subheading_part_b">Select a map data file to download</string>
+    
+    <string name="map_download_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
+    <string name="map_download_ui_dialog_error_in_download">An error occured while downloading the list of map files, please try again later.</string>
+    
+    <string name="map_mirror_ui_entry_size_lbl">File Size:</string>
+    <string name="map_download_ui_entry_generated_lbl">File Date:</string>
+    <string name="map_download_ui_entry_bbox_lbl_top">Top Coordinates:</string>
+    <string name="map_download_ui_entry_bbox_lbl_bottom">Bottom Coordinates:</string>
     
     
     <!-- Map Menu UI -->
