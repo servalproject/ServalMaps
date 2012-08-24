@@ -192,10 +192,12 @@
     <string name="map_download_ui_dialog_error_in_download">An error occured while downloading the list of map files, please try again later.</string>
     <string name="map_download_ui_dialog_unable_to_use_mirror">Unable to download file at this time, please choose another or try again later.</string>
     
-    <string name="map_mirror_ui_entry_size_lbl">File Size:</string>
+    <string name="map_download_ui_entry_size_lbl">File Size:</string>
     <string name="map_download_ui_entry_generated_lbl">File Date:</string>
     <string name="map_download_ui_entry_bbox_lbl_top">Top Coordinates:</string>
     <string name="map_download_ui_entry_bbox_lbl_bottom">Bottom Coordinates:</string>
+    
+    <string name="map_download_ui_toast_download_started">Download of the \'%1$s\' file has been queued</string>
     
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>

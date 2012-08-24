@@ -39,7 +39,7 @@
              <TextView
 		        android:id="@+id/map_download_ui_entry_size_lbl"
 		        style="@style/smapsLabel" 
-		        android:text="@string/map_mirror_ui_entry_size_lbl"/>
+		        android:text="@string/map_download_ui_entry_size_lbl"/>
 		    
 		    <TextView
 		        android:id="@+id/map_mirror_ui_entry_size"

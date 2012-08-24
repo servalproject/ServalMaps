@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
@@ -270,6 +271,9 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			DownloadManager mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 			
 			mDownloadManager.enqueue(mDownloadRequest);
+			
+			// show a toast that the download has started
+			Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_started), mFileName), Toast.LENGTH_LONG).show();
 			
 		} catch (JSONException e) {
 			showDialog(UNABLE_TO_USE_FILE);
