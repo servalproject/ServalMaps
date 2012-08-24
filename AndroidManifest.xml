@@ -25,7 +25,7 @@
     android:versionCode="2"
     android:versionName="0.3.1" >
 
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="8"/>
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="10"/>
 
     <!-- uses features -->
     <uses-feature android:required="true" android:name="android.hardware.location.gps"/>
