@@ -47,6 +47,9 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
+/**
+ * activity used to start the download of a map data file
+ */
 public class MapDownloadActivity extends ListActivity implements OnItemClickListener {
 	
 	/*
@@ -269,12 +272,8 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			// make sure the downloads directory exists
 			File mDownloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 			
-			Log.v(TAG, mDownloadDirectory.getPath());
-			
 			mDownloadDirectory = new File(mDownloadDirectory.getPath() + getString(R.string.system_path_download_data) +  mFileName).getParentFile();
 		    mDownloadDirectory.mkdirs();
-		    
-		    Log.v(TAG, mDownloadDirectory.getPath());
 			
 			// setup the request
 			Request mDownloadRequest = new Request(Uri.parse(sMirrorUrl + mFileName));

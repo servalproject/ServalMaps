@@ -72,6 +72,7 @@ public class MapUtils {
 		
 		// populate the hashmap
 		mMetadata.put("date", TimeUtils.formatDate(mMapFileInfo.mapDate, TimeZone.getDefault().getID()));
+		mMetadata.put("short-date", TimeUtils.formatDateSimple(mMapFileInfo.mapDate, TimeZone.getDefault().getID()));
 		
 		mMetadata.put("min-latitude", Double.toString(
 				microDegreesToDegrees(

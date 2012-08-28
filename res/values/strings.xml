@@ -199,6 +199,24 @@
     
     <string name="map_download_ui_toast_download_started">Download of the \'%1$s\' file has been queued</string>
     
+    <!-- map import activity -->
+    <string name="map_import_ui_lbl_heading">Import Map Data File</string>
+    
+    <string name="map_import_file_name_lbl">File Name:</string>
+    <string name="map_import_file_size_lbl">File Size:</string>
+    <string name="map_import_file_date_lbl">File Date:</string>
+    <string name="map_import_ui_bbox_lbl_top">Top Coordinates:</string>
+    <string name="map_import_ui_bbox_lbl_bottom">Bottom Coordinates:</string>
+    
+    <string name="map_import_ui_btn_import">Import</string>
+    <string name="map_import_ui_btn_delete">Delete</string>
+    <string name="map_import_ui_btn_close">Close</string>
+    
+    <string name="map_import_ui_dialog_invalid_file">The map data file is invalid, do you want to delete it?</string>
+    <string name="map_import_ui_dialog_delete_file">Are you sure you want to delete the map data file?</string>
+    <string name="map_import_ui_dialog_overwrite_fail">Unable to remove the old map data file, the import has failed.</string>
+    <string name="map_import_ui_dialog_file_already_exists">A map data file with the same name already exists. Do you want to replace it?</string>
+    
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>
     <string name="menu_map_activity_add_poi">Add POI</string>
@@ -263,6 +281,8 @@
     <string name="system_path_map_data">/servalproject/maps/map-data/</string>
     <string name="system_path_binary_data">/servalproject/maps/meshms/</string>
     <string name="system_path_export_data">/servalproject/maps/export-data/</string>
+    
+    <!-- root of this path is the system specified download path -->
     <string name="system_path_download_data">/servalproject/maps/map-data/</string>
  
     <!-- permissions -->
@@ -286,6 +306,9 @@
     <!-- system strings for the downloads -->
     <string name="system_download_description">Map Data Download</string>
     <string name="system_map_file_mime_type">application/vnd.org.mapsforge.map</string>
+    
+    <!-- rhizome strings -->
+    <string name="rhizome_add_file_failed_toast">Adding data to Rhizome failed, data is not being shared on the network. Reinstall Serval Maps after reinstalling Serval Mesh.</string>
     
     <!-- battery strings -->
     <string name="system_battery_status_low">Your battery charge is low. Serval Maps has stopped using GPS in an effort to conserve power.</string>

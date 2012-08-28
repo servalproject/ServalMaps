@@ -95,6 +95,7 @@
         <activity android:name=".TagListActivity"></activity>
         <activity android:name=".download.MapMirrorActivity"></activity>
         <activity android:name=".download.MapDownloadActivity"></activity>
+        <activity android:name=".download.MapImportActivity"></activity>
         
         <!-- services -->
         <service 
@@ -119,12 +120,25 @@
             android:readPermission="org.servalproject.maps.provider.READ_ITEMS">
         </provider>
         
-        <receiver android:name=".rhizome.RhizomeBroadcastReceiver" android:permission="org.servalproject.rhizome.RECEIVE_FILE">
+        <!-- rhizome related broadcast receiver -->
+        <receiver 
+            android:name=".rhizome.RhizomeBroadcastReceiver" 
+            android:permission="org.servalproject.rhizome.RECEIVE_FILE">
             <intent-filter>
                 <action android:name="org.servalproject.rhizome.RECEIVE_FILE"/> 
                 <data android:scheme="content"/>
             </intent-filter>
         </receiver>
+        
+        <!-- map data download receiver -->
+        <receiver 
+            android:name=".download.DownloadCompleteReceiver"
+            android:permission="android.permission.SEND_DOWNLOAD_COMPLETED_INTENTS">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>

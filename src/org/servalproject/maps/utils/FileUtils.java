@@ -401,5 +401,32 @@ public class FileUtils {
 		String pre = (binary ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (binary ? "" : "i");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
 	}
+	
+	/**
+	 * move a file from one location to another
+	 * 
+	 * @param filePath full path to the file
+	 * @param destDir full path to the destination directory
+	 * @return true on success and false on failure
+	 */
+	public static boolean moveFileToDir(String filePath, String destDir) throws IOException{
+		
+		if(isFileReadable(filePath) == false) {
+			throw new IOException("unable to access the specified source file");
+		}
+		
+		if(isDirectoryWritable(destDir) == false) {
+			throw new IOException("unable to access the specified destination directory '" + destDir + "'");
+		}
+		
+		File mSourceFile = new File(filePath);
+		
+		if(isFileReadable(destDir + mSourceFile.getName())) {
+			throw new IOException("destination file already exists");
+		}
+		
+		return mSourceFile.renameTo(new File(destDir + mSourceFile.getName()));
+		
+	}
 
 }
