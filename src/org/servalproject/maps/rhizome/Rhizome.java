@@ -20,10 +20,14 @@
 package org.servalproject.maps.rhizome;
 
 import java.io.File;
+
+import org.servalproject.maps.R;
 import org.servalproject.maps.utils.FileUtils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
 
 
 /**
@@ -34,7 +38,10 @@ public class Rhizome {
 	/*
 	 * class level constants
 	 */
-	//private static final String TAG = "Rhizome";
+	private static final String TAG = "Rhizome";
+	
+	private static final int MIN_TIME_DELAY = 30000;
+	private static long sLastErrorShown = 0;
 
 	/**
 	 * add a file to the Rhizome repository
@@ -66,7 +73,21 @@ public class Rhizome {
 		
 		// ask rhizome to save the new manifest here
 		mIntent.putExtra("save_manifest", mManifestFile.getAbsolutePath());
-		context.getApplicationContext().startService(mIntent);
+		
+		// ensure a lack of permission doesn't crash the app
+		try {
+			context.getApplicationContext().startService(mIntent);
+		} catch (SecurityException e) {
+			Log.e(TAG, "security exception thrown when trying to add file to rhizome", e);
+			
+			// make sure we don't spam the user too much
+			if((sLastErrorShown + MIN_TIME_DELAY) < System.currentTimeMillis()) {
+				Toast.makeText(context.getApplicationContext(), R.string.rhizome_add_file_failed_toast, Toast.LENGTH_LONG).show();
+				sLastErrorShown = System.currentTimeMillis();
+			}
+			
+			return;
+		}
 		
 	}
 	

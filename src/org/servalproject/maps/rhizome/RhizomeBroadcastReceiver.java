@@ -86,6 +86,12 @@ public class RhizomeBroadcastReceiver extends BroadcastReceiver {
 		String[] mFileParts = mFileName.split("-");
 	
 		String mPhoneNumber = mServalMaps.getPhoneNumber();
+		
+		if(mPhoneNumber == null) {
+			Log.w(TAG, "phone number was null from the application object, aborting.");
+			return;
+		}
+		
 		mPhoneNumber = mPhoneNumber.replace(" ", "");
 		mPhoneNumber = mPhoneNumber.replace("-", "");
 		
