@@ -197,7 +197,8 @@
     <string name="map_download_ui_entry_bbox_lbl_top">Top Coordinates:</string>
     <string name="map_download_ui_entry_bbox_lbl_bottom">Bottom Coordinates:</string>
     
-    <string name="map_download_ui_toast_download_started">Download of the \'%1$s\' file has been queued</string>
+    <string name="map_download_ui_toast_download_started">Download of the \'%1$s\' file has been queued download</string>
+    <string name="map_download_ui_toast_download_already_queued">The \'%1$s\' file has already been queued for download</string>
     
     <!-- map import activity -->
     <string name="map_import_ui_lbl_heading">Import Map Data File</string>
@@ -216,6 +217,27 @@
     <string name="map_import_ui_dialog_delete_file">Are you sure you want to delete the map data file?</string>
     <string name="map_import_ui_dialog_overwrite_fail">Unable to remove the old map data file, the import has failed.</string>
     <string name="map_import_ui_dialog_file_already_exists">A map data file with the same name already exists. Do you want to replace it?</string>
+    <string name="map_import_ui_dialog_success">The map data file has been imported successfully</string>
+    <string name="map_import_ui_dialog_fail">There was an error importing the map data file, please try again later</string>
+    
+    <!-- download notification activity -->
+    <string name="download_notification_ui_lbl_heading">Download Map Data File</string>
+    
+    <string name="download_notification_ui_url_lbl">Download Url:</string>
+    <string name="download_notification_ui_status_lbl">Download Status:</string>
+    
+    <string name="download_notification_ui_btn_import">Import File</string>
+    <string name="download_notification_ui_btn_cancel">Cancel Download</string>
+    <string name="download_notification_ui_btn_close">Close</string>
+    
+    <string name="download_notification_download_running">Download Underway</string>
+    <string name="download_notification_download_failed">Download Failed</string>
+    <string name="download_notification_download_paused">Download Paused</string>
+    <string name="download_notification_download_pending">Not Started Yet</string>
+    <string name="download_notification_download_available">Download Complete, File Available</string>
+    <string name="download_notification_download_unknown">Indeterminate State</string>
+    
+    <string name="download_notification_ui_dialog_cancel">Are you sure you wish to cancel this download?</string>
     
     <!-- Map Menu UI -->
     <string name="menu_map_activity_preferences">Settings</string>

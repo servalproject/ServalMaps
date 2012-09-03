@@ -130,7 +130,7 @@
             </intent-filter>
         </receiver>
         
-        <!-- map data download receiver -->
+        <!-- map data download receivers -->
         <receiver 
             android:name=".download.DownloadCompleteReceiver"
             android:permission="android.permission.SEND_DOWNLOAD_COMPLETED_INTENTS">
@@ -138,6 +138,13 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE"/>
             </intent-filter>
         </receiver>
+        
+        <receiver
+            android:name=".download.DownloadNotificationReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+            </intent-filter>
+         </receiver>
         
     </application>
 

@@ -32,6 +32,7 @@ import org.servalproject.maps.utils.FileUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
@@ -50,14 +51,14 @@ public class MapImportActivity extends Activity implements OnClickListener {
 	 * private class level constants
 	 */
 	//private final boolean V_LOG = true;
-	private final String  TAG = "MapImportActivity";
+	private static final String  TAG = "MapImportActivity";
 	
-	private final int INVALID_FILE_DIALOG = 1;
-	private final int DELETE_FILE_DIALOG = 2;
-	private final int OVERWRITE_FILE_FAIL_DIALOG = 3;
-	private final int FILE_ALREADY_EXISTS_DIALOG = 4;
-	private final int IMPORT_SUCCESS_DIALOG = 5;
-	private final int IMPORT_FAIL_DIALOG = 6;
+	private static final int INVALID_FILE_DIALOG = 1;
+	private static final int DELETE_FILE_DIALOG = 2;
+	private static final int OVERWRITE_FILE_FAIL_DIALOG = 3;
+	private static final int FILE_ALREADY_EXISTS_DIALOG = 4;
+	private static final int IMPORT_SUCCESS_DIALOG = 5;
+	private static final int IMPORT_FAIL_DIALOG = 6;
 	
 	// store reference to ourself to gain access to activity methods in inner classes
 	private final MapImportActivity REFERENCE_TO_SELF = this;
@@ -66,6 +67,8 @@ public class MapImportActivity extends Activity implements OnClickListener {
 	 * private class level variables
 	 */
 	private String fileUri;
+	private long downloadId;
+	private DownloadManager downloadManager;
 	
 	
 	/*
@@ -81,6 +84,10 @@ public class MapImportActivity extends Activity implements OnClickListener {
 		Bundle mBundle = this.getIntent().getExtras();
 		
 		fileUri = mBundle.getString("file-uri");
+		downloadId = mBundle.getLong("download-id");
+		
+		// get an instance of the download manager class
+		downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 		
 		// get the metadata about the file
 		File mMapDataFile = null;
@@ -185,6 +192,7 @@ public class MapImportActivity extends Activity implements OnClickListener {
 			try {
 				if(FileUtils.moveFileToDir(mMapDataFile.getPath(), mMapDataPath)) {
 					showDialog(IMPORT_SUCCESS_DIALOG);
+					downloadManager.remove(downloadId);
 				} else {
 					showDialog(IMPORT_FAIL_DIALOG);
 				}
@@ -264,6 +272,27 @@ public class MapImportActivity extends Activity implements OnClickListener {
 				}
 			})
 			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case IMPORT_SUCCESS_DIALOG:
+			mBuilder.setMessage(R.string.map_import_ui_dialog_success)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					REFERENCE_TO_SELF.finish();
+				}
+			});
+			mDialog = mBuilder.create();
+			break;
+		case IMPORT_FAIL_DIALOG:
+			mBuilder.setMessage(R.string.map_import_ui_dialog_fail)
+			.setCancelable(false)
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					dialog.cancel();
 				}

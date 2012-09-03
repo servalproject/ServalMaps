@@ -102,6 +102,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
 					Intent mIntent = new Intent(context, org.servalproject.maps.download.MapImportActivity.class);
 					mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // use this flag as we're starting an activity outside the context of an activity
 					mIntent.putExtra("file-uri", mLocalUri);
+					mIntent.putExtra("download-id", mDownloadId);
 					context.startActivity(mIntent);
 				}
 			}

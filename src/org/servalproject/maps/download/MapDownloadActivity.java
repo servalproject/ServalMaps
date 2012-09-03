@@ -21,6 +21,7 @@ package org.servalproject.maps.download;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,16 +63,16 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 	private final int ERROR_IN_DOWNLOAD = 2;
 	private final int UNABLE_TO_USE_FILE = 3;
 	
-	// store reference to ourself to gain access to activity methods in inner classes
-	private final MapDownloadActivity REFERENCE_TO_SELF = this;
-	
-	private static JSONArray sMapFileList = null;
-	
 	/*
 	 * class level variables
 	 */
 	private String mirrorName = null;
 	private static String sMirrorUrl = null;
+	private static JSONArray sMapFileList = null;
+	private ArrayList<Integer> downloadedIds = new ArrayList<Integer>();
+	
+	// store reference to ourself to gain access to activity methods in inner classes
+	private final MapDownloadActivity REFERENCE_TO_SELF = this;
 	
 	/*
 	 * (non-Javadoc)
@@ -269,6 +270,13 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			
 			String mFileName =  mItem.getString("fileName");
 			
+			// check to see if this file has been queued already
+			if(downloadedIds.contains(Integer.valueOf(position)) == true) {
+				// show a toast that the download is underway
+				Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_already_queued), mFileName), Toast.LENGTH_LONG).show();
+				return;
+			}
+			
 			// make sure the downloads directory exists
 			File mDownloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 			
@@ -292,6 +300,9 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			
 			// show a toast that the download has started
 			Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_started), mFileName), Toast.LENGTH_LONG).show();
+			
+			// add the id of this download
+			downloadedIds.add(Integer.valueOf(position));
 			
 		} catch (JSONException e) {
 			showDialog(UNABLE_TO_USE_FILE);
