@@ -34,7 +34,10 @@ import android.app.Dialog;
 import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -68,8 +71,13 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 	 */
 	private String mirrorName = null;
 	private static String sMirrorUrl = null;
-	private static JSONArray sMapFileList = null;
 	private ArrayList<Integer> downloadedIds = new ArrayList<Integer>();
+	
+	// private class level variables
+	private MapFileDatabase databaseHelper;
+	private SQLiteDatabase database;
+	private String sqlString;
+	private Cursor cursor;
 	
 	// store reference to ourself to gain access to activity methods in inner classes
 	private final MapDownloadActivity REFERENCE_TO_SELF = this;
@@ -83,18 +91,22 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_download);
 		
+		// get connection to the database
+		databaseHelper = new MapFileDatabase(this);
+		database = databaseHelper.getWritableDatabase();
+		
 		// get the name and url of this mirror
 		Bundle mBundle = this.getIntent().getExtras();
 		
 		mirrorName = mBundle.getString("name");
 		
-		// invalidate the cached data if this is a different mirror
-		if(sMirrorUrl == null) {
-			sMirrorUrl = mBundle.getString("url");
-		} if(sMirrorUrl != mBundle.getString("url")) {
-			sMirrorUrl = mBundle.getString("url");
-			sMapFileList = null;
-		}
+		sMirrorUrl = mBundle.getString("url");
+		
+		//TODO implement use of cache if same mirror
+		
+		// empty the database table
+		sqlString = "DELETE FROM " + MapFileTableContract.TABLE_NAME;
+		database.execSQL(sqlString);
 		
 		// check and see if a network connection is available
 		if(HttpUtils.isOnline(this) == false) {
@@ -122,16 +134,12 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 						)
 				);
 		
-		if(sMapFileList == null) {
-			// get the mirror list and update the ui
-			new DownloadFileList().execute(sMirrorUrl + "index.json");
-		} else {
-			populateList(sMapFileList);
-		}
+		// download the list of files
+		new DownloadFileList().execute(sMirrorUrl + "index.json");
 	}
 	
 	/*
-	 * private class to update the UI with the list of files on a separate thread
+	 * private class to download the list of files on a separate thread
 	 */
 	private class DownloadFileList extends AsyncTask<String, Void, String> {
 		
@@ -161,9 +169,9 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 			try {
 				
 				JSONObject mJsonObject = new JSONObject(result);
-				sMapFileList = mJsonObject.getJSONArray("mapFiles");
+				JSONArray mMapFileList = mJsonObject.getJSONArray("mapFiles");
 				
-				REFERENCE_TO_SELF.populateList(sMapFileList);
+				REFERENCE_TO_SELF.importList(mMapFileList);
 				
 			} catch (JSONException e) {
 				Log.e(TAG, "unable to parse JSON '" + e.getMessage() + "'", e);
@@ -177,7 +185,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 	/*
 	 * private method used to populate the list of mirrors
 	 */
-	private void populateList(JSONArray fileList) {
+	private void importList(JSONArray fileList) {
 		
 		// update the UI
 		TextView mTextView = (TextView) findViewById(R.id.map_download_ui_subheading);
@@ -192,9 +200,143 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 		ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.map_download_ui_progress_bar);
 		mProgressBar.setVisibility(View.GONE);
 		
+		mProgressBar = (ProgressBar) findViewById(R.id.map_download_ui_progress_bar_2);
+		mProgressBar.setMax(fileList.length());
+		mProgressBar.setVisibility(View.VISIBLE);
+		
+		ImportFileList importTask = new ImportFileList(database, mProgressBar);
+		importTask.execute(fileList);
+	}
+	
+	/*
+	 * private class to import the list of files on a separate thread
+	 */
+	private class ImportFileList extends AsyncTask<JSONArray, Integer, Integer> {
+		
+		/*
+		 * private class level variables
+		 */
+		private SQLiteDatabase database;
+		private ProgressBar progressBar;
+		private ContentValues contentValues;
+		private JSONObject object;
+		
+		public ImportFileList(SQLiteDatabase database, ProgressBar progressBar) {
+			this.database = database;
+			this.progressBar = progressBar;
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected Integer doInBackground(JSONArray... arrays) {
+			
+			JSONArray array = arrays[0];
+			
+			for(int i = 0; i < array.length(); i++) {
+				
+				try {
+					// get the object at this index
+					object = array.getJSONObject(i);
+					contentValues = new ContentValues();
+					
+					// populate the list of values
+					contentValues.put(MapFileTableContract.NAME, object.getString("fileName"));
+					contentValues.put(MapFileTableContract.SIZE, Long.valueOf(object.getString("fileSize")));
+					contentValues.put(MapFileTableContract.TIMESTAMP, Long.valueOf(object.getString("fileDate")));
+					contentValues.put(MapFileTableContract.MAX_LATITUDE, Double.valueOf(object.getString("maxLatitude")));
+					contentValues.put(MapFileTableContract.MAX_LONGITUDE, Double.valueOf(object.getString("maxLongitude")));
+					contentValues.put(MapFileTableContract.MIN_LATITUDE, Double.valueOf(object.getString("minLatitude")));
+					contentValues.put(MapFileTableContract.MIN_LONGITUDE, Double.valueOf(object.getString("minLongitude")));
+					
+					// insert the values
+					database.insert(MapFileTableContract.TABLE_NAME, null, contentValues);
+					
+				} catch (JSONException e) {
+					Log.e(TAG, "unable to process JSON object at index '" + i + "'");
+				}
+				
+				publishProgress(Integer.valueOf(i));
+			}
+			
+			return Integer.valueOf(array.length());
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+		 */
+		@Override
+	    protected void onProgressUpdate(Integer... progress) {
+			
+			// update the progress bar
+			progressBar.setProgress(progress[0]);
+			
+		}
+		
+		/*
+		 * (non-Javadoc)
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
+		@Override
+		protected void onPostExecute(Integer result) {
+			
+			// populate the list
+			REFERENCE_TO_SELF.populateList();
+			
+		}
+	};
+	
+	/*
+	 * private method used to populate the list of mirrors
+	 */
+	private void populateList() {
+		
+		// update the UI
+		TextView mTextView = (TextView) findViewById(R.id.map_download_ui_subheading);
+		mTextView.setText(
+				String.format(
+						getString(R.string.map_download_ui_lbl_subheading), 
+						mirrorName, 
+						getString(R.string.map_download_ui_lbl_subheading_part_c)
+						)
+				);
+		
+		ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.map_download_ui_progress_bar_2);
+		mProgressBar.setVisibility(View.GONE);
+		
+		// populate the list
 		ListView mListView = (ListView) getListView();
 		
-		MapDownloadAdapter mAdapter = new MapDownloadAdapter(this, fileList);
+		// define a list of views to populate
+		
+		int[] mTo = new int[5];
+		mTo[0] = R.id.map_download_ui_entry_title;
+		mTo[1] = R.id.map_mirror_ui_entry_size_txt;
+		mTo[2] = R.id.map_download_ui_entry_generated_txt;
+		mTo[3] = R.id.map_download_ui_entry_bbox_top_txt;
+		mTo[4] = R.id.map_download_ui_entry_bbox_bottom_txt;
+		
+		// get the data
+		cursor = database.query(
+				MapFileTableContract.TABLE_NAME, 
+				MapFileTableContract.ALL_COLUMNS,
+				null, 
+				null,
+				null, 
+				null,
+				MapFileTableContract.NAME);
+		
+		// setup the data adapter
+		MapDownloadAdapter mAdapter = new MapDownloadAdapter(
+				this,
+				R.layout.map_download_entry,
+				cursor,
+				MapFileTableContract.ALL_COLUMNS,
+				mTo);
+
 		mListView.setAdapter(mAdapter);
 		
 		mListView.setVisibility(View.VISIBLE);
@@ -262,52 +404,44 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		
-		// get the details of the file
-		JSONObject mItem = null;
+		// lookup the details of the file
+		cursor.moveToPosition(position);
 		
-		try {
-			mItem = (JSONObject) sMapFileList.get(position);
+		String mFileName = cursor.getString(cursor.getColumnIndex(MapFileTableContract.NAME));
+		
+		if(downloadedIds.contains(Integer.valueOf(position)) == true) {
 			
-			String mFileName =  mItem.getString("fileName");
-			
-			// check to see if this file has been queued already
-			if(downloadedIds.contains(Integer.valueOf(position)) == true) {
-				// show a toast that the download is underway
-				Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_already_queued), mFileName), Toast.LENGTH_LONG).show();
-				return;
-			}
-			
-			// make sure the downloads directory exists
-			File mDownloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-			
-			mDownloadDirectory = new File(mDownloadDirectory.getPath() + getString(R.string.system_path_download_data) +  mFileName).getParentFile();
-		    mDownloadDirectory.mkdirs();
-			
-			// setup the request
-			Request mDownloadRequest = new Request(Uri.parse(sMirrorUrl + mFileName));
-			mDownloadRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-			mDownloadRequest.setAllowedOverRoaming(false);
-			mDownloadRequest.setTitle(getString(R.string.system_notification_title));
-			mDownloadRequest.setDescription(getString(R.string.system_download_description));
-			mDownloadRequest.setMimeType(getString(R.string.system_map_file_mime_type));
-			
-			mDownloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, getString(R.string.system_path_download_data) +  mFileName);
-			
-			// enque the downloading of this file
-			DownloadManager mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-			
-			mDownloadManager.enqueue(mDownloadRequest);
-			
-			// show a toast that the download has started
-			Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_started), mFileName), Toast.LENGTH_LONG).show();
-			
-			// add the id of this download
-			downloadedIds.add(Integer.valueOf(position));
-			
-		} catch (JSONException e) {
-			showDialog(UNABLE_TO_USE_FILE);
-			Log.e(TAG, "mirror list item at position '" + position + "' could not be used");
+			// show a toast that the download is underway
+			Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_already_queued), mFileName), Toast.LENGTH_LONG).show();
 			return;
-		}		
+		}
+		
+			
+		// make sure the downloads directory exists
+		File mDownloadDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+		
+		mDownloadDirectory = new File(mDownloadDirectory.getPath() + getString(R.string.system_path_download_data) +  mFileName).getParentFile();
+	    mDownloadDirectory.mkdirs();
+		
+		// setup the request
+		Request mDownloadRequest = new Request(Uri.parse(sMirrorUrl + mFileName));
+		mDownloadRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
+		mDownloadRequest.setAllowedOverRoaming(false);
+		mDownloadRequest.setTitle(getString(R.string.system_notification_title));
+		mDownloadRequest.setDescription(getString(R.string.system_download_description));
+		mDownloadRequest.setMimeType(getString(R.string.system_map_file_mime_type));
+		
+		mDownloadRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, getString(R.string.system_path_download_data) +  mFileName);
+		
+		// enque the downloading of this file
+		DownloadManager mDownloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+		
+		mDownloadManager.enqueue(mDownloadRequest);
+		
+		// show a toast that the download has started
+		Toast.makeText(getApplicationContext(), String.format(getString(R.string.map_download_ui_toast_download_started), mFileName), Toast.LENGTH_LONG).show();
+		
+		// add the id of this download
+		downloadedIds.add(Integer.valueOf(position));			
 	}
 }

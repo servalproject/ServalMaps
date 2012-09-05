@@ -186,7 +186,8 @@
     <string name="map_download_ui_lbl_heading">Map Data Files</string>
     <string name="map_download_ui_lbl_subheading">Using the \'%1$s\' mirror \n %2$s</string>
     <string name="map_download_ui_lbl_subheading_part_a">Downloading list of files&#8230;</string>
-    <string name="map_download_ui_lbl_subheading_part_b">Select a map data file to download</string>
+    <string name="map_download_ui_lbl_subheading_part_b">Importing list of files</string>
+    <string name="map_download_ui_lbl_subheading_part_c">Select a map data file to download</string>
     
     <string name="map_download_ui_dialog_no_network">A valid connection to the internet is required before continuing. Please connect to the Internet and try again.</string>
     <string name="map_download_ui_dialog_error_in_download">An error occured while downloading the list of map files, please try again later.</string>
@@ -197,7 +198,7 @@
     <string name="map_download_ui_entry_bbox_lbl_top">Top Coordinates:</string>
     <string name="map_download_ui_entry_bbox_lbl_bottom">Bottom Coordinates:</string>
     
-    <string name="map_download_ui_toast_download_started">Download of the \'%1$s\' file has been queued download</string>
+    <string name="map_download_ui_toast_download_started">Download of the \'%1$s\' file has been queued</string>
     <string name="map_download_ui_toast_download_already_queued">The \'%1$s\' file has already been queued for download</string>
     
     <!-- map import activity -->
