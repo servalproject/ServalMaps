@@ -20,9 +20,13 @@
 package org.servalproject.maps.protobuf;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
+import org.servalproject.maps.provider.LocationsContract;
+import org.servalproject.maps.provider.MapItems;
 import org.servalproject.maps.provider.PointsOfInterestContract;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -79,11 +83,10 @@ public class PointsOfInterestWorker implements Runnable {
 			
 			try{
 				// prepare helper variables
-				ContentValues mNewValues = null;
-				Cursor mCursor = null;
 				PointOfInterestMessage.Message mMessage;
 				
 				long mLatestTimeStamp = -1;
+				ArrayList<ContentProviderOperation> operations=new ArrayList<ContentProviderOperation>();
 				
 				// loop through the data
 				while((mMessage = PointOfInterestMessage.Message.parseDelimitedFrom(mInputStream)) != null) {
@@ -97,7 +100,7 @@ public class PointsOfInterestWorker implements Runnable {
 						mSelectionArgs[0] = mMessage.getPhoneNumber();
 						String mOrderBy = PointsOfInterestContract.Table.TIMESTAMP + " DESC";
 						
-						mCursor = mContentResolver.query(
+						Cursor mCursor = mContentResolver.query(
 								PointsOfInterestContract.CONTENT_URI,
 								mProjection,
 								mSelection,
@@ -114,13 +117,12 @@ public class PointsOfInterestWorker implements Runnable {
 						}
 						
 						mCursor.close();
-						mCursor = null;
 					}
 					
 					if(mMessage.getTimestamp() > mLatestTimeStamp) {
 						
 						// add new record
-						mNewValues = new ContentValues();
+						ContentValues mNewValues = new ContentValues();
 						
 						mNewValues.put(PointsOfInterestContract.Table.PHONE_NUMBER, mMessage.getPhoneNumber());
 						mNewValues.put(PointsOfInterestContract.Table.SUBSCRIBER_ID, mMessage.getSubsciberId());
@@ -135,39 +137,18 @@ public class PointsOfInterestWorker implements Runnable {
 						mNewValues.put(PointsOfInterestContract.Table.ACCURACY, mMessage.getAccuracy());
 						mNewValues.put(PointsOfInterestContract.Table.ALTITUDE, mMessage.getAltitude());
 						
-						try {
-							mContentResolver.insert(
-									PointsOfInterestContract.CONTENT_URI,
-									mNewValues);
-						} catch (SQLiteException e) {
-							Log.e(TAG, "an error occurred while inserting data", e);
-							break;
-						}
-						
-						if(V_LOG) {
-							Log.v(TAG, "added new POI record to the database");
-						}
-					} else {
-//						if(V_LOG) {
-//							Log.v(TAG, "skipped an existing POI record");
-//						}
-						
-						// don't hit the CPU so hard so sleep for a bit
-						try {
-							Thread.sleep(sSleepTime);
-						}catch (InterruptedException e) {
-							Log.w(TAG, "thread was interrupted unexepectantly");
-						}
+						ContentProviderOperation o=
+							ContentProviderOperation
+							.newInsert(PointsOfInterestContract.CONTENT_URI)
+							.withValues(mNewValues).build();
+						operations.add(o);
 					}
-						
-					mNewValues = null;
-					
-					// don't hit the database so hard with writes to sleep for a bit
-					try {
-						Thread.sleep(sSleepTime);
-					}catch (InterruptedException e) {
-						Log.w(TAG, "thread was interrupted unexepectantly");
-					}
+				}
+				
+				if (operations.size()>0){
+					mContentResolver.applyBatch(MapItems.AUTHORITY, operations);
+					if(V_LOG)
+						Log.v(TAG, "Added "+operations.size()+" new POI record(s) to the database");
 				}
 			}finally{
 				mInputStream.close();

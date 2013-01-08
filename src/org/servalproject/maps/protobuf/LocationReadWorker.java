@@ -20,9 +20,12 @@
 package org.servalproject.maps.protobuf;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import org.servalproject.maps.provider.LocationsContract;
+import org.servalproject.maps.provider.MapItems;
 
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -87,12 +90,11 @@ public class LocationReadWorker implements Runnable {
 			
 			try{
 				// prepare helper variables
-				ContentValues mNewValues = null;
-				Cursor mCursor = null;
 				LocationMessage.Message mMessage;
 				
 				long mLatestTimeStamp = -1;
-			
+				ArrayList<ContentProviderOperation> operations=new ArrayList<ContentProviderOperation>();
+				
 				// loop through the data
 				while((mMessage = LocationMessage.Message.parseDelimitedFrom(mInputStream)) != null) {
 					
@@ -105,7 +107,7 @@ public class LocationReadWorker implements Runnable {
 						mSelectionArgs[0] = mMessage.getPhoneNumber();
 						String mOrderBy = LocationsContract.Table.TIMESTAMP + " DESC";
 						
-						mCursor = mContentResolver.query(
+						Cursor mCursor = mContentResolver.query(
 								LocationsContract.CONTENT_URI,
 								mProjection,
 								mSelection,
@@ -121,13 +123,12 @@ public class LocationReadWorker implements Runnable {
 						}
 						
 						mCursor.close();
-						mCursor = null;
 					}
 					
 					if(mMessage.getTimestamp() > mLatestTimeStamp) {
 						
 						// add new record
-						mNewValues = new ContentValues();
+						ContentValues mNewValues = new ContentValues();
 						
 						mNewValues.put(LocationsContract.Table.PHONE_NUMBER, mMessage.getPhoneNumber());
 						mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, mMessage.getSubsciberId());
@@ -138,39 +139,19 @@ public class LocationReadWorker implements Runnable {
 						mNewValues.put(LocationsContract.Table.ALTITUDE, mMessage.getAltitude());
 						mNewValues.put(LocationsContract.Table.ACCURACY, mMessage.getAccuracy());
 						
-						try {
-							mContentResolver.insert(
-									LocationsContract.CONTENT_URI,
-									mNewValues);
-						} catch (SQLiteException e) {
-							Log.e(TAG, "an error occurred while inserting data", e);
-							break;
-						}
+						ContentProviderOperation o=
+							ContentProviderOperation
+							.newInsert(LocationsContract.CONTENT_URI)
+							.withValues(mNewValues).build();
+						operations.add(o);
 						
-						if(V_LOG) {
-							Log.v(TAG, "added new location record to the database");
-						}
-					} else {
-//						if(V_LOG) {
-//							Log.v(TAG, "skipped an existing location record");
-//						}
-						
-						// don't hit the CPU so hard so sleep for a bit
-						try {
-							Thread.sleep(sSleepTime);
-						}catch (InterruptedException e) {
-							Log.w(TAG, "thread was interrupted unexepectantly");
-						}
 					}
-					
-					mNewValues = null;
-					
-					// don't hit the database so hard with writes to sleep for a bit
-					try {
-						Thread.sleep(sSleepTime);
-					}catch (InterruptedException e) {
-						Log.w(TAG, "thread was interrupted unexepectantly");
-					}
+				}
+				
+				if (operations.size()>0){
+					mContentResolver.applyBatch(MapItems.AUTHORITY, operations);
+					if(V_LOG)
+						Log.v(TAG, "Added "+operations.size()+" new location record(s) to the database");
 				}
 			}finally{
 				mInputStream.close();
