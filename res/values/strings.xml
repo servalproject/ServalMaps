@@ -87,7 +87,7 @@
     <string name="poi_info_ui_btn_photo">View Photo</string>
     <string name="poi_info_ui_ui_btn_back">Back to Map</string>
 
-    <string name="poi_into_toast_no_photo">Unable to show the photo as this time</string>
+    <string name="poi_into_toast_no_photo">Unable to show the photo at this time</string>
     
     <!-- POI List Activity -->
     <string name="poi_list_ui_lbl_heading">List of POIs</string>
