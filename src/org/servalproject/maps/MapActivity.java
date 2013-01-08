@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import org.mapsforge.android.maps.overlay.ArrayWayOverlay;
 import org.mapsforge.core.GeoPoint;
+import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.overlay.OverlayWay;
@@ -134,18 +135,19 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		mapView.setClickable(true);
 		mapView.setBuiltInZoomControls(true);
 		
-		if(mMapFileName != null) {
-			
-			if(FileUtils.isFileReadable(mMapFileName) == false) {
-				String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
-				mMapDataPath += getString(R.string.system_path_map_data);
-				mMapFileName = mMapDataPath + mMapFileName;
-				if (FileUtils.isFileReadable(mMapFileName))
-					mapView.setMapFile(new File(mMapFileName));
-			} else {
-				mapView.setMapFile(new File(mMapFileName));
+		if(mMapFileName != null && !FileUtils.isFileReadable(mMapFileName)) {
+			mMapFileName = Environment.getExternalStorageDirectory().getPath()
+				+ getString(R.string.system_path_map_data) + mMapFileName;
+		}
+		
+		if(mMapFileName != null && FileUtils.isFileReadable(mMapFileName)) {
+			mapView.setMapFile(new File(mMapFileName));
+			MapFileInfo info = mapView.getMapDatabase().getMapFileInfo();
+			if (info.startPosition==null || !info.boundingBox.contains(info.startPosition)){
+				mapView.getController().setCenter(info.mapCenter);
 			}
-			
+			if (info.startZoomLevel == null || info.startZoomLevel > 9)
+				mapView.getController().setZoom(6);
 		}
 		
 		setContentView(mapView);
@@ -343,6 +345,8 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			if(mLocation != null) {
 				GeoPoint mGeoPoint = new GeoPoint(mLocation.getLatitude(), mLocation.getLongitude());
 				mapView.getController().setCenter(mGeoPoint);
+				if (mapView.getMapPosition().getZoomLevel() < 10)
+					mapView.getController().setZoom(12);
 			} else {
 				Toast.makeText(getApplicationContext(), R.string.map_ui_toast_location_unavailable, Toast.LENGTH_LONG).show();
 			}
