@@ -355,20 +355,16 @@ public class NewPoiActivity extends Activity implements OnClickListener{
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+	    	
 	        if (resultCode == Activity.RESULT_OK) {
-	            // Image captured and saved to fileUri specified in the Intent
-	        	// check on the returned intent data
-	        	if(data == null) {
-	        		// no return intent so check the uri that was supplied
-	        		if(FileUtils.isFileReadable(photoFileUri.getPath()) == false) {
-	        			photoFileUri = null;
-	        		} 
-	        	} else {
-	        		if(FileUtils.isFileReadable(data.getData().getPath()) == false) {
-	        			photoFileUri = null;
-	        		} 
-	        	}
-	        	
+	        	// the camera application may tell us where the image was saved
+		    	if (data!=null && data.getData()!=null && FileUtils.isFileReadable(data.getData().getPath()))
+		    		photoFileUri = data.getData();
+		    	
+		    	// otherwise, check that there is a file where we told it to save
+		    	else if(photoFileUri!=null && !FileUtils.isFileReadable(photoFileUri.getPath()))
+		    		photoFileUri = null;
+		    	
 	        	if(photoFileUri == null) {
 	        		// no photo available, inform user
 	        		Toast.makeText(this, R.string.new_poi_toast_no_photo, Toast.LENGTH_SHORT).show();
