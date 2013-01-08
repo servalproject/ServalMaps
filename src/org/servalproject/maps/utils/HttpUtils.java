@@ -223,15 +223,12 @@ public class HttpUtils {
 			urlConnection.setDoOutput(true);
 			urlConnection.connect();
 		} catch (MalformedURLException e) {
-			Log.e(TAG, "invalid url", e);
-			throw new IOException("Unable to connect to the given url");
-		} catch (IOException e) {
-			Log.e(TAG, "unbable to connect to the given url", e);
-			throw new IOException("Unable to connect to the given url");
+			IOException x = new IOException("Unable to connect to "+url);
+			x.initCause(e);
+			throw e;
 		}
 		
 		// get the data
-		try {
 		InputStream mInputStream = urlConnection.getInputStream();
 		BufferedReader mBufferedReader = new BufferedReader(new InputStreamReader(mInputStream));
 		StringBuilder mBuilder = new StringBuilder();
@@ -243,10 +240,6 @@ public class HttpUtils {
 		}
 		
 		return mBuilder.toString();
-		} catch (IOException e) {
-			Log.e(TAG, "unable to download the data", e);
-			throw new IOException("unable to download the required data");
-		}
 	}
 	
 	/**

@@ -65,7 +65,7 @@ public class MapDataService extends IntentService {
 		String mMapDataPath = Environment.getExternalStorageDirectory().getPath();
 		mMapDataPath += getString(R.string.system_path_map_data);
 		
-		String[] mMapDataFiles = new String[0];
+		String[] mMapDataFiles = null;
 		Intent mBroadcastIntent = new Intent("org.servalproject.maps.MAP_DATA_LIST");
 		
 		// check to see if the path is available
@@ -77,11 +77,10 @@ public class MapDataService extends IntentService {
 				mMapDataFiles = FileUtils.listFilesInDir(mMapDataPath, EXTENSIONS);
 			} catch (IOException e) {
 				Log.e(TAG, "unable to get a list of files", e);
-				mMapDataFiles = new String[0];
 			}
 		}
 		
-		if(mMapDataFiles.length > 0) {
+		if(mMapDataFiles!=null && mMapDataFiles.length > 0) {
 			// build a list of parcelables
 			ArrayList<MapDataInfo> mMapDataInfoList = new ArrayList<MapDataInfo>();
 			

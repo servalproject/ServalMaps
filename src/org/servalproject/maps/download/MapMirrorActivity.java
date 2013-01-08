@@ -109,7 +109,7 @@ public class MapMirrorActivity extends ListActivity implements OnItemClickListen
 				return mMirrorData;
 				
 			} catch (IOException e) {
-				Log.e(TAG, "unable to download data '" + e.toString() + "'");
+				Log.e(TAG, "unable to download data '" + e.getMessage() + "'", e);
 				return null;
 			}
 			

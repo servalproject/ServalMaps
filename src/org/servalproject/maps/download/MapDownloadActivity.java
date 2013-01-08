@@ -152,7 +152,7 @@ public class MapDownloadActivity extends ListActivity implements OnItemClickList
 				return mFileData;
 				
 			} catch (IOException e) {
-				Log.e(TAG, "unable to download data '" + e.toString() + "'");
+				Log.e(TAG, "Unable to download data '" + e.getMessage() + "'", e);
 				return null;
 			}
 			
