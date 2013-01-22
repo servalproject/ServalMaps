@@ -72,14 +72,7 @@ public class PointsOfInterestWorker implements Runnable {
 			
 			ContentResolver mContentResolver = context.getContentResolver();
 			
-			InputStream mInputStream = null;
-			
-			try {
-				mInputStream = mContentResolver.openInputStream(dataFile);
-			} catch (java.io.FileNotFoundException e) {
-				Log.e(TAG, "unable to open file for reading: " + dataFile);
-				return;
-			}
+			InputStream mInputStream = mContentResolver.openInputStream(dataFile);
 			
 			try{
 				// prepare helper variables

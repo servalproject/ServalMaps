@@ -44,6 +44,7 @@ import android.database.Cursor;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -211,9 +212,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
      	meshPhoneNumber = mApplication.getPhoneNumber();
      	mApplication = null;
      	
-		// update the map without delay
-		updateHandler.post(updateMapTask);
-		
 		if(V_LOG) {
 			Log.v(TAG, "activity created");
 		}
@@ -380,9 +378,6 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		// stop the core service
 		stopService(coreServiceIntent);
 		
-		// stop the handle / runnable looping action
-		updateHandler.removeCallbacks(updateMapTask);
-		
 		super.onDestroy();
 		
 		if(V_LOG) {
@@ -413,6 +408,18 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		// restart the updating of the map
 		updateHandler.post(updateMapTask);
 		
+		final ServalMaps app = (ServalMaps)this.getApplication();
+		long lastRefresh = app.getLastRefresh();
+		if (System.currentTimeMillis() - lastRefresh > 60*60*1000){
+			// once every hour, do a full refresh of all mapping contents from rhizome.
+			new AsyncTask<Void,Void,Void>(){
+				@Override
+				protected Void doInBackground(Void... arg0) {
+					app.fullRefresh();
+					return null;
+				}
+			}.execute();
+		}
 		super.onResume();
 	}
 	

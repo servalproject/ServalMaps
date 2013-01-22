@@ -20,6 +20,7 @@
 package org.servalproject.maps;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.servalproject.maps.location.LocationCollector;
@@ -157,19 +158,16 @@ public class PoiInfoActivity extends Activity implements OnClickListener {
 		switch(v.getId()) {
 		case R.id.poi_info_ui_btn_photo:
 			// show the photo to the user
-			File mFile = new File(MediaUtils.getMediaStore() + photoName);
-			
-			try {
-				if(FileUtils.isFileReadable(mFile.getCanonicalPath()) == true) {
-					// show the file
-					Intent mIntent = new Intent();
-					mIntent.setAction(android.content.Intent.ACTION_VIEW);
-					mIntent.setDataAndType(Uri.fromFile(mFile), "image/jpg");
-					startActivity(mIntent);
-				} else {
-					// report an error
-					Toast.makeText(getApplicationContext(), R.string.poi_into_toast_no_photo, Toast.LENGTH_LONG).show();
-				}
+			try{
+				ServalMaps app = (ServalMaps)this.getApplication();
+				Uri uri = app.findPhoto(photoName);
+				if (uri==null)
+					throw new FileNotFoundException("Unable to locate file "+photoName);
+				
+				Intent mIntent = new Intent();
+				mIntent.setAction(android.content.Intent.ACTION_VIEW);
+				mIntent.setDataAndType(uri, "image/jpg");
+				startActivity(mIntent);
 			} catch (IOException e) {
 				// report an error
 				Toast.makeText(getApplicationContext(), R.string.poi_into_toast_no_photo, Toast.LENGTH_LONG).show();

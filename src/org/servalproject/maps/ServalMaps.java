@@ -19,7 +19,20 @@
  */
 package org.servalproject.maps;
 
+import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.servalproject.maps.protobuf.BinaryFileContract;
+import org.servalproject.maps.protobuf.LocationReadWorker;
+import org.servalproject.maps.protobuf.PointsOfInterestWorker;
+
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -29,10 +42,14 @@ import android.util.Log;
  */
 public class ServalMaps extends Application {
 	
-	/*
-	 * class level constants
-	 */
 	public final String TAG = "ServalMaps";
+	private static final int THREAD_POOL_SIZE = 2;
+	private final boolean V_LOG = true;
+	
+	// keep a static weak reference to a thread pool
+	// this should allow it to shutdown when there are no files being processed
+	private static volatile WeakReference<ExecutorService> executorRef;
+	
 	
 	/**
 	 * an enum representing the different states of the Serval Mesh software
@@ -136,4 +153,132 @@ public class ServalMaps extends Application {
 		
 	}
 	
+	public void setLastRefresh(long value){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		Editor e = prefs.edit();
+		e.putLong("last_refresh", value);
+		e.commit();
+	}
+	
+	public long getLastRefresh(){
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		return prefs.getLong("last_refresh", -1);
+	}
+	
+	public static String binToHex(byte[] buff, int offset, int len) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < len; i++) {
+			sb.append(Character.forDigit(((buff[i + offset]) & 0xf0) >> 4, 16));
+			sb.append(Character.forDigit((buff[i + offset]) & 0x0f, 16));
+		}
+		return sb.toString().toUpperCase();
+	}
+	
+	public Uri findPhoto(String name){
+		Uri manifests = Uri.parse("content://org.servalproject.files/");
+		Cursor c = this.getContentResolver().query(manifests, null, null, new String[]{"file",name}, null);
+		if (c==null)
+			return null;
+		try{
+			int id_col = c.getColumnIndexOrThrow("id");
+			if (!c.moveToNext())
+				return null;
+			byte []id=c.getBlob(id_col);
+			String id_str = binToHex(id,0,id.length);
+			return Uri.parse("content://org.servalproject.files/"+id_str);
+		}finally{
+			c.close();
+		}
+	}
+	
+	private void refreshType(String type){
+		Uri manifests = Uri.parse("content://org.servalproject.files/");
+		Cursor c = this.getContentResolver().query(manifests, null, null, new String[]{"file","%"+type}, null);
+		if (c==null)
+			return;
+		try{
+			int name_col=c.getColumnIndexOrThrow("name");
+			int id_col = c.getColumnIndexOrThrow("id");
+			while(c.moveToNext()){
+				String name=c.getString(name_col);
+				byte []id=c.getBlob(id_col);
+				String id_str = binToHex(id,0,id.length);
+				Uri uri = Uri.parse("content://org.servalproject.files/"+id_str);
+				processFile(name, uri);
+			}
+		}finally{
+			c.close();
+		}
+	}
+	
+	public void fullRefresh(){
+		refreshType(BinaryFileContract.LOCATION_EXT);
+		refreshType(BinaryFileContract.POI_EXT);
+	}
+	
+	public void processFile(String fileName, Uri uri){
+		// see if the file is one we want to work with
+		
+		if (fileName==null){
+			Log.e(TAG, "filename is null");
+			return;
+		}
+		
+		String[] mFileParts = fileName.split("-");
+		String mPhoneNumber = this.getPhoneNumber();
+		
+		if(mPhoneNumber == null) {
+			Log.w(TAG, "phone number was null from the application object, aborting.");
+			return;
+		}
+		
+		mPhoneNumber = mPhoneNumber.replace(" ", "");
+		mPhoneNumber = mPhoneNumber.replace("-", "");
+		
+		if(mFileParts[0].equals(this.getPhoneNumber())) { 
+			// skip files that we sent
+			return;
+		}
+		
+		// is this a location binary data file?
+		if(fileName.endsWith(BinaryFileContract.LOCATION_EXT)) {
+			if(V_LOG) {
+				Log.v(TAG, "Queing location reader for "+fileName);
+			}
+			
+			// queue the reading of the file
+			queue(new LocationReadWorker(this, uri));
+			return;
+		}
+		
+		// is this is a POI binary data file?
+		if(fileName.endsWith(BinaryFileContract.POI_EXT) == true) {
+			if(V_LOG) {
+				Log.v(TAG, "Queing POI reader for "+fileName);
+			}
+			
+			// queue the reading of the file
+			queue(new PointsOfInterestWorker(this, uri));
+			return;
+		}
+	}
+	
+	/*
+	 * queue the runnable that will process the file
+	 */
+	private void queue(Runnable r){
+		ExecutorService mExecutorService = null;
+		
+		// use existing service if 
+		if (executorRef != null){
+			mExecutorService = executorRef.get();
+		}
+		
+		if (mExecutorService == null){
+			mExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+			executorRef = new WeakReference<ExecutorService>(mExecutorService);
+		}
+		
+		mExecutorService.submit(r);
+	}
 }
