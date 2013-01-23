@@ -97,15 +97,6 @@
         <activity android:name=".download.MapDownloadActivity"></activity>
         <activity android:name=".download.MapImportActivity"></activity>
         
-        <!-- services -->
-        <service 
-            android:name=".services.MapDataService"
-            android:permission="org.servalproject.maps.MAP_DATA" 
-            android:exported="true">
-            <intent-filter>
-                <action android:name="org.servalproject.maps.MAP_DATA" />
-            </intent-filter>
-        </service>
         <service android:name=".services.CoreService"></service>
         
         <!-- provider -->

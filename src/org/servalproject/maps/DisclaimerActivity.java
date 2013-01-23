@@ -21,11 +21,18 @@
 package org.servalproject.maps;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import org.mapsforge.map.reader.MapDatabase;
+import org.mapsforge.map.reader.header.FileOpenResult;
 import org.servalproject.maps.batphone.PhoneNumberReceiver;
 import org.servalproject.maps.batphone.StateReceiver;
-import org.servalproject.maps.parcelables.MapDataInfo;
+import org.servalproject.maps.mapsforge.MapUtils;
+import org.servalproject.maps.utils.FileUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,8 +44,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,8 +78,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	 */
 	private PhoneNumberReceiver phoneNumberReceiver = null;
 	private StateReceiver batphoneStateReceiver = null;
-	private int mapFileCount = 0;
-	private ArrayList<MapDataInfo> mapDataInfoList = null;
+	private List<File> mapDataInfoList = new ArrayList<File>();
 	private CharSequence[] mFileNames = null;
 
 	/*
@@ -116,7 +124,35 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			mButton.setEnabled(false);
 		}
 	}
-
+	
+	private void findMaps(){
+		try{
+			File mapFolder = new File(Environment.getExternalStorageDirectory(), 
+					getString(R.string.system_path_map_data));
+			
+			File files[] = mapFolder.listFiles(new FilenameFilter(){
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".map");
+				}
+			});
+			
+			Arrays.sort(files);
+			MapDatabase mapDatabase = new MapDatabase();
+			
+			mapDataInfoList.clear();
+			
+			for (int i=0;i<files.length;i++){
+				if (mapDatabase.openFile(files[i])==FileOpenResult.SUCCESS){
+					mapDataInfoList.add(files[i]);
+					mapDatabase.closeFile();
+				}
+			}
+			
+		}catch (Exception e){
+			Log.e("Mapping", e.getMessage(),e);
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
@@ -137,6 +173,33 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 				// show the appropriate dialog
 				showDialog(SERVAL_NOT_RUNNING_DIALOG);
 			}else {
+				
+				new AsyncTask<Void,Void,Void>(){
+					@Override
+					protected Void doInBackground(Void... arg0) {
+						findMaps();
+						// TODO Auto-generated method stub
+						return null;
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						super.onPostExecute(result);
+						// show the appropriate dialog
+						switch(mapDataInfoList.size()){
+						case 0:
+							showDialog(NO_FILES_DIALOG);
+							return;
+						case 1:
+							// show the map activity
+							showMapActivity(mapDataInfoList.get(0).getAbsolutePath());
+							return;
+						default:
+							// show the map file chooser
+							showDialog(MANY_FILES_DIALOG);
+						}
+					}
+				}.execute();
 				// check for files and go to the map activity
 				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
 				startService(mIntent);
@@ -224,17 +287,12 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	// private method to register the various broadcast receivers
 	private void registerReceivers() {
 
-		// register the map data receiver
-		IntentFilter mBroadcastFilter = new IntentFilter();
-		mBroadcastFilter.addAction("org.servalproject.maps.MAP_DATA_LIST");
-		registerReceiver(MapDataReceiver, mBroadcastFilter);
-
 		// register for the sticky broadcast from the main Serval Software
 		if(phoneNumberReceiver == null) {
 			phoneNumberReceiver = new PhoneNumberReceiver(getApplication());
 		}
 
-		mBroadcastFilter = new IntentFilter();
+		IntentFilter mBroadcastFilter = new IntentFilter();
 		mBroadcastFilter.addAction("org.servalproject.SET_PRIMARY");
 		registerReceiver(phoneNumberReceiver, mBroadcastFilter);
 		
@@ -256,8 +314,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	// private method to unregister the various broadcast receivers
 	private void unRegisterReceivers() {
 
-		unregisterReceiver(MapDataReceiver);
-
 		if(phoneNumberReceiver != null) {
 			unregisterReceiver(phoneNumberReceiver);
 		}
@@ -266,35 +322,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			unregisterReceiver(batphoneStateReceiver);
 		}
 	}
-
-	/*
-	 * a broadcast receiver to get the information from the activity
-	 */
-	private BroadcastReceiver MapDataReceiver = new BroadcastReceiver() {
-
-		// listen for the appropriate broadcast
-		@Override
-		public void onReceive(Context context, Intent intent) {
-
-			// get the list of files
-			mapFileCount = intent.getIntExtra("count", 0);
-			if(mapFileCount > 0){
-				mapDataInfoList = intent.getParcelableArrayListExtra("files");
-			}
-
-			// show the appropriate dialog
-			if(mapFileCount == 0) {
-				showDialog(NO_FILES_DIALOG);
-			} else if(mapFileCount == 1) {
-				// show the map activity
-				MapDataInfo mInfo = mapDataInfoList.get(0);
-				showMapActivity(mInfo.getFileName());
-			} else {
-				// show the map file chooser
-				showDialog(MANY_FILES_DIALOG);
-			}
-		}
-	};
 
 	/*
 	 * dialog related methods
@@ -346,17 +373,9 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			
 		case MANY_FILES_DIALOG:
 			
-			if(mapDataInfoList != null) {
-				mFileNames = new CharSequence[mapDataInfoList.size()];
-				File mFile = null;
-	
-				for(int i = 0; i < mapDataInfoList.size(); i++) {
-					MapDataInfo mInfo = mapDataInfoList.get(i);
-					mFile = new File(mInfo.getFileName());
-					mFileNames[i] = mFile.getName();
-				}
-			} else {
-				mFileNames = new CharSequence[0];
+			mFileNames = new CharSequence[mapDataInfoList.size()];
+			for(int i = 0; i < mapDataInfoList.size(); i++) {
+				mFileNames[i]=mapDataInfoList.get(i).getName();
 			}
 			
 			// do not show an empty list of files
@@ -369,12 +388,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 					}
 				});
 				mDialog = mBuilder.create();
-			} else {
-				// retry getting a list of files
-				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
-				startService(mIntent);
-				
-				mDialog = null;
 			}
 			break;
 		case NO_SERVAL_DIALOG:
