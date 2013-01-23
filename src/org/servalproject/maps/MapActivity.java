@@ -455,83 +455,89 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// resolve the content uri
 			ContentResolver mContentResolver = getApplicationContext().getContentResolver();
 			
-			// get the location marker content
-			Cursor mCursor = mContentResolver.query(LocationsContract.LATEST_CONTENT_URI, null, null, null, null);
-			
 			// store the list of items
 			ArrayList<OverlayItem> mItems = new ArrayList<OverlayItem>();
 			
+			// get the location marker content
+			Cursor mCursor = mContentResolver.query(LocationsContract.LATEST_CONTENT_URI, null, null, null, null);
 			if(mCursor == null) {
 				Log.i(TAG, "a null cursor was returned when looking up location info");
 				return;
 			}
 			
-			if(V_LOG) {
-				Log.v(TAG, "rows in location info cursor: " + mCursor.getCount());
-			}
-			
-			if(mCursor.getCount() > 0) {
-				// process the location records
-				GeoPoint mGeoPoint;
-				String mPhoneNumber;
-				OverlayItem mOverlayItem;
-				long mLocationAge;
-				long mCompareTime = System.currentTimeMillis() - locationMaxAge;
+			try{
 				
-				while(mCursor.moveToNext()) {
-					
-					// check on the age of the info if required
-					if(locationMaxAge != -1000) {
-						mLocationAge = mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP));
-						
-						if(mLocationAge < mCompareTime) {
-							// skip this record
-							continue;
-						}
-					}
-
-					// get the basic information
-					mPhoneNumber = mCursor.getString(mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER));
-					
-					// get the geographic coordinates
-					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
-					
-					// determine what type of marker to create
-					if(mPhoneNumber.equals(meshPhoneNumber) == true) {
-						// this is a self marker
-						mOverlayItem = new OverlayItem(mGeoPoint, null, null, selfLocationMarker);
-						mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
-						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(LocationsContract.Table._ID)));
-						
-						// recenter the map if required
-						if(keepCentered) {
-							mapView.getController().setCenter(mGeoPoint);
-							if(V_LOG) {
-								Log.v(TAG, "map was recentered");
-							}
-						}
-					} else {
-						// this is a peer marker
-						mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
-						mOverlayItem.setType(OverlayItems.PEER_LOCATION_ITEM);
-						mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(LocationsContract.Table._ID)));
-
-					}
-					
-					mItems.add(mOverlayItem);
-					
+				if(V_LOG) {
+					Log.v(TAG, "rows in location info cursor: " + mCursor.getCount());
 				}
 				
+				if(mCursor.getCount() > 0) {
+					// process the location records
+					GeoPoint mGeoPoint;
+					String mPhoneNumber;
+					OverlayItem mOverlayItem;
+					long mLocationAge;
+					long mCompareTime = System.currentTimeMillis() - locationMaxAge;
+					
+					int age_col=mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP);
+					int ph_col=mCursor.getColumnIndex(LocationsContract.Table.PHONE_NUMBER);
+					int lat_col=mCursor.getColumnIndex(LocationsContract.Table.LATITUDE);
+					int lng_col=mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE);
+					int id_col=mCursor.getColumnIndex(LocationsContract.Table._ID);
+					
+					while(mCursor.moveToNext()) {
+						
+						// check on the age of the info if required
+						if(locationMaxAge != -1000) {
+							mLocationAge = mCursor.getLong(age_col);
+							
+							if(mLocationAge < mCompareTime) {
+								// skip this record
+								continue;
+							}
+						}
+	
+						// get the basic information
+						mPhoneNumber = mCursor.getString(ph_col);
+						
+						// get the geographic coordinates
+						mGeoPoint = new GeoPoint(mCursor.getDouble(lat_col), mCursor.getDouble(lng_col));
+						
+						// determine what type of marker to create
+						if(mPhoneNumber.equals(meshPhoneNumber) == true) {
+							// this is a self marker
+							mOverlayItem = new OverlayItem(mGeoPoint, null, null, selfLocationMarker);
+							mOverlayItem.setType(OverlayItems.SELF_LOCATION_ITEM);
+							mOverlayItem.setRecordId(mCursor.getInt(id_col));
+							
+							// recenter the map if required
+							if(keepCentered) {
+								mapView.getController().setCenter(mGeoPoint);
+								if(V_LOG) {
+									Log.v(TAG, "map was recentered");
+								}
+							}
+						} else {
+							// this is a peer marker
+							mOverlayItem = new OverlayItem(mGeoPoint, null, null, peerLocationMarker);
+							mOverlayItem.setType(OverlayItems.PEER_LOCATION_ITEM);
+							mOverlayItem.setRecordId(mCursor.getInt(id_col));
+	
+						}
+						
+						mItems.add(mOverlayItem);
+					}
+				}
+			}finally{
+				// play nice and tidy up
+				mCursor.close();
 			}
-			
-			// play nice and tidy up
-			mCursor.close();
-			
 			// get the POI content
-			String[] mProjection = new String[3];
-			mProjection[0] = PointsOfInterestContract.Table._ID;
-			mProjection[1] = PointsOfInterestContract.Table.LATITUDE;
-			mProjection[2] = PointsOfInterestContract.Table.LONGITUDE;
+			String[] mProjection = new String[]{
+				PointsOfInterestContract.Table._ID,
+				PointsOfInterestContract.Table.LATITUDE,
+				PointsOfInterestContract.Table.LONGITUDE
+			};
 			
 			// determine if we need to restrict the list of POIs
 			String mSelection = null;
@@ -540,8 +546,9 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 			// restrict the poi content returned if required
 			if(poiMaxAge != -1000) {
 				mSelection = PointsOfInterestContract.Table.TIMESTAMP + " > ? ";
-				mSelectionArgs = new String[1];
-				mSelectionArgs[0] = Long.toString(System.currentTimeMillis() - poiMaxAge);
+				mSelectionArgs = new String[]{
+					Long.toString(System.currentTimeMillis() - poiMaxAge)
+				};
 			}
 			
 			mCursor = mContentResolver.query(
@@ -556,55 +563,60 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 				return;
 			}
 			
-			if(V_LOG) {
-				Log.v(TAG, "rows in POI cursor: " + mCursor.getCount());
-			}
-			
-			// process the list of poi records
-			if(mCursor.getCount() > 0) {
-				// process the location records
-				GeoPoint mGeoPoint;
-				OverlayItem mOverlayItem;
-				
-				while(mCursor.moveToNext()) {
-					
-					// get the geographic coordinates
-					mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE)));
-					
-					mOverlayItem = new OverlayItem(mGeoPoint, null, null, poiLocationMarker);
-					mOverlayItem.setType(OverlayItems.POI_ITEM);
-					mOverlayItem.setRecordId(mCursor.getInt(mCursor.getColumnIndex(PointsOfInterestContract.Table._ID)));
-					
-					mItems.add(mOverlayItem);
+			try{
+				if(V_LOG) {
+					Log.v(TAG, "rows in POI cursor: " + mCursor.getCount());
 				}
+				
+				// process the list of poi records
+				if(mCursor.getCount() > 0) {
+					// process the location records
+					GeoPoint mGeoPoint;
+					OverlayItem mOverlayItem;
+					int lat_col=mCursor.getColumnIndex(PointsOfInterestContract.Table.LATITUDE);
+					int lng_col=mCursor.getColumnIndex(PointsOfInterestContract.Table.LONGITUDE);
+					int id_col=mCursor.getColumnIndex(PointsOfInterestContract.Table._ID);
+					while(mCursor.moveToNext()) {
+						
+						// get the geographic coordinates
+						mGeoPoint = new GeoPoint(mCursor.getDouble(lat_col), mCursor.getDouble(lng_col));
+						
+						mOverlayItem = new OverlayItem(mGeoPoint, null, null, poiLocationMarker);
+						mOverlayItem.setType(OverlayItems.POI_ITEM);
+						mOverlayItem.setRecordId(mCursor.getInt(id_col));
+						
+						mItems.add(mOverlayItem);
+					}
+				}
+			}finally{
+				// play nice and tidy up
+				mCursor.close();
 			}
-			
-			// play nice and tidy up
-			mCursor.close();
 			
 			// build the gps track overlay if required
 			if(arrayWayOverlay != null) {
 				
 				// determine which fields to return
-				mProjection = new String[2];
-				mProjection[0] = LocationsContract.Table.LATITUDE;
-				mProjection[1] = LocationsContract.Table.LONGITUDE;
+				mProjection = new String[]{
+						LocationsContract.Table.LATITUDE,
+						LocationsContract.Table.LONGITUDE
+				};
 				
 				// check if we need to take into account the age of the information
 				if(locationMaxAge != -1000) {
-				
 					mSelection = LocationsContract.Table.PHONE_NUMBER + " = ? AND "
 							+ LocationsContract.Table.TIMESTAMP + " > ?";
 					
-					mSelectionArgs = new String[2];
-					mSelectionArgs[0] = meshPhoneNumber;
-					mSelectionArgs[1] = Long.toString(System.currentTimeMillis() - locationMaxAge);
+					mSelectionArgs = new String[]{
+							meshPhoneNumber,
+							Long.toString(System.currentTimeMillis() - locationMaxAge)
+					};
 				} else {
-					
 					mSelection = LocationsContract.Table.PHONE_NUMBER + " = ?";
 					
-					mSelectionArgs = new String[1];
-					mSelectionArgs[0] = meshPhoneNumber;
+					mSelectionArgs = new String[]{
+							meshPhoneNumber
+					};
 				}
 				
 				// get the data
@@ -615,33 +627,32 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 						mSelectionArgs,
 						LocationsContract.Table.TIMESTAMP);
 				
-				if(mCursor.getCount() > 0) {
-					if(V_LOG) {
-						Log.v(TAG, "gps track contains: '" + mCursor.getCount() + "' points");
+				try{
+					if(mCursor.getCount() > 0) {
+						if(V_LOG) {
+							Log.v(TAG, "gps track contains: '" + mCursor.getCount() + "' points");
+						}
+						
+						// declare array to hold our list of points
+						GeoPoint[][] mWayPoints = new GeoPoint[1][mCursor.getCount()];
+						int mCount = 0;
+						int lat_col=mCursor.getColumnIndex(LocationsContract.Table.LATITUDE);
+						int lng_col=mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE);
+						// populate the array
+						while(mCursor.moveToNext()) {
+							mWayPoints[0][mCount++] = new GeoPoint(mCursor.getDouble(lat_col), mCursor.getDouble(lng_col));
+						}
+						
+						OverlayWay mOverlayWay = new OverlayWay(mWayPoints, null, null);
+						
+						// update the overlay
+						arrayWayOverlay.clear();
+						arrayWayOverlay.addWay(mOverlayWay);
 					}
-					
-					// declare array to hold our list of points
-					GeoPoint[][] mWayPoints = new GeoPoint[1][mCursor.getCount()];
-					int mCount = 0;
-					GeoPoint mGeoPoint;
-					
-					// populate the array
-					while(mCursor.moveToNext()) {
-						mGeoPoint = new GeoPoint(mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LATITUDE)), mCursor.getDouble(mCursor.getColumnIndex(LocationsContract.Table.LONGITUDE)));
-						mWayPoints[0][mCount] = mGeoPoint;
-						mCount++;
-					}
-					
+				}finally{
 					// play nice and tidy up
 					mCursor.close();
-					
-					OverlayWay mOverlayWay = new OverlayWay(mWayPoints, null, null);
-					
-					// update the overlay
-					arrayWayOverlay.clear();
-					arrayWayOverlay.addWay(mOverlayWay);
 				}
-				
 			}
 			
 			// update and redraw the overlay

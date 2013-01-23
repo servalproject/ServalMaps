@@ -22,7 +22,6 @@ package org.servalproject.maps.protobuf;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.servalproject.maps.provider.LocationsContract;
 import org.servalproject.maps.provider.MapItems;
 import org.servalproject.maps.provider.PointsOfInterestContract;
 
@@ -31,7 +30,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.util.Log;
 
@@ -42,8 +40,6 @@ public class PointsOfInterestWorker implements Runnable {
 	 */
 	private final String TAG = "PointsOfInterestWorker";
 	private final boolean V_LOG = true;
-	
-	private final long sSleepTime = 300;
 	
 	/*
 	 * private class level variables

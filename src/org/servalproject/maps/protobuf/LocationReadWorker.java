@@ -30,7 +30,6 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.util.Log;
 
@@ -46,8 +45,6 @@ public class LocationReadWorker implements Runnable {
 	 */
 	private final String TAG = "LocationReadWorker";
 	private final boolean V_LOG = true;
-	
-	private final long sSleepTime = 300;
 	
 	/*
 	 * private class level variables
@@ -106,16 +103,15 @@ public class LocationReadWorker implements Runnable {
 								mSelection,
 								mSelectionArgs,
 								mOrderBy);
-						
-						if(mCursor.getCount() != 0) {
-							mCursor.moveToFirst();
-							
-							mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP));
-						} else {
-							mLatestTimeStamp = 0;
+						try{
+							if (mCursor.moveToNext()){
+								mLatestTimeStamp = mCursor.getLong(mCursor.getColumnIndex(LocationsContract.Table.TIMESTAMP));
+							} else {
+								mLatestTimeStamp = 0;
+							}
+						}finally{
+							mCursor.close();
 						}
-						
-						mCursor.close();
 					}
 					
 					if(mMessage.getTimestamp() > mLatestTimeStamp) {

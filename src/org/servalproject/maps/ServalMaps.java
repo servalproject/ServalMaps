@@ -214,6 +214,7 @@ public class ServalMaps extends Application {
 	public void fullRefresh(){
 		refreshType(BinaryFileContract.LOCATION_EXT);
 		refreshType(BinaryFileContract.POI_EXT);
+		this.setLastRefresh(System.currentTimeMillis());
 	}
 	
 	public void processFile(String fileName, Uri uri){
