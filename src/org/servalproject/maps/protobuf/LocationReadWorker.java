@@ -19,6 +19,7 @@
  */
 package org.servalproject.maps.protobuf;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -77,24 +78,31 @@ public class LocationReadWorker implements Runnable {
 			ContentResolver mContentResolver = context.getContentResolver();
 			
 			InputStream mInputStream = mContentResolver.openInputStream(dataFile);
-			
+			if (mInputStream==null)
+				throw new FileNotFoundException();
 			try{
 				// prepare helper variables
-				LocationMessage.Message mMessage;
+				LocationMessage.Message message, lastMessage=null;
 				
 				long mLatestTimeStamp = -1;
 				ArrayList<ContentProviderOperation> operations=new ArrayList<ContentProviderOperation>();
 				
+				/*
+				 * Skip to the last message in the file and only insert that.
+				 */
+				
 				// loop through the data
-				while((mMessage = LocationMessage.Message.parseDelimitedFrom(mInputStream)) != null) {
-					
+				while((message = LocationMessage.Message.parseDelimitedFrom(mInputStream)) != null) {
+					lastMessage=message;
+				}
+				
+				if (lastMessage!=null){
 					// check to see if we need to get the latest time stamp
 					if(mLatestTimeStamp == -1) {
 						
 						String[] mProjection = {LocationsContract.Table.TIMESTAMP};
-						String mSelection = LocationsContract.Table.PHONE_NUMBER + " = ?";
-						String[] mSelectionArgs = new String[1];
-						mSelectionArgs[0] = mMessage.getPhoneNumber();
+						String mSelection = LocationsContract.Table.SRC_FILE + " = ?";
+						String[] mSelectionArgs = new String[]{dataFile.getLastPathSegment()};
 						String mOrderBy = LocationsContract.Table.TIMESTAMP + " DESC";
 						
 						Cursor mCursor = mContentResolver.query(
@@ -114,19 +122,20 @@ public class LocationReadWorker implements Runnable {
 						}
 					}
 					
-					if(mMessage.getTimestamp() > mLatestTimeStamp) {
+					if(lastMessage.getTimestamp() > mLatestTimeStamp) {
 						
 						// add new record
 						ContentValues mNewValues = new ContentValues();
 						
-						mNewValues.put(LocationsContract.Table.PHONE_NUMBER, mMessage.getPhoneNumber());
-						mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, mMessage.getSubsciberId());
-						mNewValues.put(LocationsContract.Table.LATITUDE, mMessage.getLatitude());
-						mNewValues.put(LocationsContract.Table.LONGITUDE, mMessage.getLongitude());
-						mNewValues.put(LocationsContract.Table.TIMESTAMP, mMessage.getTimestamp());
-						mNewValues.put(LocationsContract.Table.TIMEZONE, mMessage.getTimeZone());
-						mNewValues.put(LocationsContract.Table.ALTITUDE, mMessage.getAltitude());
-						mNewValues.put(LocationsContract.Table.ACCURACY, mMessage.getAccuracy());
+						mNewValues.put(LocationsContract.Table.PHONE_NUMBER, lastMessage.getPhoneNumber());
+						mNewValues.put(LocationsContract.Table.SUBSCRIBER_ID, lastMessage.getSubsciberId());
+						mNewValues.put(LocationsContract.Table.LATITUDE, lastMessage.getLatitude());
+						mNewValues.put(LocationsContract.Table.LONGITUDE, lastMessage.getLongitude());
+						mNewValues.put(LocationsContract.Table.TIMESTAMP, lastMessage.getTimestamp());
+						mNewValues.put(LocationsContract.Table.TIMEZONE, lastMessage.getTimeZone());
+						mNewValues.put(LocationsContract.Table.ALTITUDE, lastMessage.getAltitude());
+						mNewValues.put(LocationsContract.Table.ACCURACY, lastMessage.getAccuracy());
+						mNewValues.put(LocationsContract.Table.SRC_FILE, dataFile.getLastPathSegment());
 						
 						ContentProviderOperation o=
 							ContentProviderOperation
@@ -135,12 +144,12 @@ public class LocationReadWorker implements Runnable {
 						operations.add(o);
 						
 					}
-				}
-				
-				if (operations.size()>0){
-					mContentResolver.applyBatch(MapItems.AUTHORITY, operations);
-					if(V_LOG)
-						Log.v(TAG, "Added "+operations.size()+" new location record(s) to the database");
+					
+					if (operations.size()>0){
+						mContentResolver.applyBatch(MapItems.AUTHORITY, operations);
+						if(V_LOG)
+							Log.v(TAG, "Added "+operations.size()+" new location record(s) to the database");
+					}
 				}
 			}finally{
 				mInputStream.close();

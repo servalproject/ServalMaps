@@ -36,7 +36,8 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ LocationsContract.Table.ALTITUDE + " REAL, "
 			+ LocationsContract.Table.ACCURACY + " REAL, "
 			+ LocationsContract.Table.TIMESTAMP + " INTEGER, "
-			+ LocationsContract.Table.TIMEZONE + " TEXT)";
+			+ LocationsContract.Table.TIMEZONE + " TEXT, "
+			+ LocationsContract.Table.SRC_FILE + " TEXT)";
 	
 	private final String POI_CREATE = "CREATE TABLE " +
 			PointsOfInterestContract.CONTENT_URI_PATH + " ("
@@ -52,16 +53,17 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 			+ PointsOfInterestContract.Table.TITLE + " TEXT, "
 			+ PointsOfInterestContract.Table.DESCRIPTION + " TEXT, "
 			+ PointsOfInterestContract.Table.PHOTO + " TEXT, "
-			+ PointsOfInterestContract.Table.TAGS + " TEXT)";
+			+ PointsOfInterestContract.Table.TAGS + " TEXT, "
+			+ PointsOfInterestContract.Table.SRC_FILE + " TEXT)";
 	
 	private final String LOCATIONS_INDEX = "CREATE INDEX locations_timestamp_desc ON "
 			+ LocationsContract.CONTENT_URI_PATH + " ("
 			+ LocationsContract.Table.PHONE_NUMBER + " ASC, "
 			+ LocationsContract.Table.TIMESTAMP + " DESC)";
 	
-	private final String POI_INDEX = "CREATE INDEX poi_timestamp_desc ON "
+	private final String POI_INDEX = "CREATE INDEX poi_file_timestamp_desc ON "
 			+ PointsOfInterestContract.CONTENT_URI_PATH + " ("
-			+ PointsOfInterestContract.Table.PHONE_NUMBER + " ASC, "
+			+ PointsOfInterestContract.Table.SRC_FILE + " ASC, "
 			+ PointsOfInterestContract.Table.TIMESTAMP + " DESC)";
 	
 	private final String TAGS_CREATE = "CREATE TABLE " +

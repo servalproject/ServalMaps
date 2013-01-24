@@ -22,28 +22,26 @@ package org.servalproject.maps;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
-import org.servalproject.maps.batphone.PhoneNumberReceiver;
 import org.servalproject.maps.batphone.StateReceiver;
-import org.servalproject.maps.mapsforge.MapUtils;
 import org.servalproject.maps.utils.FileUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -76,7 +74,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	/*
 	 * private class level variables
 	 */
-	private PhoneNumberReceiver phoneNumberReceiver = null;
 	private StateReceiver batphoneStateReceiver = null;
 	private List<File> mapDataInfoList = new ArrayList<File>();
 	private CharSequence[] mFileNames = null;
@@ -129,6 +126,38 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 		try{
 			File mapFolder = new File(Environment.getExternalStorageDirectory(), 
 					getString(R.string.system_path_map_data));
+			mapFolder.mkdirs();
+			
+			ContentResolver resolver = this.getContentResolver();
+			Uri manifests = Uri.parse("content://org.servalproject.files/");
+			Cursor c = resolver.query(manifests, null, null, new String[]{"file","%.map"}, null);
+			
+			if (c==null)
+				return;
+			try{
+				int name_col=c.getColumnIndexOrThrow("name");
+				int id_col = c.getColumnIndexOrThrow("id");
+				while(c.moveToNext()){
+					try{
+						String name=c.getString(name_col);
+						
+						File dest = new File(mapFolder, name);
+						if (!dest.exists()){
+							Log.v("FindMaps", "Copying "+name);
+							byte []id=c.getBlob(id_col);
+							String id_str = ServalMaps.binToHex(id,0,id.length);
+							Uri uri = Uri.parse("content://org.servalproject.files/"+id_str);
+							
+							FileUtils.copyFile(resolver.openInputStream(uri), dest);
+						}
+					}catch (Exception e){
+						Log.e("FileMaps",e.getMessage(),e);
+					}
+				}
+			}finally{
+				c.close();
+			}
+			Log.v("FindMaps","Building available map list");
 			
 			File files[] = mapFolder.listFiles(new FilenameFilter(){
 				@Override
@@ -153,6 +182,36 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			Log.e("Mapping", e.getMessage(),e);
 		}
 	}
+	
+	private void startOpenMap(){
+		new AsyncTask<Void,Void,Void>(){
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				findMaps();
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+				// show the appropriate dialog
+				switch(mapDataInfoList.size()){
+				case 0:
+					showDialog(NO_FILES_DIALOG);
+					return;
+				case 1:
+					// show the map activity
+					showMapActivity(mapDataInfoList.get(0).getAbsolutePath());
+					return;
+				default:
+					// show the map file chooser
+					showDialog(MANY_FILES_DIALOG);
+				}
+			}
+		}.execute();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see android.view.View.OnClickListener#onClick(android.view.View)
@@ -173,36 +232,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 				// show the appropriate dialog
 				showDialog(SERVAL_NOT_RUNNING_DIALOG);
 			}else {
-				
-				new AsyncTask<Void,Void,Void>(){
-					@Override
-					protected Void doInBackground(Void... arg0) {
-						findMaps();
-						// TODO Auto-generated method stub
-						return null;
-					}
-
-					@Override
-					protected void onPostExecute(Void result) {
-						super.onPostExecute(result);
-						// show the appropriate dialog
-						switch(mapDataInfoList.size()){
-						case 0:
-							showDialog(NO_FILES_DIALOG);
-							return;
-						case 1:
-							// show the map activity
-							showMapActivity(mapDataInfoList.get(0).getAbsolutePath());
-							return;
-						default:
-							// show the map file chooser
-							showDialog(MANY_FILES_DIALOG);
-						}
-					}
-				}.execute();
-				// check for files and go to the map activity
-				Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
-				startService(mIntent);
+				startOpenMap();
 			}
 		}
 	}
@@ -287,20 +317,11 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 	// private method to register the various broadcast receivers
 	private void registerReceivers() {
 
-		// register for the sticky broadcast from the main Serval Software
-		if(phoneNumberReceiver == null) {
-			phoneNumberReceiver = new PhoneNumberReceiver(getApplication());
-		}
-
-		IntentFilter mBroadcastFilter = new IntentFilter();
-		mBroadcastFilter.addAction("org.servalproject.SET_PRIMARY");
-		registerReceiver(phoneNumberReceiver, mBroadcastFilter);
-		
 		if(batphoneStateReceiver == null) {
 			batphoneStateReceiver = new StateReceiver();
 		}
 		
-		mBroadcastFilter = new IntentFilter();
+		IntentFilter mBroadcastFilter = new IntentFilter();
 		mBroadcastFilter.addAction("org.servalproject.ACTION_STATE_CHECK_UPDATE");
 		mBroadcastFilter.addAction("org.servalproject.ACTION_STATE");
 		registerReceiver(batphoneStateReceiver, mBroadcastFilter);
@@ -313,11 +334,6 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 
 	// private method to unregister the various broadcast receivers
 	private void unRegisterReceivers() {
-
-		if(phoneNumberReceiver != null) {
-			unregisterReceiver(phoneNumberReceiver);
-		}
-		
 		if(batphoneStateReceiver != null) {
 			unregisterReceiver(batphoneStateReceiver);
 		}
@@ -405,9 +421,7 @@ public class DisclaimerActivity extends Activity implements OnClickListener {
 			.setCancelable(false)
 			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					// check for files and go to the map activity
-					Intent mIntent = new Intent("org.servalproject.maps.MAP_DATA");
-					startService(mIntent);
+					startOpenMap();
 				}
 			})
 			.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {

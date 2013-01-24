@@ -411,6 +411,7 @@ public class MapActivity extends org.mapsforge.android.maps.MapActivity {
 		final ServalMaps app = (ServalMaps)this.getApplication();
 		long lastRefresh = app.getLastRefresh();
 		if (System.currentTimeMillis() - lastRefresh > 60*60*1000){
+			Log.v(TAG,"Performing full refresh ("+(System.currentTimeMillis() - lastRefresh)+")");
 			// once every hour, do a full refresh of all mapping contents from rhizome.
 			new AsyncTask<Void,Void,Void>(){
 				@Override

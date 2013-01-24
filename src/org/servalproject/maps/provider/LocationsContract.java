@@ -115,9 +115,10 @@ public class LocationsContract {
 		 */
 		public static final String TIMEZONE = "timezone";
 		
+		public static final String SRC_FILE = "src_file";
 		/**
 		 * a list of all of the columns
 		 */
-		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, ALTITUDE, ACCURACY, TIMESTAMP, TIMEZONE};
+		public static final String[] COLUMNS = {_ID, PHONE_NUMBER, SUBSCRIBER_ID, LATITUDE, LONGITUDE, ALTITUDE, ACCURACY, TIMESTAMP, TIMEZONE, SRC_FILE};
 	}
 }

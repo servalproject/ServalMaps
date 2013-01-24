@@ -19,6 +19,7 @@
  */
 package org.servalproject.maps;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,10 +29,13 @@ import org.servalproject.maps.protobuf.LocationReadWorker;
 import org.servalproject.maps.protobuf.PointsOfInterestWorker;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -71,37 +75,7 @@ public class ServalMaps extends Application {
 	private String phoneNumber = null;
 	private String sid = null;
 	private BatphoneState state = null;
-	
-	/**
-	 * set the phone number as reported by Serval
-	 * 
-	 * @param value the new mobile phone value
-	 * @throws IllegalArgumentException if the value is not valid
-	 */
-	public void setPhoneNumber(String value) throws IllegalArgumentException {
 
-		if(TextUtils.isEmpty(value) == true) {
-			throw new IllegalArgumentException("the value parameter must not be empty");
-		}
-
-		phoneNumber = value;
-	}
-
-	/**
-	 * set the sid as reported by Serval 
-	 * 
-	 * @param value the new sid value
-	 * @throws IllegalArgumentException if the value is not valid
-	 */
-	public void setSid(String value) throws IllegalArgumentException {
-
-		if(TextUtils.isEmpty(value) == true) {
-			throw new IllegalArgumentException("the value parameter must not be empty");
-		}
-
-		sid = value;
-	}
-	
 	/**
 	 * set the current state of the Serval Mesh
 	 * @param state the current state of the Serval Mesh
@@ -116,12 +90,27 @@ public class ServalMaps extends Application {
 		
 	}
 	
+	private void getPrimaryDetails(){
+		if (phoneNumber!=null)
+			return;
+		IntentFilter filter = new IntentFilter();
+		filter.addAction("org.servalproject.SET_PRIMARY");
+		Intent intent=this.registerReceiver(null, filter);
+		phoneNumber = intent.getStringExtra("did");
+		sid = intent.getStringExtra("sid");
+		
+		if (phoneNumber==null)
+			Log.e(TAG, "unable to retrieve Serval Mesh phone number");
+		if (sid==null)
+			Log.e(TAG, "unable to retrieve the Serval Mesh sid");
+	}
 	/**
 	 * Get the phone number of the device as reported by Serval 
 	 * 
 	 * @return the phone number
 	 */
 	public String getPhoneNumber() {
+		getPrimaryDetails();
 		return phoneNumber;
 	}
 
@@ -131,6 +120,7 @@ public class ServalMaps extends Application {
 	 * @return the sid
 	 */
 	public String getSid() {
+		getPrimaryDetails();
 		return sid;
 	}
 	
@@ -166,12 +156,13 @@ public class ServalMaps extends Application {
 	}
 	
 	public static String binToHex(byte[] buff, int offset, int len) {
-		StringBuilder sb = new StringBuilder();
+		char[] ret = new char[len*2];
+		int j=0;
 		for (int i = 0; i < len; i++) {
-			sb.append(Character.forDigit(((buff[i + offset]) & 0xf0) >> 4, 16));
-			sb.append(Character.forDigit((buff[i + offset]) & 0x0f, 16));
+			ret[j++]=Character.forDigit(((buff[i + offset]) & 0xf0) >> 4, 16);
+			ret[j++]=Character.forDigit((buff[i + offset]) & 0x0f, 16);
 		}
-		return sb.toString().toUpperCase();
+		return new String(ret);
 	}
 	
 	public Uri findPhoto(String name){
@@ -212,9 +203,9 @@ public class ServalMaps extends Application {
 	}
 	
 	public void fullRefresh(){
-		refreshType(BinaryFileContract.LOCATION_EXT);
-		refreshType(BinaryFileContract.POI_EXT);
 		this.setLastRefresh(System.currentTimeMillis());
+		refreshType(BinaryFileContract.POI_EXT);
+		refreshType(BinaryFileContract.LOCATION_EXT);
 	}
 	
 	public void processFile(String fileName, Uri uri){
@@ -225,21 +216,10 @@ public class ServalMaps extends Application {
 			return;
 		}
 		
-		String[] mFileParts = fileName.split("-");
-		String mPhoneNumber = this.getPhoneNumber();
-		
-		if(mPhoneNumber == null) {
-			Log.w(TAG, "phone number was null from the application object, aborting.");
+		// skip files if we have the log file we produced.
+		File dataPath= new File(Environment.getExternalStorageDirectory().getPath(), this.getString(R.string.system_path_binary_data));
+		if (dataPath.exists())
 			return;
-		}
-		
-		mPhoneNumber = mPhoneNumber.replace(" ", "");
-		mPhoneNumber = mPhoneNumber.replace("-", "");
-		
-		if(mFileParts[0].equals(this.getPhoneNumber())) { 
-			// skip files that we sent
-			return;
-		}
 		
 		// is this a location binary data file?
 		if(fileName.endsWith(BinaryFileContract.LOCATION_EXT)) {

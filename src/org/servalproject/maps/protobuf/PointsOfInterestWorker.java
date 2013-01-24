@@ -84,9 +84,8 @@ public class PointsOfInterestWorker implements Runnable {
 					if(mLatestTimeStamp == -1) {
 						
 						String[] mProjection = {PointsOfInterestContract.Table.TIMESTAMP};
-						String mSelection = PointsOfInterestContract.Table.PHONE_NUMBER + " = ?";
-						String[] mSelectionArgs = new String[1];
-						mSelectionArgs[0] = mMessage.getPhoneNumber();
+						String mSelection = PointsOfInterestContract.Table.SRC_FILE + " = ?";
+						String[] mSelectionArgs = new String[]{dataFile.getLastPathSegment()};
 						String mOrderBy = PointsOfInterestContract.Table.TIMESTAMP + " DESC";
 						
 						Cursor mCursor = mContentResolver.query(
@@ -125,6 +124,7 @@ public class PointsOfInterestWorker implements Runnable {
 						mNewValues.put(PointsOfInterestContract.Table.TAGS, mMessage.getTags());
 						mNewValues.put(PointsOfInterestContract.Table.ACCURACY, mMessage.getAccuracy());
 						mNewValues.put(PointsOfInterestContract.Table.ALTITUDE, mMessage.getAltitude());
+						mNewValues.put(PointsOfInterestContract.Table.SRC_FILE, dataFile.getLastPathSegment());
 						
 						ContentProviderOperation o=
 							ContentProviderOperation

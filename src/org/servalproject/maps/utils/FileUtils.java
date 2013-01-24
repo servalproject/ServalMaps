@@ -114,7 +114,7 @@ public class FileUtils {
 		try{
 			OutputStream mOutputStream = new FileOutputStream(destination);
 			try{
-				byte buff[] = new byte[1024];
+				byte buff[] = new byte[64*1024];
 				int read=0;
 				while((read = inputStream.read(buff)) >=0){
 					mOutputStream.write(buff, 0, read);
