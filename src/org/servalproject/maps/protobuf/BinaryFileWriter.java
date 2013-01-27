@@ -180,14 +180,11 @@ public class BinaryFileWriter {
 		// open the file and write the data
 		FileOutputStream mOutput = null;
 		try{
-			try {
-				mOutput = new FileOutputStream(mOutputPath + mFileName, true);
-				
-				BinaryFileContract.writePointOfInterestRecord(mCursor, mOutput);
-				mOutput.getFD().sync();
-			}finally{
-				mOutput.close();
-			}
+			mOutput = new FileOutputStream(mOutputPath + mFileName, true);
+			
+			BinaryFileContract.writePointOfInterestRecord(mCursor, mOutput);
+			mOutput.getFD().sync();
+			
 			// add the file to rhizome
 			Rhizome.addFile(context, mOutputPath + mFileName);
 			
@@ -198,9 +195,8 @@ public class BinaryFileWriter {
 		} finally {
 			// play nice and tidy up
 			try {
-				if(mOutput != null) {
+				if(mOutput != null)
 					mOutput.close();
-				}
 			} catch (IOException e) {
 				Log.e(TAG, "unable to close the output file", e);
 			}
